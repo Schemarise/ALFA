@@ -1,0 +1,8 @@
+record scalars.Period {
+    //fPeriod : period
+    // fPeriodWithDefault : period = "P5Y"
+}
+
+record scalars.constraints.range.Period {
+	// fPeriod : period( "P1Y", "P6Y" )
+}

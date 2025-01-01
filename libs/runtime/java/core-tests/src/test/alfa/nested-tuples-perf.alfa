@@ -1,0 +1,12 @@
+
+namespace nestedtupleperf
+
+record TuplePerText {
+    payload : tuple<
+                    Name : string,
+                    Address : tuple< Line1 : string,
+                                     PostCode : tuple< Region : string, Location : string >
+                                   >
+                   >
+}
+

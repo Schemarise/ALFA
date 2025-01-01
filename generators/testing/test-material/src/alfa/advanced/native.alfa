@@ -1,0 +1,7 @@
+typedefs {
+    storage = native acme.types.Storage
+}
+
+record Feature.NativeUsage {
+    Capacity : storage
+}

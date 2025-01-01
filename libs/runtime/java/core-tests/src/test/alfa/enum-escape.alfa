@@ -1,0 +1,12 @@
+
+namespace enumtest
+
+record Foo {
+    Embedded : enum< `N/A`, test >
+    EnumRef : EnumRefData
+}
+
+enum EnumRefData {
+    `N/A`
+    test
+}

@@ -1,0 +1,4 @@
+record enclosed.TypeOfData {
+//	F1 : typeof< record >
+}
+

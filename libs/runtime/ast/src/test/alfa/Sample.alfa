@@ -1,0 +1,142 @@
+namespace Demo
+
+
+enum PositionType {
+    Attack Defence Midfield
+}
+
+record Player {
+    PlayerName : string
+    Position : PositionType
+    Ranking : int(1,10)
+}
+
+record Team {
+    TeamName : string
+    Captain : Player
+    Players : list< Player >
+}
+
+record League {
+    LeagueName : string
+    Teams : map< Division : string, Team : list< Team > >
+}
+
+record SampleRecord {
+    checkField : try< double >
+    compressedField : compressed< double >
+    encryptedField : encrypted< double >
+    stringField : string?
+    intField : int
+    mapField : map< date, long >
+    setField : set< uuid >
+    matrix : list< list< double > >
+}
+
+record SimpleConstraintRecord {
+    Marks : int(0,100)
+    Skills : map< string, int(0,10) >
+}
+
+record SimpleRecord {
+    stringField : string
+    optField : string?
+    intField : int
+    mapField : map< date, SimpleObjHolder >
+    setField : set< uuid >
+    matrix : list< list< long > >
+    kw : KeywordVals?
+    type : string?
+}
+
+enum KeywordVals {
+    `long`
+    `short`
+}
+
+record SimpleObjHolder {
+    Val : int
+}
+
+record Permutations {
+    F1 : list< int >
+    F2 : list< int >?
+    F3 : list< int? >
+    F4 : list < list < int > >
+    F5 : list< list < list< int > > >
+    F6 : map< int, set< string > >
+    F7 : map< int, set< string >? >
+}
+
+record SampleTopLevel {
+    F1 : SampleNested
+    F2 : set< SampleNested >
+}
+
+record SampleNested {
+    F1 : string
+}
+
+trait SampleTrait { }
+
+union UnionOfBox {
+    intBox : Boxed< int >
+    strBox : Boxed< string >
+}
+
+record Boxed< T > {
+    value : T
+}
+
+record RecOfBox {
+    boxed : Boxed< int >
+}
+
+record TryOfInt {
+    val : try< int >
+}
+
+record EitherStringOrSampleNested {
+    val : either< SampleNested, int >
+}
+
+record SimpleObjectHolder {
+    val : int
+}
+
+record SimpleEncrypted {
+    val : encrypted< SampleNested >
+}
+
+
+record SimpleCompressed {
+    val : compressed< SampleNested >
+}
+
+record EitherStringOrDate {
+	F1 : either< date, SampleNested >
+}
+
+record TableDataRecord {
+    C1 : int
+    C2 : double
+    C3 : list< string >
+    C4 : set< string >
+    C5 : map< int, OtherTableDataRecord >
+}
+
+record OtherTableDataRecord {
+    D1 : date
+}
+
+record TableRecord {
+    T : table< TableDataRecord >
+}
+
+key SimpleKey {
+    Id : long
+}
+
+entity SimpleEntity key SimpleKey {
+    Name : string
+}

@@ -1,0 +1,3 @@
+record enclosed.FutureData {
+	F1 : future< string >
+}

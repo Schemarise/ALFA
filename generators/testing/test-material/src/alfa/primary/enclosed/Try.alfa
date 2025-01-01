@@ -1,0 +1,7 @@
+record enclosed.TryScalar {
+	F1 : try< double >
+}
+
+record enclosed.TryVector {
+	F1 : try< list< string > >
+}

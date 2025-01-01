@@ -1,0 +1,11 @@
+
+entity udts.entity.MyEntityWithAssert key ( Id : uuid ) {
+    F1 : int
+    F2 : string
+    F3 : double
+
+    assert MyAssert1 {
+        let x = F1
+    }
+}
+

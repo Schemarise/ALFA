@@ -1,0 +1,38 @@
+
+namespace Foo
+
+namespace Baz
+
+record Bar {
+    F1 : union < int, string >
+
+}
+
+/*
+trait Level0< T > {
+    L0 : T
+}
+
+
+record Level1 includes Level0< int > {
+}
+
+record Level2<T> includes Level0< T > {
+}
+
+
+
+trait series< T, V > {
+    freq : T
+    value : V
+}
+
+namespace Bar
+
+trait dateseries< V > includes Foo.series< date, V >{}
+
+trait Results {
+    Prices : dateseries< double >
+    Inventory : dateseries< long >
+}
+*/

@@ -1,0 +1,10 @@
+namespace vectors.map
+
+record MapOfNonPrimitiveKeyedValues {
+    F1 : map< ID, string >
+}
+
+record ID {
+    Id : uuid
+    Timestamp : datetime
+}

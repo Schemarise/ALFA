@@ -1,0 +1,30 @@
+namespace Feature.DeeplyNestedTrait
+
+record A {
+    b : B
+}
+
+record B {
+    c : C
+}
+
+record C {
+    d : D
+}
+
+record D {
+    t : T
+}
+
+trait T {
+
+}
+
+record E includes T {
+    A : int
+}
+
+record F includes T {
+    B : int
+}
+

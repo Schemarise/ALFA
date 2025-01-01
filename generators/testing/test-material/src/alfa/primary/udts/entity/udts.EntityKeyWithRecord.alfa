@@ -1,0 +1,21 @@
+
+namespace udts
+
+entity EntityKeyWithRecord key CompositeKey {
+    F1 : int
+    F2 : string
+}
+
+key CompositeKey {
+    F4 : WeekDay
+    F5 : OtherRec
+}
+
+record OtherRec {
+    Id : uuid
+    Date : date
+}
+
+enum WeekDay {
+    Mon Tue Wed Thu Fri
+}

@@ -1,0 +1,3 @@
+record vectors.sets.SetOfInplaceUnions {
+    F1 : set< union< U1:int, U2:string, U3:double > >
+}

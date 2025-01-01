@@ -1,0 +1,3 @@
+record vectors.list.ListOfInplaceUnions {
+    F1 : list< union< U1:int, U2:string, U3:double > >
+}

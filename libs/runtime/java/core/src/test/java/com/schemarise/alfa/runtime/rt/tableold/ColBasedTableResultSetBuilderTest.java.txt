@@ -1,0 +1,83 @@
+package alfa.rt.tableold;
+
+import alfa.rt.JsonCodec;
+import alfa.rt.ColBasedTable;
+import alfa.rt.ColumnDef;
+import alfa.rt.TableDef;
+import alfa.rt.model.ScalarType;
+import alfa.rt.model.UdtMetaType;
+import alfa.rt.model.UdtVersionedName;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.sql.Date;
+import java.sql.ResultSet;
+
+public class ColBasedTableResultSetBuilderTest {
+
+    @Test
+    public void resultSetReaderTest() throws Exception {
+        ColBasedTable t = create();
+        ResultSet rs = new ColBasedTableResultSet( t );
+
+        while ( rs.next() ) {
+            int c1 = rs.getInt("C1");
+            String c2 = rs.getString(2);
+            double c3 = rs.getDouble("C3");
+            Date c4 = rs.getDate(4);
+
+            System.out.println( c1 + ", " + c2 + ", " + c3 + ", " + c4 );
+        }
+        Assert.assertEquals( rs.getRow(), 3 );
+    }
+
+    @Test
+    public void resultSetBuilder() throws Exception {
+        ColBasedTable t = create();
+        System.out.println( JsonCodec.toFormattedJson(t));
+    }
+
+    private ColBasedTable create() throws Exception {
+        ColumnDef c1 = TableUtils.createColumn("C1", ScalarType.intType);
+        ColumnDef c2 = TableUtils.createColumn("C2", ScalarType.stringType);
+        ColumnDef c3 = TableUtils.createColumn("C3", ScalarType.doubleType);
+        ColumnDef c4 = TableUtils.createColumn("C4", ScalarType.dateType);
+
+        TableDef def = TableDef.newBuilder().setUdtName( UdtVersionedName.newBuilder().setFullyQualifiedName("Data.Sample").
+                setUdtType(UdtMetaType.recordType).build() ).
+                addColumns(c1).addColumns(c2).addColumns(c3).addColumns(c4).
+                build();
+
+        ResultSet b = new ColBasedTableResultSetBuilder(def, true );
+
+        b.moveToInsertRow();
+        b.updateInt(1, 10);
+        b.updateString(2, "a");
+        b.updateDouble(3, 190.31);
+        b.updateDate(4, new Date(System.currentTimeMillis()));
+        b.insertRow();
+
+        b.moveToInsertRow();
+        b.updateInt(1, 15);
+        b.updateString(2, "b");
+        b.updateDouble(3, 290.21);
+        b.updateDate(4, new Date(System.currentTimeMillis()));
+        b.insertRow();
+
+        b.moveToInsertRow();
+        b.updateInt(1, 56);
+        b.updateString(2, "c");
+        b.updateDouble(3, 219.81);
+        b.updateDate(4, new Date(System.currentTimeMillis()));
+        b.insertRow();
+
+        ColBasedTable tbl = ( (ColBasedTableResultSetBuilder) b ).buildColBasedTable();
+
+        String json = JsonCodec.toJsonString(tbl);
+        ColBasedTable decoded = JsonCodec.fromJsonString(json);
+        Assert.assertEquals(tbl, decoded);
+
+        return tbl;
+
+    }
+}

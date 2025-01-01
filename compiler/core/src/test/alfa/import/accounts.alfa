@@ -1,0 +1,11 @@
+
+import com.acme.hr.*
+import com.acme.Base
+
+namespace com.acme.accounts
+
+trait Account {
+    Owner : Person
+    B : Base
+}
+

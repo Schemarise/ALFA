@@ -1,0 +1,3 @@
+record vectors.inlined.InlineTuple {
+    F1 : tuple< T1:int, T2:string, T3:double >
+}

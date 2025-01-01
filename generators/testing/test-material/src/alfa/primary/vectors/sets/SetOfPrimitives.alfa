@@ -1,0 +1,3 @@
+record vectors.sets.SetOfPrimitives {
+    F1 : set< int >
+}

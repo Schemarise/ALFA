@@ -1,0 +1,11 @@
+namespace enclosed
+
+record EncryptedData {
+	F1 : encrypted< string >
+	F2 : encrypted< SensitiveData >
+}
+
+record SensitiveData {
+    CreditCard : string
+    DOB : date
+}

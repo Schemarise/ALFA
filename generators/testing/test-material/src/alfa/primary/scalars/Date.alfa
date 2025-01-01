@@ -1,0 +1,20 @@
+record scalars.Date {
+	fDate : date
+}
+
+record scalars.constraints.range.Date {
+	fRange : date( "1500-01-01", "8005-01-01" )
+}
+
+record scalars.constraints.upper.Date {
+	fUpperBound : date( *, "2005-01-01" )
+}
+
+record scalars.constraints.lower.Date {
+	fLowerBound : date( "1500-01-01", * )
+}
+
+record scalars.defaulted.Date {
+	fDefaulted : date = "2000-01-01"
+}
+

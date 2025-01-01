@@ -1,0 +1,4 @@
+---
+name: com.acme:Payments
+compile:
+  DisallowNonSelfCyclicDeclarations: true

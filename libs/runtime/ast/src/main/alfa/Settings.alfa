@@ -1,0 +1,32 @@
+namespace schemarise.alfa.runtime.config.cli
+
+record Settings
+{
+    # Namespace to use when schemas are imported from models which have no namespace (e.g. JSON Schema)
+    Namespace: string?
+
+    # When deserializing data, ignore unknown fields
+    SkipUnknownFields : boolean = false
+
+    UseCachedClasses : boolean = true
+
+    SkipAssertAll : boolean = false
+
+    ExcludeAsserts : boolean = false
+
+    CsvDelimiter : string = ","
+
+    # Which row is considered the CSV titles/header row. Use 0 if no header.
+    CsvHeaderRows : int = 1
+
+    # Store to persist DQ results
+    DqStoreDB : DBConfig?
+
+    RuntimeDBs : map< StoreName : string, DBConfig >?
+}
+
+record DBConfig {
+    Type : string
+    Url : string
+    Name : string?
+}

@@ -1,0 +1,9 @@
+namespace vectors.map
+
+record MapWithEnumKey {
+    F1 : map< DirectionType, string >
+}
+
+enum DirectionType {
+    N S E W
+}

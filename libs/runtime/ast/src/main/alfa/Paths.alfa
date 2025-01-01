@@ -1,0 +1,72 @@
+# Definitions in this namespace models generic path based values
+# to any Alfa object, so that any value within an object can be
+# represented using UdtObject or Path.
+
+namespace schemarise.alfa.runtime.model.path
+
+record ListEntry {
+   Index : int
+   Element : PathElement
+}
+
+record MapEntry {
+   Key : PathElement
+   Value : PathElement
+}
+
+union PathElement {
+    ScalarValue : string
+    ListEntry : list< ListEntry >
+    SetEntry : list< PathElement >
+    MapEntry : list< MapEntry >
+    MapKey : list< PathElement >
+    Udt : UdtObject
+    EndOfPath : void
+}
+
+record UdtObject {
+    Type : string
+    Paths : map<string, PathElement >
+}
+
+record Path {
+    Field : string
+    Element : PathElement
+}
+
+/*
+{
+    Type : "AnObject",
+    Paths : [ {
+            Field : "Name",
+            Element : {
+                ScalarValue : "Bob"
+            }
+        }, {
+            Field : "Location",
+            Element : {
+                Udt : {
+                    Type : "Address",
+                    Paths : [
+                    ]
+                }
+            }
+        } {
+            Field : "ListOfInts",
+            Elements : [ {
+                    ListEntry : {
+                        Index : 0,
+                        Element : {
+                            ScalarValue : "10"
+                        }
+                    }
+                }
+            ]
+
+        }
+    ]
+}
+
+
+*/
+

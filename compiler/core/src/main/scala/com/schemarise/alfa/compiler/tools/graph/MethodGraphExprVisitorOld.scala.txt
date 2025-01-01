@@ -1,0 +1,253 @@
+package com.schemarise.alfa.compiler.tools.graph
+
+import java.util
+
+import com.schemarise.alfa.compiler.ast.model._
+import com.schemarise.alfa.compiler.ast.model.NodeVisitMode.Mode
+import com.schemarise.alfa.compiler.ast.model.expr.{IIfElseExpression, IObjectExpression, IQualifiedStringLiteral}
+import com.schemarise.alfa.compiler.ast.model.graph.{Edges, NodeIdentity}
+import com.schemarise.alfa.compiler.ast.model.stmt.{IReturnStatement, IVariableDeclarationStatement}
+import com.schemarise.alfa.compiler.ast.model.types.IDataType
+import com.schemarise.alfa.compiler.ast.nodes.datatypes.UdtDataType
+import com.schemarise.alfa.compiler.ast.nodes.expr.{NewExpression, ObjectExpression}
+import com.schemarise.alfa.compiler.ast.nodes.expr.liternal.{IdentifierLiteral, QualifiedIdentifierLiteral}
+import com.schemarise.alfa.compiler.tools.graph.MethodBuildVertexType.VariableType
+
+import scala.collection.mutable.ListBuffer
+import scala.collection.JavaConverters._
+
+class MethodGraphExprVisitorOld(graph : AlfaDirectedGraph[MethodGraphVertex, Edge]) extends NoOpNodeVisitor {
+
+  private val accessPrefixStack = new util.Stack[String]()
+  private val lastVisitedLiterals = new ListBuffer[MethodGraphVertex]()
+
+  case class IdNode(s: String) extends IdentifiableNode {
+    override def nodeId: NodeIdentity = new NodeIdentity("id", s)
+
+    override def traverse(v: NodeVisitor): Unit = {}
+
+    override def toString: String = s
+  }
+
+  class QualifiedLitVisitor extends NoOpNodeVisitor {
+    val literals = new ListBuffer[MethodGraphVertex]()
+
+    override def enter(e: IQualifiedStringLiteral): Mode = {
+
+      e match {
+        case x: IdentifierLiteral =>
+          val v = createOrFindVertex(x.rawValue.text, MethodBuildVertexType.VariableRef)
+          literals += v
+
+        case x: QualifiedIdentifierLiteral =>
+          if ( x.resolvedField.isDefined ) {
+            val f = x.resolvedField.get
+            val v = createOrFindVertex(x.toString, MethodBuildVertexType.FieldRef)
+            literals += v
+          }
+      }
+
+      super.enter(e)
+    }
+  }
+
+  def createOrFindVertex(n: String, vt: VariableType) = {
+    val mgv = new MethodGraphVertex(IdNode(n), None, vt)
+
+    val existing = graph.vertexSet().asScala.find(e => e.equals(mgv))
+
+    if (existing.isDefined)
+      existing.get
+    else {
+      graph.addVertex(mgv)
+      mgv
+    }
+  }
+
+  private def fieldHierarchy(parent: MethodGraphVertex, path: List[String], dt: IDataType): Unit = {
+    if (dt.isUdt) {
+      val all = dt.asInstanceOf[UdtDataType].resolvedType.get.allFields
+      val fieldNames = all.keys
+      fieldNames.foreach(fn => {
+        val fdt = all.get(fn).get.dataType
+
+        if (!fdt.isUdt) {
+          val vf = createOrFindVertex(path.mkString("", ".", ".") + fn, MethodBuildVertexType.Field)
+
+          if (parent.vtype == MethodBuildVertexType.Formal)
+            addEdge(parent, vf)
+          else if ( parent.vtype == MethodBuildVertexType.Variable ) {
+            addEdge(vf, parent)
+          }
+          else
+            addEdge(vf, parent)
+        }
+
+        // only expand nest fields for a formal
+        if (parent.vtype == MethodBuildVertexType.Formal)
+          fieldHierarchy(parent, path ++ Seq(fn), fdt)
+      })
+    }
+  }
+
+  private def buildFieldsOfVar(f: INode) = {
+    val t = f match {
+      case x: IFormal => (MethodBuildVertexType.Formal, x.name, x.dataType)
+      case x: IVariableDeclarationStatement =>
+        (MethodBuildVertexType.Variable, x.variableName, x.dataType.get)
+    }
+
+    val v = createOrFindVertex(t._2, t._1)
+    //      addVertex(v)
+
+    fieldHierarchy(v, List(t._2), t._3)
+  }
+
+  override def enter(e: IFormal): Mode = {
+    buildFieldsOfVar(e)
+    super.enter(e)
+  }
+
+  override def enter(e: IIfElseExpression): Mode = {
+    super.enter(e)
+  }
+
+  override def enter(v: IVariableDeclarationStatement): Mode = {
+    accessPrefixStack.push(v.variableName)
+    buildFieldsOfVar(v)
+    super.enter(v)
+  }
+
+  override def exit(v: IVariableDeclarationStatement): Unit = {
+    val from = createOrFindVertex(v.variableName, MethodBuildVertexType.Variable)
+
+    lastVisitedLiterals.map(l => {
+      addEdge(l, from)
+    })
+
+    lastVisitedLiterals.clear()
+    accessPrefixStack.pop()
+    super.exit(v)
+  }
+
+  override def enter(e: IStatement) = {
+    e match {
+      case r: IReturnStatement =>
+        accessPrefixStack.push("return")
+        val retv = createOrFindVertex("return", MethodBuildVertexType.Return)
+
+      case _ =>
+    }
+
+    super.enter(e)
+  }
+
+  override def exit(e: IStatement) = {
+
+    super.exit(e)
+
+    e match {
+      case r: IReturnStatement =>
+        accessPrefixStack.pop()
+        val retv = createOrFindVertex("return", MethodBuildVertexType.Return)
+
+        lastVisitedLiterals.map(l => {
+          addEdge(l, retv)
+        })
+
+      case _ =>
+    }
+
+    lastVisitedLiterals.clear()
+  }
+
+  private def addEdge(i: MethodGraphVertex, o: MethodGraphVertex) = {
+    val e = graph.getEdgeFactory.createEdge(i, o).setData(i, o, Edges.ExpressionInput)
+
+    val added = graph.addEdge(i, o, e)
+    if (!added)
+      debug("addEdge NOT added " + i + " --> " + o)
+    else
+      debug("addEdge added " + i + " --> " + o)
+
+  }
+
+  private def debug(s: String) = {
+    // println("DEBUG: " + s)
+  }
+
+  override def enter(e: IObjectExpression): Mode = {
+
+    val oe = e.asInstanceOf[ObjectExpression]
+
+    if (oe.locateExprParent().get.isInstanceOf[NewExpression]) {
+      val all = e.dataType.asInstanceOf[UdtDataType].resolvedType.get.allFields
+
+      val fieldNames = all.keys
+
+      val prefix = accessPrefixStack.asScala.mkString(".") + "."
+      val objHolder = accessPrefixStack.peek()
+
+      val varDecl = createOrFindVertex(objHolder, MethodBuildVertexType.VariableRef)
+
+      /*
+       Given let y = new Out( F1 = x )
+         varDecl == y
+         vf == y.F1
+         We create a edge from y to y.F1 and from x to y.F1
+     */
+
+      fieldNames.foreach(fn => {
+        val vf = createOrFindVertex(prefix + fn, MethodBuildVertexType.NewObjField)
+
+        addEdge(vf, varDecl)
+
+        val fieldExpr = e.value.get(fn)
+
+        if (fieldExpr.isDefined) {
+          val collector = new QualifiedLitVisitor()
+          fieldExpr.get.traverse(collector)
+
+          collector.literals.foreach(lit => {
+            val vf = createOrFindVertex(prefix + fn, MethodBuildVertexType.NewObjField)
+            addEdge(lit, vf)
+          })
+        }
+      })
+
+      e.value
+    }
+
+    NodeVisitMode.Break
+  }
+
+  override def enter(e: IQualifiedStringLiteral): Mode = {
+    e match {
+      case x: IdentifierLiteral =>
+        val v = createOrFindVertex(x.rawValue.text, MethodBuildVertexType.VariableRef)
+
+        lastVisitedLiterals += v
+
+      case x: QualifiedIdentifierLiteral =>
+        if ( x.resolvedField.isDefined ) {
+          val f = x.resolvedField.get
+
+          val parent = createOrFindVertex(x.accesors.head._1, MethodBuildVertexType.VariableRef)
+          val v = createOrFindVertex(x.toString, MethodBuildVertexType.FieldRef)
+          addEdge(parent, v)
+          lastVisitedLiterals += v
+        }
+      //          else if ( x.resolvedEnum.isDefined ) {
+      //
+      //          }
+      //          else if ( x.resolvedType.isDefined ) {
+      //            val parent = createOrFindVertex(x.resolvedType.get.fullyQualifiedName, MethodBuildVertexType.Type)
+      //            val v = createOrFindVertex(x.toString, MethodBuildVertexType.Type)
+      //            addEdge(parent, v)
+      //            lastVisitedLiterals += v
+      //          }
+    }
+
+    super.enter(e)
+  }
+}

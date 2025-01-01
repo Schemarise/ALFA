@@ -1,0 +1,4 @@
+record vectors.inlined.InlineUnion {
+    F1 : union< U1:int, U2:string, U3:double >
+    // UntaggedField : union< int | string | double >
+}

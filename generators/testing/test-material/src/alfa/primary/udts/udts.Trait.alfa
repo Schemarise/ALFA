@@ -1,0 +1,9 @@
+namespace udts
+
+trait MyTrait {
+    F1 : int
+    F2 : string
+}
+
+record MyTraitImpl includes MyTrait {}
+

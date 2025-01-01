@@ -1,0 +1,4 @@
+record scalars.Binary {
+	fBinary : binary
+	fFixedLengthBinary : binary(1,128)
+}

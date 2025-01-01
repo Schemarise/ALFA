@@ -1,0 +1,7 @@
+include "TraitOneParam.alfa"
+
+namespace generics
+
+record AbstractRecordOneParam< T > includes TraitOneParam< T > {
+    RecParamField : T
+}

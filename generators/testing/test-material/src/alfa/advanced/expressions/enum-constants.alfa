@@ -1,0 +1,11 @@
+namespace LibTest
+
+enum ENType {
+    A B C
+}
+
+library ENUsage {
+    fn() : void {
+        let x2 = { ENType.A, ENType.B }
+    }
+}

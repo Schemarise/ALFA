@@ -1,0 +1,3 @@
+record scalars.Boolean {
+	fBoolean  : boolean
+}

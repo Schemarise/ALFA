@@ -1,0 +1,12 @@
+namespace generics
+
+trait GenericTrait< T > {
+    value : T
+}
+
+record GenericTraitUsage1 includes GenericTrait< string > {
+}
+
+record GenericTraitUsage2 {
+    F1 : GenericTrait< string >
+}

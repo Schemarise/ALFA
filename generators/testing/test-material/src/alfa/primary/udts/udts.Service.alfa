@@ -1,0 +1,18 @@
+
+namespace udts
+
+service MyService( host : string, port : int ) {
+    getDate() : date
+
+    # This sets the date
+    setDate(
+            d : date ## new date value
+        ) : void
+
+    getUDT() : Data
+}
+
+record Data {
+    F1 : int
+    F2 : string
+}

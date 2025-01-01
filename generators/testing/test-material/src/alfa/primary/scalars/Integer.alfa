@@ -1,0 +1,21 @@
+record scalars.Integer {
+	fInt  : int
+}
+
+record scalars.constraints.range.Integer {
+	fRange : int( -10, 1000 )
+}
+
+/*
+record scalars.constraints.upper.Integer {
+	fUpperBound : int( *, 100 )
+}
+
+record scalars.constraints.lower.Integer {
+	fLowerBound : int( 10, * )
+}
+
+record scalars.defaulted.Integer {
+	fDefaulted : int = 50
+}
+*/

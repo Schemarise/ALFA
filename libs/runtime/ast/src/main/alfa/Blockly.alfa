@@ -1,0 +1,61 @@
+namespace schemarise.alfa.runtime.model.blk
+
+
+record Blocks {
+    blocks : list< Block >
+}
+
+record Block {
+    type : string
+    category : string
+
+    message0 : string?
+    args0 : list< BlockBodyArg >?
+    message1 : string?
+    args1 : list< BlockBodyArg >?
+    message2 : string?
+    args2 : list< BlockBodyArg >?
+    message3 : string?
+    args3 : list< BlockBodyArg >?
+    message4 : string?
+    args4 : list< BlockBodyArg >?
+    message5 : string?
+    args5 : list< BlockBodyArg >?
+
+    colour : int
+    tooltip : string
+    helpUrl : string
+
+    previousStatement : string?
+    nextStatement : string?
+
+    inputsInline : boolean?
+    output : string?
+    style : string?
+    mutator : string?
+    extensions : list< string >?
+}
+
+record BlockBodyArg {
+    type : ArgType
+    name : string
+    check : CheckType?
+    text  : string?
+    spellcheck : boolean?
+    options : list< list< string > >?
+}
+
+enum CheckType {
+    String
+    Number
+    Boolean
+}
+
+enum ArgType {
+    input_value,
+    input_statement,
+    input_dummy,
+    field_input,
+    field_dropdown
+}
+

@@ -1,0 +1,3 @@
+record vectors.list.ListOfSets {
+    F1 : list< set< int > >
+}

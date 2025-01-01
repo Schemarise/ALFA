@@ -1,0 +1,3 @@
+record vectors.list.ListOfInplaceTuple {
+    F1 : list< tuple< T1 :int, T2 :string, T3 :double > >
+}

@@ -1,0 +1,9 @@
+namespace vectors.sets
+
+record MapOfRecords {
+    F1 : set< UDT >
+}
+
+record UDT {
+    Data : string
+}

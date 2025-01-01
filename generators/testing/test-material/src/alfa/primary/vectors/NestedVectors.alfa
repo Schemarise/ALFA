@@ -1,0 +1,3 @@
+record vectors.NestedVectors {
+    F1 : list< map< int, set < string > > >
+}

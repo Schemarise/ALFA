@@ -1,0 +1,4 @@
+record vectors.list.ListOfOptionals {
+    F1 : list< double? >
+    F2 : list< double >?
+}

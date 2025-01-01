@@ -1,0 +1,7 @@
+
+namespace generics
+
+trait TraitPair< L, R > {
+    Left : L
+    Right : R
+}

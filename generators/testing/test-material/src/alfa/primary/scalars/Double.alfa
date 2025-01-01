@@ -1,0 +1,5 @@
+record scalars.Double {
+	fDouble : double
+	fDoubleUpperBound : double(*, 100.0)
+	fDoubleLowerBound : double(10.0, *)
+}

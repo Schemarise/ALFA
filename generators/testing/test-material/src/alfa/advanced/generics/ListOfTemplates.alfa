@@ -1,0 +1,11 @@
+namespace vectors.list
+
+trait ListOfTemplates< T > {
+    F1 : list< T >
+}
+
+record TmplImpl1 includes ListOfTemplates< int >
+{}
+
+// TODO REVIEW TEMPLATED CODEGEN JAVA
+// record TmplImpl2 includes SeqOfTemplates< TmplImpl1 > {}

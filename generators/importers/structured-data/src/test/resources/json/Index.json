@@ -1,0 +1,50 @@
+{
+  "system": "bcdd",
+  "id": "1234abc",
+  "version": 1230,
+  "status": "validated",
+  "book": "VGY147",
+  "legalEntity": " EFGH",
+  "counterpartyId": 987456123,
+  "counterpartyCode": "ICE-001",
+  "counterpartyName": "The ICE",
+  "traderID": "Trader12345",
+  "uniqueTransactionIdentifier": "V2D0K0I4F0G7",
+  "buySellIndicator": "S",
+  "tradePrice": 995,
+  "tradeCcy": "USD",
+  "quantity": 5000,
+  "quantityUnit": "MMBtus",
+  "notionalAmount": 49750.00,
+  "notionalCurrency": "USD",
+  "tradeDate": "2023-02-14",
+  "enteredeDate": "2023-02-14",
+  "settleDate": "2023-03-31",
+  "expiryDate": "2023-04-27",
+  "deliveryDate": "2023-05-31",
+  "updateTime": "2023-02-14T09:04:45",
+  "updatedBy": "Trader12345",
+  "actionType": "New",
+  "micCode": "IFED",
+  "product": {
+    "contractType": "INDEX",
+    "ContractExtendedType": "Henry",
+    "contractName": "NG Index IF for GDD Futures",
+    "contractSymbol": "Jun23",
+    "contractSize": "2500 MMBtus",
+    "contractUnits": "Lots",
+    "referencePrice": {
+      "refPriceA": "NATURAL GAS-LOUISIANA (HENRY HUB)-GAS DAILY",
+      "refPriceB": "NATURAL GAS-S. LOUISIANA (HENRY HUB)-INSIDE FERC"
+    },
+    "type": {
+      "baseProduct": "Energy",
+      "subProduct": "Gas",
+      "subProduct2": "HIS"
+    },
+    "code": "HIS",
+    "settlementMethod": "CASH",
+    "settlementCcy": "USD",
+    "paymentDate": "2023-07-20"
+  }
+}

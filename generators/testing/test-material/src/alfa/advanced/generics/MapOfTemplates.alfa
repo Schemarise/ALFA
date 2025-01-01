@@ -1,0 +1,7 @@
+namespace vectors.map
+
+trait MapOfTemplates< T > {
+    F1 : map< string, T >
+}
+
+record MapOfTemplateUsages includes MapOfTemplates< int > { }

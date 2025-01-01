@@ -1,0 +1,3 @@
+record vectors.map.MapOfOptionals {
+    F1 : map< string, double? >
+}

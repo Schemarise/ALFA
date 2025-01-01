@@ -1,0 +1,3 @@
+record vectors.map.MapOfPrimitives {
+    F1 : map< string, int >
+}

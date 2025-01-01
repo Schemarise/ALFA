@@ -1,0 +1,3 @@
+record vectors.map.MapOfInplaceTuple {
+    F1 : map< string, tuple< T1:int, T2:string, T3:double > >
+}
