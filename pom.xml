@@ -203,11 +203,17 @@
     </profiles>
 
    <distributionManagement>
+       <snapshotRepository>
+           <id>ossrh</id>
+           <name>Central Repository OSSRH</name>
+           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+       </snapshotRepository>
+	   
        <repository>
-           <id>github</id>
-           <name>Schemarise</name>
-           <url>https://maven.pkg.github.com/Schemarise/ALFA</url>
-       </repository>
+           <id>ossrh</id>
+           <name>Central Repository OSSRH</name>
+           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+       </repository>	   
    </distributionManagement>
 
 </project>
