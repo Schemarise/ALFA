@@ -20,5 +20,6 @@ jobs:
       - name: Publish package
         run: mvn deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_ARGS: -V -B --no-transfer-progress -DskipDistribution=true
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
