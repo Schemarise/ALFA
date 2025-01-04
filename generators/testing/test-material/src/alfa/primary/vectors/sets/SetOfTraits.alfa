@@ -1,0 +1,13 @@
+namespace vectors.sets
+
+record SetOfTraits {
+    F1 : set< Base >
+}
+
+trait Base {
+    Data : string
+}
+
+record Impl1 includes Base {}
+record Impl2 includes Base {}
+record Impl3 includes Base {}

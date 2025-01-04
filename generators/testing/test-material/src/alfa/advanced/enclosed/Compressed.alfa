@@ -1,0 +1,8 @@
+record enclosed.CompressedListData {
+	F1 : compressed< list< string > >
+}
+
+record enclosed.CompressedScalarData {
+	F1 : compressed< string >
+	F2 : compressed< double >
+}

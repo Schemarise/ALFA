@@ -1,0 +1,14 @@
+namespace udts.entity
+
+entity EntityWithRecs key ( identifier : uuid ) {
+    F1 : int
+    F2 : string
+    F3 : double?
+    F4 : PlainRec
+}
+
+record PlainRec {
+    PR1 : int
+    PR2 : string
+}
+

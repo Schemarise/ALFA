@@ -1,0 +1,5 @@
+union scalars.Void {
+	fInt : int
+	fVoid : void
+
+}

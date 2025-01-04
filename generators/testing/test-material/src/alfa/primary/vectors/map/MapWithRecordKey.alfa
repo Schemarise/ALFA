@@ -1,0 +1,10 @@
+namespace vectors.map
+
+record MapWithRecordKey {
+    F1 : map< RecForKey, string >
+}
+
+record RecForKey {
+    F1 : int
+    F2 : string
+}

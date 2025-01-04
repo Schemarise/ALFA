@@ -1,0 +1,3 @@
+record vectors.list.ListOfPrimitives {
+    F1 : list<  int >
+}

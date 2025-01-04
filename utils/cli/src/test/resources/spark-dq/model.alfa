@@ -1,0 +1,6 @@
+namespace SparkDQTest
+
+record Person {
+    Name : string
+    Age : int(1, 120)
+}

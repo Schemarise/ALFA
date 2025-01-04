@@ -1,0 +1,34 @@
+namespace schemarise.alfa.runtime.model.annotation.db
+
+enum StorageMode
+{
+    Relational ## only fully flattened
+    Composite  ## modern relations with struct columns, arrays etc
+    JSON       ## store as json
+    JSONB      ## json binary store
+}
+
+record TableDef
+{
+    # Underlying database table name override
+    Name : string?
+
+    # Underlying database schema name
+    Schema : string?
+
+    PayloadColumnName : string = "__Payload"
+
+    # Schema layout approach
+    StorageMode : StorageMode = StorageMode.Composite
+
+    # Hint which fields are queryable, and possibly stored outside the JSON(B)
+    Queryable : set< string > = { }
+
+    # Indexes by set of fields
+    Indexes : map< name: string, cols: set< string > > = {}
+
+    PartitionFields : set< string > = {}
+    ClusterFields : set< string > = {}
+    PartitionExpression : string = ""
+    Options : set< string > = {}
+}

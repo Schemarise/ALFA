@@ -1,0 +1,26 @@
+
+namespace generics
+
+record TemplatedOptional< T > {
+   Val : T?
+}
+
+record TemplatedMap< K, V > {
+   Val : map< K, V>
+}
+
+record TemplatedMapList< T > {
+   Val : map< string, list< T > >
+}
+
+record ConcretedOptional {
+    F1 : TemplatedOptional< int >
+}
+
+record ConcretedMap {
+    F1 : TemplatedOptional< date >
+}
+
+record ConcretedMapList {
+    F1 : TemplatedMapList< short >
+}

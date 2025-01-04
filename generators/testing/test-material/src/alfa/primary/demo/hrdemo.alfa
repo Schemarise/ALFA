@@ -1,0 +1,52 @@
+namespace hr.model
+
+key EmployeeId {
+  EmployeeId : long
+}
+
+entity Employee key EmployeeId {
+  Name : string
+  Job : JobId
+  Salary : double
+  Manager : EmployeeId?
+  Dept : DepartmentId
+}
+
+key JobId {
+  JobId : long
+}
+
+entity Job key JobId {
+  Title : string
+  MinSalary : double
+  MaxSalary : double
+}
+
+key DepartmentId {
+  DepartmentId : long
+}
+
+entity Department key DepartmentId {
+  DepartmentName : string
+  Manager : EmployeeId
+  Location : LocationId
+}
+
+key LocationId {
+  locatonId : long
+}
+
+entity Location key LocationId {
+  stressAddress : string
+  postalAddress : string
+  city : string
+  country : CountryId
+}
+
+key CountryId {
+  countryId : long
+}
+
+entity Country key CountryId {
+  countryName : string
+}

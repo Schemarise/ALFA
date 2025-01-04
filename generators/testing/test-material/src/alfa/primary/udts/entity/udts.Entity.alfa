@@ -1,0 +1,11 @@
+
+entity udts.MyEntity1 key ( Id : uuid ) {
+    F1 : int
+    F2 : string
+}
+
+entity udts.MyEntity2 key udts.MyKey {
+    F1 : int
+    F2 : string
+}
+

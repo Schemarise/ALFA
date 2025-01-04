@@ -1,0 +1,138 @@
+
+namespace flattentest
+
+enum SampleEnum {
+    R G B
+}
+
+record SimpleObj {
+    StrVal : string
+    IntVal : int
+    OptVal : short?
+    TryVal : try< string >
+    EitherVal : either< string, double >
+    EnVal : SampleEnum
+}
+
+
+record DecimalTestObj {
+    Dec1Val : decimal(10, 2)
+    Dec2Val : decimal(12, 8)
+    Dec3Val : decimal(12, 8, 0, 1000000)
+}
+
+
+record PlainObj {
+    StrVal : string
+    IntVal : int
+    OptVal : short?
+    EnVal : SampleEnum
+}
+
+record FlatObj {
+    Region : string
+    Country  : string
+    ItemType : enum< `Baby Food`, Fruits, Clothes, Meat, Household, Vegetables, Beverages, Food,
+                     Cosmetics, Snacks, `Personal Care`, Cereal, `Office Supplies` >
+    SalesChannel : string
+    OrderPriority : enum<H, M, L, C>
+    OrderDate : date(*,*,"M/d/yyyy")
+    OrderID : string(9,10)
+    ShipDate : date(*,*,"M/d/yyyy")
+    UnitsSold : long
+    UnitPrice : double
+    UnitCost : double
+    TotalRevenue : double
+    TotalCost : double
+    TotalProfit : double
+
+    assert ShippedAfterOrdered {
+        if ( OrderDate > ShipDate )
+            raise error("Error")
+    }
+}
+
+
+
+record WithList {
+    StrVal : string
+    ListVal : list< int >(1,*)
+}
+
+record WithSet {
+    StrVal : string
+    SetVal : set< int >
+}
+
+record WithMap {
+    StrVal : string
+    MapVal : map< string, int >
+}
+
+record SmallRec {
+    StrVal : string
+    IntVal : int
+}
+
+record WithListOfSmallRec {
+    StrVal : string
+    ListVal : list< SmallRec >
+}
+
+record WithMapOfSmallRec {
+    StrVal : string
+    RecMapsVal : map< K : string, V : SmallRec >
+}
+
+record WithCompositeMapKey {
+    StrVal : string
+    MoL : map< CK : SmallRec, string >
+}
+
+record WithMapOfLists {
+    StrVal : string
+    MoL : map< int, list< string > >
+}
+
+
+record WithMapAndList {
+    StrVal : string
+    MapVal : map< string, int >
+    IntVal : int
+    ListVal : list< string >
+}
+
+entity EntityObj key ( id : uuid ) {
+    StrVal : string
+    ListVal : list< string >
+}
+
+union UnionObj {
+    StrVal : string
+    UdtVal : SmallRec
+}
+
+record RecOfUnions {
+    StrVal : string
+    Unis : list< UnionObj >
+}
+
+trait SampleTrait {
+    F1 : string
+}
+
+record SampleTraitImplA includes SampleTrait {
+    F2 : int
+}
+
+record SampleTraitImplB includes SampleTrait {
+    F3 : long
+}
+
+record WithTraitRec {
+    TVal : list< SampleTrait >
+}
+
+record DeeplyNestedVectors {
+    F2 : list< list< int >  >
+}

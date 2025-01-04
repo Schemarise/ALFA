@@ -1,0 +1,112 @@
+{
+  "system": "bcdd",
+  "id": "1234abc",
+  "version": 1230,
+  "status": "validated",
+  "book": "ABCD",
+  "legalEntity": " EFGH",
+  "counterpartyId": 987456123,
+  "counterpartyCode": "BP-001",
+  "counterpartyName": "BP Energy Trading",
+  "traderID": "Trader12345",
+  "uniqueTransactionIdentifier": "V2D0K0I4F0G7",
+  "buySellIndicator": "B",
+  "tradePrice": 130,
+  "tradeCcy": "GBP",
+  "quantity": 61000,
+  "notionalAmount": 7930000.00,
+  "notionalCurrency": "GBP",
+  "tradeDate": "2023-02-14",
+  "enteredeDate": "2023-02-14",
+  "settleDate": "2023-03-31",
+  "maturityDate": "2023-05-31",
+  "deliveryDate": "2023-05-31",
+  "updateTime": "2023-02-14:09:02:39",
+  "updatedBy": "Trader12345",
+  "actionType": "New",
+  "micCode": "IFEU",
+  "product": {
+    "contractType": "SWAP",
+    "ContractExtendedType": "AVERAGING_SWAP",
+    "contractName": "M-UK NBP Natural Gas Futures",
+    "contractSymbol": " ",
+    "type": {
+      "baseProduct": "Energy",
+      "subProduct": "Gas",
+      "subProduct2": "NBP"
+    },
+    "code": "GWM",
+    "settlementMethod": "CASH",
+    "settlementCcy": "GBP",
+    "productSwapLegs": [
+      {
+        "legId": 1,
+        "payReceive": "PAY",
+        "fixedFloatType": "FIXED",
+        "productSwapLegsPeriods": [
+          {
+            "periodId": 1,
+            "contractSymbol": "Apr23",
+            "deliveryStartDate": "2023-04-01",
+            "deliveryEndDate": "2023-04-30",
+            "loadDeliveryStartTime": "06:00:00Z",
+            "loadDeliveryEndTime": "18:00:00Z",
+            "periodQuantity": 1000,
+            "periodQuantityUnit": "therm",
+            "fixingStartRate": 130,
+            "fixingEndRate": 130,
+            "fixingQuation": "GBP/therm",
+            "paymentDate": "2023-05-20"
+          },
+          {
+            "periodId": 2,
+            "contractSymbol": "May23",
+            "deliveryStartDate": "2023-05-01",
+            "deliveryEndDate": "2023-05-31",
+            "loadDeliveryStartTime": "06:00:00Z",
+            "loadDeliveryEndTime": "18:00:00Z",
+            "periodQuantity": 1000,
+            "periodQuantityUnit": "therm",
+            "fixingStartRate": 130,
+            "fixingEndRate": 130,
+            "fixingQuation": "GBP/therm",
+            "paymentDate": "2023-06-20"
+          }
+        ],
+        "legId": 2,
+        "payReceive": "RECEIVE",
+        "fixedFloatType": "FLOAT",
+        "productSwapLegsPeriods": [
+          {
+            "periodId": 1,
+            "contractSymbol": "Apr23",
+            "deliveryStartDate": "2023-04-01",
+            "deliveryEndDate": "2023-04-30",
+            "loadDeliveryStartTime": "06:00:00Z",
+            "loadDeliveryEndTime": "18:00:00Z",
+            "periodQuantity": 1000,
+            "periodQuantityUnit": "therm",
+            "fixingStartDate": "2023-04-01",
+            "fixingEndDate": "2023-04-30",
+            "fixingQuation": "GBP/therm",
+            "paymentDate": "2023-05-20"
+          },
+          {
+            "periodId": 2,
+            "contractSymbol": "May23",
+            "deliveryStartDate": "2023-05-01",
+            "deliveryEndDate": "2023-05-31",
+            "loadDeliveryStartTime": "06:00:00Z",
+            "loadDeliveryEndTime": "18:00:00Z",
+            "periodQuantity": 1000,
+            "periodQuantityUnit": "therm",
+            "fixingStartDate": "2023-05-01",
+            "fixingEndDate": "2023-05-31",
+            "fixingQuation": "GBP/therm",
+            "paymentDate": "2023-06-20"
+          }
+        ]
+      }
+    ]
+  }
+}

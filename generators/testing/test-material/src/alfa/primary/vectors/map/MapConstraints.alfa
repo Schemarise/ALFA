@@ -1,0 +1,26 @@
+
+namespace vectors.map.constraints
+
+record range.Map {
+    F1 : map< int, string >(1, 100)
+}
+
+record upper.Map {
+    F1 : map< int, string >(*, 10)
+}
+
+record lower.Map {
+    F1 : map< int, string >(1, *)
+}
+
+record mapkey.Map {
+    F1 : map< int(10,1000), string >
+}
+
+record mapvalue.Map {
+    F1 : map< int, string(1,1000) >
+}
+
+record defaulted.Map {
+    F1 : map< int, string >(1, 1000) = { 1 : "A", 2 : "B", 3 : "C" }
+}

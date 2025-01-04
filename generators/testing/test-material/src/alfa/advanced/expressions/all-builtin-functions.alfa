@@ -1,0 +1,741 @@
+namespace AllBuiltins 
+
+testcase AddWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = { 1, 2, 3 }
+        add(a, 4)
+        let result = if ( len(a) == 4 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase AddWithListTestSuite { 
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 1, 2, 3 ]
+        add(a, 4)
+        let result = if ( len(a) == 4 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ContainsWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 1, 2, 3 ]
+        let found = contains(a, 2)
+        let result = if ( found ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ContainsWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = { 1, 2, 3 }
+        let found = contains(a, 2)
+        let result = if ( found ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ContainWithsMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = { 1:"a", 2:"b", 3:"c" }
+        let found = contains(a, 2)
+        let result = if ( found ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase IndexOfWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = indexOf([1, 2, 3, 4], 2)
+        let result = if ( a == 1 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase IndexOfWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = indexOf("abcdef", "c")
+        let result = if ( a == 2 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase IsNoneTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : string? = some("A")
+        let b : string? = none
+        let result = if ( ! isNone(a) && isNone(b)) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase LeftWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = "helloworld"
+        let result = if ( left(a, 2) == "he") true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase LeftWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [1,2,3,4]
+        let result = if ( left(a, 2) == [1,2]) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase LenWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [1,2,3,4]
+        let result = if ( len(a) == 4 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase LenWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {1,2,3,4}
+        let result = if ( len(a) == 4 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase LenWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = { "a":2, "b": 3}
+        let result = if ( len(a) == 2 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase LenWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = "hello"
+        let result = if ( len(a) == 5 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase RightWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = "helloworld"
+        let result = if ( right(a, 2) == "ld") true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase RightWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [1,2,3,4]
+        let result = if ( right(a, 2) == [3,4]) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase DeleteWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = ["a", "b", "c"]
+        delete(a, 2)
+        let result = if ( a == ["a", "b"]) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase DeleteWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {"a", "b", "c"}
+        delete(a, "b")
+        let result = if ( a == {"a", "c"}) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase DeleteWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {5:"a", 6:"b", 7:"c"}
+        delete(a, 6)
+        let result = if ( len(a) == 2 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase FilterWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 2, 5, 7, 9 ]
+        let f = filter(a, (e) => e > 6 )
+        let result = if ( len(f) == 2 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase FilterWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {3, 6, 8, 9}
+        let f = filter(a, (e) => e > 6 )
+        let result = if ( len(f) == 2 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase FilterWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {5:"a", 6:"b", 7:"c"}
+        let f = filter(a, (k, v) => k > 6 )
+        let result = if ( len(f) == 1 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase IsEmptyWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 2, 5, 7, 9 ]
+        let b : list<int> = [ ]
+        let result = if ( !isEmpty(a) && isEmpty(b) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase IsEmptyWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {3, 6, 8, 9}
+        let b : set<int> = { }
+        let result = if ( !isEmpty(a) && isEmpty(b) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase IsEmptyWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = { 5:"a", 6:"b", 7:"c" }
+        let b : map<int,int> = {}
+        let result = if ( !isEmpty(a) && isEmpty(b) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase MapWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 2, 5, 7, 9 ]
+        let f : list<int> = map(a, (e) => e + 1 )
+        let result = if ( f == [3, 6, 8, 10 ]) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase MapWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {1, 3, 5, 7}
+        let f : set< int > = map(a, (e) => e + 1 ) // when set type not set entire function fails.. should only be inner error
+        let result = if ( contains(f, 2) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase MapWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {5:"a", 6:"b", 7:"c"}
+        let f : map< int, string > = map(a, (k, v) => k + 1, (k, v) => v ) // No val on args
+        let result = if ( contains(f, 8) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase PutWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {5:"a", 6:"b", 7:"c"}
+        put(a, 8, "d")  // No val on func name!
+        let result = if ( contains(a, 8) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase GetWithTryTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : try< int > = newTryValue( 10 )
+        let b = newTryValue( 11 )
+        let result = if ( get(a) + 1 == get(b) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase GetWithOptionalTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = some( 10 )
+        let result = if ( get(a) == 10 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase GetWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {5:"a", 6:"b", 7:"c"}
+        let result = if ( get( get(a, 5) ) == "a" ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase GetWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 2, 5, 7, 9 ]
+        let result = if ( get( get(a, 1 ) ) == 5 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ReduceWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {1:"a", 2:"b", 3:"c"}
+        let total = reduce(a, 0, ( acc, k, v ) => acc + k )
+        let result = if ( total == 6 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase ReduceWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = { 1, 2, 3 }
+        let total = reduce(a, 0, ( acc, e ) => acc + e )
+        let result = if ( total == 6 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ReduceWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 1, 2, 3 ]
+        let total = reduce(a, 0, ( acc, e ) => acc + e )
+        let result = if ( total == 6 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ValuesWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {1:"a", 2:"b", 3:"c"}
+        let vals = values(a)
+        let result = if ( vals == [  "a", "b", "c"] ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase KeysWithMapTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = {1:"a", 2:"b", 3:"c"}
+        let allkeys = keys(a)
+        let result = if ( allkeys == { 1, 2, 3 } ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase SomeTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = some("a")
+        let result = if ( get(a) == "a" ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDateWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = toDate("2021-01-08")
+        let result = if ( year(a) == 2021 && month(a) == 1 && day(a) == 8 ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDateWithDatetimeTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let dt = toDatetime("2021-01-08 21:00:31.902")
+        let a = toDate(dt)
+        let result = if ( year(a) == 2021 && month(a) == 1 && day(a) == 8 ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDatetimeWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = toDatetime("2021-01-08 21:00:31.902")
+        let result = if ( 
+            year(a) == 2021 && 
+            month(a) == 1 && 
+            day(a) == 8 &&
+            hour(a) == 21 &&
+            minute(a) == 0 &&
+            second(a) == 31 &&
+            millisecond(a) == 902
+            ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDatetimeWithDateTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let d = toDate("2021-01-08")
+        let a = toDatetime(d)
+        let result = if ( 
+            year(a) == 2021 && 
+            month(a) == 1 && 
+            day(a) == 8 &&
+            hour(a) == 0 &&
+            minute(a) == 0 &&
+            second(a) == 0 &&
+            millisecond(a) == 0
+            ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToTimeFromStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = toTime("22:32:42.321")
+        let result = if ( 
+            hour(a) == 22 &&
+            minute(a) == 32 &&
+            second(a) == 42 &&
+            millisecond(a) == 321
+            ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDecimalTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let s = "100.390"
+        let i = 100
+        let l : long = 2039482093823
+        let dbl = 100.234098
+
+        let dec1 = toDecimal(s)
+        let dec2 = toDecimal(i)
+        let dec3 = toDecimal(l)
+        let dec4 = toDecimal(dbl)
+        
+        let result = if ( dec1 > 100 && dec1 < 101 && 
+                    dec2 == 100 && 
+                    dec3 == 2039482093823 && 
+                    dec4 > 100 && dec4 < 101 
+        ) true
+           else false
+           
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDoubleTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let s = "100.390"
+        let i = 100
+        let l : long = 2039482093823
+
+        let dec1 = toDouble(s)
+        let dec2 = toDouble(i)
+        let dec3 = toDouble(l)
+        
+        let result = if ( dec1 > 100 && dec1 < 101 && 
+                    dec2 == 100 && 
+                    dec3 == 2039482093823  
+        ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToDurationTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let s = "P1D"
+        let d = toDuration(s)
+        let result = if ( day(d) == 1 ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToIntWithStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = toInt("1939")
+        let result = if ( a == 1939 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToListWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = toList( {1, 2, 3} )
+        let result = if ( len(a) == 3 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToSetWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = toSet( [ 1, 2, 3 ] )
+        let result = if ( len(a) == 3 ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToMapWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : map< int, string > = toMap( [ 1, 2, 3 ], e => e, e => toString(e) )
+        let result = if ( len(a) == 3 ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToMapWithSetTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : map< int, string > = toMap( { 1, 2, 3 }, e => e, e => toString(e) )
+        let result = if ( len(a) == 3 ) true
+        else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase ToStringTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a1 = toString("a")
+        let a2 = toString(123)
+        let a3 = toString(1341.24)
+        let a4 = toString(20340871982)
+        let a5 = toString(true)
+        let a6 = toString(toDate("2010-04-12"))
+        let a7 = toString(toDatetime("2010-04-12 21:31:30.120"))
+        let a8 = toString(toTime("21:31:30.120"))
+        let a9 = toString(toDuration("P2D"))
+
+        let result = if ( a2 == "123" )
+                  true
+               else
+                  false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase LeftEitherTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : either< int, string >  = newEitherLeft(10)
+        let result = if ( left(a) == 10 && isLeft(a) )
+                  true
+               else
+                  false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase RightEitherTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : either< int, string >  = newEitherRight("hello")
+        let result = if ( right(a) == "hello" && isRight(a) )
+                  true
+               else
+                  false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase TryWithValueTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = newTryValue( 20 )
+        let result = if ( ! isTryFailure( a ) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase TryWithFailureTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a : try<date> = newTryFailure( "Failed ... " )
+        let result = if ( isTryFailure( a ) ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase NewUUIDTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = newUUID()
+        let result = if ( len( toString( a )) > 5 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase NowTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = now()
+         let result = if ( len( toString( a )) > 5 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase TodayTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = today()
+         let result = if ( len( toString( a )) > 5 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+testcase TimestampTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = timestamp()
+         let result = if ( len( toString( a )) > 5 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase DatediffTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let d1 = toDate("2020-01-01")
+        let d2 = toDate("2020-01-02")
+        let a = dateDiff(d1, d2)
+         let result = if ( a == 1 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+
+testcase MathFnsTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a1 = abs(19)
+        let a2 = abs(19.2039)
+
+        let aceil = ceil(302.32)
+        let afloor = floor(302.32)
+        let alog = log(302.32)
+        let around = round(302.32)
+
+        let asqrt = sqrt(9)
+        let arand = random()
+
+        let result = if ( asqrt == 3 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase StringFnsTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a1 = endsWith("world", "ld")
+        let a2 = startsWith("world", "wo")
+        
+        let a3 = split("aircargo", "r")
+        let a4 = toLower("Hello")
+        let a5 = toUpper("Hello")
+
+        let a6 = replaceAll("aircargo", "r", "_")
+        let a7 = substring("aircargo", 3)
+        let a8 = substring("aircargo", 3, 6)
+
+        let result = if ( a1 && 
+                    a2 &&
+                    len(a3) == 3 &&
+                    a4 == "hello" &&
+                    a5 == "HELLO" &&
+                    a6 == "ai_ca_go" &&
+                    a7 == "cargo" &&
+                    a8 == "car" 
+                    ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase MinMaxScalarTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a1 = min( 10, 12)
+        let a2 = max( 12.21, 12.31)
+        let a3 = max( toDecimal("100.342"), toDecimal("1000.123"))
+
+        let a4 = max( toDate("2020-01-01"), toDate("2021-01-01") )
+        let a5 = max( toDatetime("2020-01-01 12:30:32.123"), toDatetime("2021-01-01 12:30:32.123") )
+        let a6 = min( toTime("12:30:32.123"), toTime("14:30:32.231") )
+
+        let result = if ( a1 == 10 ) true else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase MinMaxSortVectorsTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let s1 = { 3, 7, 2, 8 }
+        let m1 = min( s1 )
+        let m2 = min( s1, (l, r) => compare( l, r ) )
+        let s2 = sort( s1 )
+        let s3 = sort( s1, (l, r) => compare( l, r ) )
+
+        let l1 = { 4, 7, 2, 8 }
+        let ml1 = min( l1 )
+        let ml2 = min( l1, (l, r) => compare( l, r ) )
+        let l2 = sort( l1 )
+        let l3 = sort( l1, (l, r) => compare( l, r ) )
+
+        let result = if ( m1 == 2 && ml1 == 2 ) true 
+                else false
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase GroupByWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+        let v : map<int, list<int>> = groupBy(a, e =>  e / 2 )
+
+        let result = len(v) == 3
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+
+testcase FlattenWithListTestSuite {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let a = [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ], [ 70, 80, 90 ] ]
+        let v : list<int> = flatten(a)
+
+        let result = len(v) == 12
+
+        scenario::assertTrue( "Test run", => result )
+    }
+}
+
+testcase DecisionTablesDefaultTestSuite {
+    testScenario1( scenario : schemarise.alfa.test.Scenario ) : void {
+
+        let s = "B"
+        let n = 100
+
+        let a = ( s, n ) match {
+            ( "A", 10 ) => 10
+            ( "B", 100 ) => 101
+            ( *, > 100 ) => 1000
+        }
+
+        let result = get(a) == 101
+        scenario::assertTrue( "Test run", => result )
+    }
+
+    testScenario2( scenario : schemarise.alfa.test.Scenario ) : void {
+
+        let s = "A"
+        let n = 1000
+
+        let a = ( s, n ) match all {
+            ( "A", 1000 ) => 10
+            ( "B", 100 ) => 101
+            ( *, > 100 ) => 1000
+        }
+
+        debug( toString(len(get(a))) )
+        let result = len(get(a)) == 2
+        scenario::assertTrue( "Test run", => result )
+    }
+
+}
+
+testcase Query {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let s = query( KeyedEntity, (e) => startsWith(e.Name, "A")  )
+        return len(s) == 0
+    }
+}
+
+testcase Lookup {
+    testScenario( scenario : schemarise.alfa.test.Scenario ) : void {
+        let s = lookup( KeyedEntity, new KeyedEntityKey(30) )
+        return isNone(s)
+    }
+}
+

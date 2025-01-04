@@ -1,0 +1,11 @@
+namespace enclosed
+
+record TableData {
+	F1 : table< TableDataObj >
+}
+
+record TableDataObj {
+    Name : string
+    Age : int
+    DOB : date
+}

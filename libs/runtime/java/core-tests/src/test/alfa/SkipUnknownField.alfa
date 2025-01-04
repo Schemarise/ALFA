@@ -1,0 +1,8 @@
+
+namespace demoskipunknown
+
+
+@alfa.rt.SkipUnknownFields
+record SkipUnknownField {
+    payload : @alfa.rt.SkipUnknownFields tuple < n : string, age : int >
+}

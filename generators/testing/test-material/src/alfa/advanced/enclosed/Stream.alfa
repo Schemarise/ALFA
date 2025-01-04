@@ -1,0 +1,3 @@
+service enclosed.StreamDataSrv {
+	func( in : stream< int > ) : stream< string >
+}

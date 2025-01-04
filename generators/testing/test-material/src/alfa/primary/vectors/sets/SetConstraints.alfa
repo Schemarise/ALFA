@@ -1,0 +1,10 @@
+namespace vectors.list.constraints
+
+record range.Set {
+    F1 : set< string >(1, 10)
+}
+
+record entry.Set {
+    F1 : set< string(1, 10) >
+}
+

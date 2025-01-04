@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2024 Schemarise Ltd
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+
+    <groupId>com.schemarise</groupId>
+    <artifactId>alfa</artifactId>
+    <version>3.4.1-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <description>
+        ALFA Data Modelling Toolset
+        ===========================
+
+        This parent project and its modules contains;
+        - The ALFA compiler
+        - ALFA Maven Plugin and CLI tools
+        - Utilities to import external models into ALFA, and exporters to generated code
+        - Java runtime library and other integration libraries
+    </description>
+
+    <url>https://github.com/Schemarise/ALFA</url>
+
+    <organization>
+        <name>Schemarise Ltd</name>
+        <url>https://www.schemarise.com</url>        
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Asanka Kinigama</name>
+            <organization>Schemarise Ltd</organization>
+            <email>info@schemarise.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/Schemarise/ALFA.git</connection>
+        <developerConnection>scm:git:git@github.com:Schemarise/ALFA.git</developerConnection>
+        <url>https://github.com/Schemarise/ALFA</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <inceptionYear>2019</inceptionYear>
+
+    <properties>
+        <encoding>UTF-8</encoding>
+        <maven.compiler.release>17</maven.compiler.release>
+
+        <scala.version>2.12.17</scala.version>
+        <alfa.java.version>11</alfa.java.version>
+        <alfa.scala.compat.version>2.12</alfa.scala.compat.version>
+        <alfa.scalatest.version>3.2.18</alfa.scalatest.version>
+        <alfa.scala-maven-plugin.version>4.7.1</alfa.scala-maven-plugin.version>
+        <alfa.scallop.version>3.3.1</alfa.scallop.version>
+        <alfa.jackson.version>2.15.0</alfa.jackson.version>
+        <alfa.sprintbootweb.version>3.4.1</alfa.sprintbootweb.version>
+        <alfa.jar.plugin.version>3.2.0</alfa.jar.plugin.version>
+        <alfa.maven-compiler-plugin.version>3.8.1</alfa.maven-compiler-plugin.version>
+        <alfa.jgrapht.version>1.0.1</alfa.jgrapht.version>
+        <alfa.commons.io.version>2.5</alfa.commons.io.version>
+        <alfa.commons.lang.version>2.6</alfa.commons.lang.version>
+        <alfa.google.jimfs.version>1.1</alfa.google.jimfs.version>
+        <alfa.google.javaformat.version>1.6</alfa.google.javaformat.version>
+        <alfa.jansi.version>1.18</alfa.jansi.version>
+        <alfa.antlr.version>4.9.3</alfa.antlr.version>
+        <alfa.junit.version>4.13.2</alfa.junit.version>
+        <alfa.mavenapi.version>3.9.9</alfa.mavenapi.version>
+        <alfa.maven.version>3.15.1</alfa.maven.version>
+        <alfa.everit.version>1.14.1</alfa.everit.version>
+        <alfa.javax.annotation.api>1.3.2</alfa.javax.annotation.api>
+        <alfa.disruptor.version>3.4.4</alfa.disruptor.version>
+        <alfa.h2db.version>2.2.222</alfa.h2db.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${alfa.scala-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <source>${alfa.java.version}</source>
+                            <target>${alfa.java.version}</target>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${alfa.jar.plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${alfa.maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${alfa.java.version}</source>
+                    <target>${alfa.java.version}</target>
+                    <debug>false</debug>
+                    <debuglevel>none</debuglevel>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.1.3</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${alfa.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${alfa.scala.compat.version}</artifactId>
+            <version>${alfa.scalatest.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <modules>
+                <module>compiler</module>
+                <module>generators</module>
+                <module>utils</module>
+                <module>libs</module>
+            </modules>
+        </profile>
+
+    </profiles>
+
+   <distributionManagement>
+       <repository>
+           <id>github</id>
+           <name>Schemarise</name>
+           <url>https://maven.pkg.github.com/Schemarise/alfa-open-core</url>
+       </repository>
+   </distributionManagement>
+
+</project>

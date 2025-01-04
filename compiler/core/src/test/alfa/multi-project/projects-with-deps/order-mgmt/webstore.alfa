@@ -1,0 +1,21 @@
+namespace webstore.ordermgmt
+
+key OrderId { Id : uuid }
+
+entity Order key OrderId {
+    When : datetime
+    Item : set< tuple< ItemKey : key< Item >, Quantity : int > >
+}
+
+
+entity Item key ( Id : uuid ) {
+    Name : string
+    Description : string
+    Images : map< Name: string, tuple< Image : binary, Description : string? > >
+    StockLevel : long? # Aggregate of StockLevel of Supplier
+}
+
+entity Supplier key( Id : uuid ) includes webstore.customers.ContactInfo, webstore.customers.CompanyInfo {
+    Supplies : map< Item : key< Item >, Stock : long >
+}
+

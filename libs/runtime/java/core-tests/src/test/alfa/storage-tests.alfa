@@ -1,0 +1,20 @@
+namespace storage.tests
+
+@alfa.db.Table( Name = "Student", StorageMode = alfa.db.StorageMode.JSONB, Queryable = { Name } )
+entity Student key ( Id : uuid ) {
+    Name : string
+    Age : int
+    SchoolRef : SchoolKey
+
+    assert ValidateSchool {
+        if ( ! keyExists( School, SchoolRef ) )
+            raise error( "Unknown school ${SchoolRef}" )
+    }
+
+}
+
+@alfa.db.Table( Name = "School", StorageMode = alfa.db.StorageMode.JSONB, Queryable = { Name } )
+entity School key ( Id : uuid ) {
+    Name : string
+}
+

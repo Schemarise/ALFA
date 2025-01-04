@@ -1,0 +1,12 @@
+namespace udts
+
+record MyRec {
+
+}
+
+// This is advanced as ProtoBuf and Avro wont support
+testcase MyRecTest {
+    validateRec( s : schemarise.alfa.test.Scenario ) : void {
+
+    }
+}

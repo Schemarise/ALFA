@@ -1,0 +1,4 @@
+record scalars.Long {
+	fLong  : long
+	fLongDefaulted  : long = 1000000000000
+}

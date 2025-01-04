@@ -1,0 +1,39 @@
+namespace webstore.customers
+
+record Address {
+    Line1 : string
+    Line2 : string?
+    City : string
+    State : string
+    PostCode : string
+}
+
+trait ContactInfo {
+    Email : string
+    Phone : string
+    website : string?
+    PrimaryAddress : Address
+    AltAddresses : seq < Address >
+    PaymentMethods : set< webstore.payment.PaymentMethod >
+}
+
+trait CustomerInfo {
+    Since : date
+    Affiliations : set< CustomerId >
+}
+
+trait CompanyInfo {
+    CompanyName : string
+    CompanyId : string
+}
+
+key CustomerId { Id : uuid }
+
+entity PersonalCustomer key CustomerId includes CustomerInfo, ContactInfo {
+    FirstName : string
+    LastName : string
+}
+
+entity BusinessCustomer key CustomerId includes CustomerInfo, ContactInfo, CompanyInfo {
+    ParentCompany : CompanyInfo?
+}

@@ -1,0 +1,3 @@
+record vectors.list.ListOfInplaceEnums {
+    F1 : list< enum< N, S, E, W > >
+}

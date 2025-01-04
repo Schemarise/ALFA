@@ -24,8 +24,8 @@ The source is organised into directories as described below;
 #### Build
 
 Prerequisites:
-- Java 17 or higher
-- Maven 3.9.9 or higher
+- Java 17 
+- Maven 3.9.9 
 
 To build the complete project, simply run;
 ```

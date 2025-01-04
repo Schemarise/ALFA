@@ -1,0 +1,7 @@
+namespace Feature.Multi.Includes
+
+trait Foo {}
+trait Bar {}
+
+record Baz includes Foo, Bar {}
+

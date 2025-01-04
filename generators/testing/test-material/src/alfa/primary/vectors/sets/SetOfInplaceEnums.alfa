@@ -1,0 +1,3 @@
+record vectors.sets.SetOfInplaceEnums {
+    F1 : set< enum< N, S, E, W > >
+}

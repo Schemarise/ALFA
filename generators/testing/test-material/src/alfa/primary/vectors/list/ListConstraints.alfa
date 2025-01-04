@@ -1,0 +1,10 @@
+
+namespace vectors.list.constraints
+
+record range.List {
+    F1 : list< int >(1, 10)
+}
+
+record element.List {
+    F1 : list< int(1, 10) >
+}

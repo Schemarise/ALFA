@@ -1,0 +1,3 @@
+record vectors.map.MapOfInplaceUnions {
+    F1 : map< string, union< U1:int, U2:string, U3:double > >
+}

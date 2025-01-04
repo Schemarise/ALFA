@@ -1,0 +1,23 @@
+{
+  "requestId" : "e9dbe828-6ce1-11ed-a1eb-0242ac120002",
+  "master" : "local",
+  "sparkConfs" : {
+    "spark.ui.enabled" : "false"
+  },
+  "sourceSpec" : {
+    "AlfaTypeName" : "SparkDQTest.Person",
+    "format" : "csv",
+    "options" : {
+      "delimiter" : ",",
+      "header" : "true",
+      "inferSchema" : "true"
+    },
+    "load" : "src/test/resources/spark-dq/data.csv"
+  },
+  "logLevel" : "warn",
+
+  "outputSpec" : {
+    "format" : "com.databricks.spark.csv",
+    "saveTarget" : "target/dq-results.csv"
+  }
+}

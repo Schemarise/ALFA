@@ -1,0 +1,47 @@
+package alfa.rt.tableold;
+//
+//import Demo.OtherTableDataRecord;
+//import Demo.TableDataRecord;
+
+import java.io.IOException;
+import java.util.*;
+
+public class FlattenerTest {
+
+    public void testBasic() throws IOException {
+        List<String> c3data = new ArrayList<>();
+        c3data.add("a1");
+        c3data.add("a2");
+        c3data.add("a3");
+
+        Set<String> c4data = new TreeSet<>();
+        c4data.add("x");
+        c4data.add("y");
+        c4data.add("z");
+
+//        Map<Integer, OtherTableDataRecord> c5 = new HashMap<>();
+//        c5.put(10, OtherTableDataRecord.newBuilder().setD1(LocalDate.now()).build());
+//        c5.put(14, OtherTableDataRecord.newBuilder().setD1(LocalDate.now()).build());
+//
+//        TableDataRecord b = TableDataRecord.newBuilder().
+//                setC1(10).
+//                setC2(1292.21).
+//                addAllC3(c3data).
+//                addAllC4(c4data).
+//                putAllC5(c5).
+//                build();
+//
+//        AlfaObjectFlattener f = new AlfaObjectFlattener(b);
+
+//        AlfaObjectTableSchemaBuilder sb = new AlfaObjectTableSchemaBuilder(b);
+//        sb.consume(b);
+//        System.out.println(JsonCodec.toFormattedJson(sb.getTableDef()));
+
+
+
+//        ColBasedTable tbl = f.getTable();
+//
+//        System.out.println(JsonCodec.toFormattedJson(tbl));
+    }
+
+}

@@ -1,0 +1,10 @@
+
+enum udts.MyEnum {
+    R G B
+}
+
+
+enum udts.MyEscapeEnum {
+    `100`
+    `200`
+}

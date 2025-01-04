@@ -1,0 +1,3 @@
+record vectors.sets.SetOfInplaceTuple {
+    F1 : set< tuple< T1:int, T2:string, T3:double > >
+}

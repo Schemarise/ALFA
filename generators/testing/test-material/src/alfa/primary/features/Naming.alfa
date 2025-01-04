@@ -1,0 +1,11 @@
+/*
+record feature.Naming.Concrete {
+    Concrete : boolean
+}
+
+record feature.Naming.Builder {
+    Builder : boolean
+}
+*/
+
+

@@ -1,0 +1,28 @@
+namespace features.mixed
+
+record MainRec {
+    OtherRec : AnotherRec
+    Direction : SomeEnumType
+    Price : double
+    Total : long
+    Version : int
+    EventDate : date
+    ListOfStrs : list< string >
+    ListOfObjs : list< AnotherRec >
+    MapOfObjs : map< string, AnotherRec >
+
+}
+
+record AnotherRec {
+	Name : string
+}
+
+enum SomeEnumType {
+	N S W E
+}
+
+service MainService() {
+    simpleFn( in : AnotherRec ) : MainRec
+    dataSubscribe() : stream< string >
+    dataPublish(data : stream< string > ) : void
+}
