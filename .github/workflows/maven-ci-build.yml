@@ -3,6 +3,7 @@ name: Non-main CI Build
 on:
   push:
     branches:
+    - '**'
     - '!main'
     
 jobs:
