@@ -1,7 +1,10 @@
-name: CI Build
+name: Non-main CI Build
 
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+    - '!main'
+    
 jobs:
   ci_build:
     runs-on: ubuntu-latest
