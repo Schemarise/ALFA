@@ -206,7 +206,7 @@
        <repository>
            <id>github</id>
            <name>Schemarise</name>
-           <url>https://maven.pkg.github.com/Schemarise/alfa-open-core</url>
+           <url>https://maven.pkg.github.com/Schemarise/ALFA</url>
        </repository>
    </distributionManagement>
 
