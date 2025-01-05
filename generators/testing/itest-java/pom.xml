@@ -21,13 +21,13 @@
 
     <groupId>com.schemarise.alfa.generators.exporters.itests</groupId>
     <artifactId>alfa-gen-exp-itest-java</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
         <artifactId>alfa-itests</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.runtime</groupId>
             <artifactId>alfa-runtime-java</artifactId>
-            <version>3.4.1</version>
+            <version>3.4.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>com.schemarise.alfa.utils</groupId>
                 <artifactId>alfa-maven-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.4.2-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>alfa-build</id>
