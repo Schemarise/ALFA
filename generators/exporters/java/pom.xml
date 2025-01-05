@@ -21,7 +21,7 @@
 
     <groupId>com.schemarise.alfa.generators.exporters</groupId>
     <artifactId>alfa-gen-exp-java</artifactId>
-    <version>3.4.1-SNAPSHOT</version>
+    <version>3.4.1</version>
     <name>${project.artifactId}</name>
 
     <description>Java Exporter for ALFA</description>
@@ -29,7 +29,7 @@
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
         <artifactId>alfa-gen-exp</artifactId>
-        <version>3.4.1-SNAPSHOT</version>
+        <version>3.4.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators</groupId>
             <artifactId>alfa-gen-common</artifactId>
-            <version>3.4.1-SNAPSHOT</version>
+            <version>3.4.1</version>
         </dependency>
 
         <dependency>
@@ -45,7 +45,7 @@
             <artifactId>alfa-gen-common</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-            <version>3.4.1-SNAPSHOT</version>
+            <version>3.4.1</version>
         </dependency>
 
         <dependency>

@@ -21,13 +21,13 @@
 
     <groupId>com.schemarise.alfa.utils</groupId>
     <artifactId>alfa-utils-cli</artifactId>
-    <version>3.4.1-SNAPSHOT</version>
+    <version>3.4.1</version>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-utils</artifactId>
-        <version>3.4.1-SNAPSHOT</version>
+        <version>3.4.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -36,19 +36,19 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators.exporters</groupId>
             <artifactId>alfa-gen-exp-java</artifactId>
-            <version>3.4.1-SNAPSHOT</version>
+            <version>3.4.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-jsonschema</artifactId>
-            <version>3.4.1-SNAPSHOT</version>
+            <version>3.4.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.utils</groupId>
             <artifactId>alfa-utils-testing</artifactId>
-            <version>3.4.1-SNAPSHOT</version>
+            <version>3.4.1</version>
             <scope>test</scope>
         </dependency>
 

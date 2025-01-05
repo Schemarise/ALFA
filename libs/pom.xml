@@ -20,14 +20,14 @@
 
     <groupId>com.schemarise.alfa</groupId>
     <artifactId>alfa-runtime</artifactId>
-    <version>3.4.1-SNAPSHOT</version>
+    <version>3.4.1</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>com.schemarise</groupId>
         <artifactId>alfa</artifactId>
-        <version>3.4.1-SNAPSHOT</version>
+        <version>3.4.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
