@@ -31,7 +31,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish package
-        run: mvn -P alfadeploy docsandsource deploy 
+        run: mvn -P alfadeploy -P docsandsource deploy 
         env:
           MAVEN_ARGS: -V -B --no-transfer-progress
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
