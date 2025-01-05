@@ -1,0 +1,39 @@
+name: Release deploy 
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (unused for now)'
+        required: true
+      next:
+        description: 'Next version (unused for now)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD  
+          gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}  
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish package
+        run: mvn -P alfadeploy docsandsource deploy 
+        env:
+          MAVEN_ARGS: -V -B --no-transfer-progress
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
