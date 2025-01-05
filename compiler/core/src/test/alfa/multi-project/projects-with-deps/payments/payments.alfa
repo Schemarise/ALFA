@@ -1,0 +1,19 @@
+namespace webstore.payment
+
+union PaymentMethod {
+    Bank : BankAccount
+    Card : CreditCard
+    Paypal : string
+    Cheque : void
+}
+
+record BankAccount {
+    SortCode : string
+    AccountNo : string
+}
+
+record CreditCard {
+    CardNo : string
+    Type : enum< Amex, Visa, Mastercard >
+    ExpDate : date
+}

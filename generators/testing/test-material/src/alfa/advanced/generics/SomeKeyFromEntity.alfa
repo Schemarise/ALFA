@@ -1,0 +1,7 @@
+
+include "SomeKey.alfa"
+
+namespace generics.useof
+
+entity SomeKeyFromEntity key generics.useof.SomeKey< string, date > {
+}

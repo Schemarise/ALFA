@@ -1,0 +1,3 @@
+record enclosed.OptionalData {
+	F1 : string?
+}

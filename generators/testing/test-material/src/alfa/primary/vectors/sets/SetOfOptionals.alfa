@@ -1,0 +1,3 @@
+record vectors.sets.SetOfOptionals {
+    F1 : set< double? >
+}

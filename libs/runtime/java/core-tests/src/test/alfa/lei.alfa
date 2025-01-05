@@ -1,0 +1,131 @@
+typedefs
+{
+    LeiTimestamp = datetime(*,*,"yyyy-MM-dd'T'HH:mm[:ss][.SSS][.S]XXX")
+}
+
+namespace RefData.LEI
+
+record Data {
+    LEIHeader : Header
+    LEIRecords : list<Record>
+}
+
+record Header {
+    ContentDate : LeiTimestamp
+    Originator : string
+    FileContent : string
+    RecordCount : long
+}
+
+record Record {
+    LEI : string
+    Entity : Entity
+    Registration : Registration?
+    NextVersion : string?
+}
+
+record Entity {
+    LegalName : string
+    OtherEntityNames : list< OtherEntityName > ?
+    TransliteratedOtherEntityNames : list< TransliteratedOtherEntityName >?
+    LegalAddress : Address?
+    OtherAddresses : list< Address > ?
+    TransliteratedOtherAddresses : list< Address > ?
+    HeadquartersAddress : Address?
+    RegistrationAuthority : RegistrationAuthority?
+    LegalJurisdiction : string?
+    EntityCategory : string?
+    EntitySubCategory : string?
+    LegalForm : LegalForm?
+    EntityStatus : enum< ACTIVE, NULL, INACTIVE >?
+    EntityCreationDate : LeiTimestamp?
+    SuccessorEntity : SuccessorEntity?
+    LegalEntityEvents : list< LegalEntityEvent >?
+    NextVersion : string?
+}
+
+record OtherEntityName {
+    type : string
+    lang : string?
+    Value : string
+
+}
+
+record TransliteratedOtherEntityName {
+    type : string
+    lang : string?
+    Value : string
+}
+
+record LegalEntityEvent {
+    group_type : string
+    group_id : string?
+    group_sequence_no : string?
+    event_status : string
+    LegalEntityEventType : string
+    LegalEntityEventEffectiveDate : LeiTimestamp?
+    LegalEntityEventRecordedDate : LeiTimestamp
+    ValidationDocuments : string
+    AffectedFields : list< AffectedField >?
+    ValidationReference : string?
+}
+
+record AffectedField {
+    field_xpath : string
+    Value : string
+}
+
+record SuccessorEntity {
+    SuccessorLEI : string?
+    SuccessorEntityName : string?
+}
+
+record Registration {
+    InitialRegistrationDate : LeiTimestamp
+    LastUpdateDate : LeiTimestamp
+    RegistrationStatus : enum< ISSUED, LAPSED, RETIRED, DUPLICATE, ANNULLED, PENDING_TRANSFER, PENDING_ARCHIVAL >
+    NextRenewalDate :  LeiTimestamp
+    ManagingLOU : string
+    ValidationSources : string?
+    ValidationAuthority : ValidationAuthority
+    OtherValidationAuthorities : list< OtherValidationAuthority >?
+    NextVersion : string?
+}
+
+record OtherValidationAuthority {
+    ValidationAuthorityID : string
+    OtherValidationAuthorityID : string?
+    ValidationAuthorityEntityID : string?
+}
+
+record ValidationAuthority {
+    ValidationAuthorityID : string
+    OtherValidationAuthorityID : string?
+    ValidationAuthorityEntityID : string?
+}
+
+record Address {
+    lang : string?
+    type : string?
+    FirstAddressLine : string
+    AdditionalAddressLine : string?
+    City : string
+    Region : string?
+    Country : string
+    PostalCode : string?
+    MailRouting : string?
+    AddressNumberWithinBuilding : string?
+    AddressNumber : string?
+
+}
+
+record RegistrationAuthority {
+    RegistrationAuthorityID : string
+    OtherRegistrationAuthorityID : string?
+    RegistrationAuthorityEntityID : string?
+}
+
+record LegalForm {
+    EntityLegalFormCode : string
+    OtherLegalForm : string?
+}

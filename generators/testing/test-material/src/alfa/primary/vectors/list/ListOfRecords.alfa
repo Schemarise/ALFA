@@ -1,0 +1,9 @@
+namespace vectors.list
+
+record ListOfRecords {
+    F1 : list< UDT >
+}
+
+record UDT {
+    Data : string
+}

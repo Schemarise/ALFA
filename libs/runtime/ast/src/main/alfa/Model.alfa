@@ -1,0 +1,396 @@
+namespace schemarise.alfa.runtime.model
+
+trait IDataType includes ExtendedAttribs {
+    TypeDefName : string?
+}
+
+trait ExtendedAttribs {
+    ExtendedAttribs : map< string, string >?
+}
+
+record Namespace includes IDocumentation {
+    QualifiedName : string
+    UdtCount : int
+}
+
+record NamespaceSummary includes IDocumentation {
+    QualifiedName : string
+    Udts : list< UdtSummary >
+}
+
+record NamespaceDetails includes IDocumentation, ExtendedAttribs {
+    QualifiedName : string
+    Udts : list< UdtSummary >
+    Checksum : string
+}
+
+trait EnclosingDataType includes IDataType {
+    ComponentType : IDataType
+}
+
+record TypeParameterDataType includes IDataType {
+    ParamName : string
+}
+
+record OptionalDataType includes EnclosingDataType { }
+record KeyDataType includes EnclosingDataType { }
+record StreamDataType includes EnclosingDataType { }
+// record KeyOfDataType includes EnclosingDataType { }
+record FutureDataType includes EnclosingDataType { }
+record EncryptedDataType includes EnclosingDataType { }
+record CompressedDataType includes EnclosingDataType { }
+record TryDataType includes EnclosingDataType { }
+record TabularDataType includes EnclosingDataType { }
+
+record EitherDataType includes IDataType {
+    LeftComponentType : IDataType
+    RightComponentType : IDataType
+}
+
+record PairDataType includes IDataType {
+    LeftComponentType : IDataType
+    RightComponentType : IDataType
+}
+
+record LambdaDataType includes IDataType {
+    ArgTypes : list< IDataType >
+    ResultType : IDataType
+}
+
+record AnyDataType includes IDataType {
+}
+
+
+record ErrorDataType includes IDataType {
+    Location: string
+    Message : string
+}
+
+record MapDataType includes IVectorDataType {
+    KeyType: IDataType
+    ValueType: IDataType
+
+    KeyName : string?
+    ValueName : string?
+}
+
+record TypeDefDataType includes IDataType, IDocumentation {
+    TypeName : string
+    TypeArguments : list<IDataType>?
+    FinalType : IDataType
+}
+
+record ScalarDataType includes IDataType, ScalarConstraints {
+    ScalarType: ScalarType
+}
+
+trait ScalarConstraints {
+    min : RangeValue?
+    max : RangeValue?
+    strPattern : string?
+    precision : DecimalPrecision?
+}
+
+record DecimalPrecision {
+    scale : int
+    precision : int
+}
+
+union RangeValue {
+    intValue : int
+    longValue : long
+    doubleValue : double
+    dateValue : date
+    datetimeValue : datetime
+    datetimetzValue : datetimetz
+    timeValue : time
+    durationValue : duration
+    periodValue : period
+}
+
+enum ScalarType {
+    stringType shortType intType longType booleanType dateType datetimeType datetimetzType timeType durationType periodType
+    doubleType floatType binaryType byteType decimalType voidType uuidType charType uriType
+}
+
+record ListDataType includes IVectorDataType {
+    ComponentType : IDataType
+}
+
+record SetDataType includes IVectorDataType {
+    ComponentType : IDataType
+}
+
+trait IVectorDataType includes IDataType {
+  SizeMin : int?
+  SizeMax : int?
+}
+
+record UdtSummary includes IDocumentation {
+   FullyQualifiedName: string
+   UdtType : UdtMetaType
+   AttribCount : int?
+   IsSynthetic : boolean?
+   IsInternal : boolean?
+   Version : int?
+}
+
+record UdtVersionedName {
+   FullyQualifiedName: string
+   UdtType : UdtMetaType
+   IsSynthetic : boolean?
+   AssociatedNonSyntheticUdt : UdtVersionedName?
+   Version : int?
+   TypeParameters : list< TypeParameter >?
+}
+
+record TypeParameter { // includes UdtBaseNode {
+    Name : string
+    DerivedFrom : IDataType?
+}
+
+record MethodSignature includes IDocumentation, IAnnotated {
+    Name : string
+    Formals : map< string, Formal >
+    ReturnType : IDataType
+}
+
+record Service includes ModelBaseNode, MethodsContainer {
+}
+
+enum ModifierType {
+    Fragment Internal
+}
+
+trait ModelBaseNode includes IDocumentation, IAnnotated, ExtendedAttribs {
+    Name : UdtVersionedName
+    Checksum : string
+    Modifiers : set< ModifierType > = { }
+    Source : union< loc : Location, Contents : string >
+    ReferencedInFieldTypeFrom : list< UdtVersionedName >?
+
+    Includes : list< UdtDataType >?
+    Scope : list< UdtDataType >?
+    IncludedFrom : list< UdtVersionedName >?
+    ModelId : string?
+}
+
+record Dataproduct includes ModelBaseNode {
+    Publish : set< DecoratedUdtVersionedName >
+    Consume : map< producerProduct : UdtVersionedName, set< DecoratedUdtVersionedName > >
+}
+
+record DecoratedUdtVersionedName includes IDocumentation, IAnnotated {
+    Name : UdtVersionedName
+}
+
+trait UdtBaseNode includes ModelBaseNode {
+    AllFields : map< string, Field >
+    Extends : UdtDataType?
+    LocalFieldNames : list< string >
+    InheritedFields : list< InheritedFields >?
+    IsSynthetic : boolean
+    Asserts : list< Assert >?
+    Linkages : list< Linkage >?
+}
+
+record Linkage {
+    Name : string
+    SourceExpressions : list< IExpression >
+    TargetType : UdtDataType
+    IsList : boolean
+    IsOptional : boolean
+    TargetExpressions : list< IExpression >
+}
+
+record Location {
+    path : string
+    line : int
+}
+
+record InheritedFields {
+    Name : UdtVersionedName
+    Fields : list< string >
+}
+
+record EnumDataType includes IDataType {
+    SynthFullyQualifiedName : string
+    Fields : list< string >
+}
+
+record TupleDataType includes IDataType, IAnnotated  {
+    SynthFullyQualifiedName : string
+    Fields : map< string, Field >
+    SyntheticFieldNames : boolean
+}
+
+record MetaDataType includes IDataType {
+    MetaType : MetaType
+}
+
+enum MetaType {
+  Entity   Key  Trait    Union  Record   Enum  Udt      Service       Annotation
+  EntityName   KeyName   TraitName  UnionName  RecordName  EnumName
+  UdtName ServiceName   FieldName
+}
+
+enum UdtMetaType {
+    entityType keyType traitType unionType untaggedUnionType recordType enumType serviceType annotationType nativeUdtType
+    libraryType testcaseType namespaceType fieldType keyFieldType methodType transformType tupleType extensionType
+    extensionInstanceType dataproductType userDefinedType
+}
+
+record UnionDataType includes IDataType {
+    Fields : map< string, Field >
+    UnionType : UnionType
+
+    SynthFullyQualifiedName : string
+    // SyntheticFieldNames : boolean
+}
+
+record UdtDataType includes IDataType {
+  FullyQualifiedName : string
+  UdtType : UdtMetaType
+  Version : int?
+  TypeArguments : map< Param : string, Arg : IDataType >?
+}
+
+record Enum includes UdtBaseNode {}
+
+record AnnotationDecl includes UdtBaseNode {
+    Targets : list< UdtMetaType >
+    ReferencedFromUdts : set< UdtVersionedName >
+    ReferencedFromUdtAttribs : map< UdtVersionedName, AttribNames : list< string >(1, *) >
+}
+
+record Record includes UdtBaseNode {}
+
+record NativeType includes UdtBaseNode {
+  AliasedType : string
+}
+
+record Trait includes UdtBaseNode {}
+
+record Key includes UdtBaseNode {}
+
+union EntityKey {
+    KeyRef : UdtDataType
+    // TODO - remove KeyFields as Entity key is always a KeyRef
+    KeyFields : list< Field >
+}
+
+record Entity includes UdtBaseNode {
+    Key : EntityKey?
+}
+
+record Union includes UdtBaseNode {
+    UnionType : UnionType
+}
+
+enum UnionType {
+   Tagged
+   Untagged
+}
+
+record Field includes IAttribute, ExtendedAttribs {
+    EnumLexical : string?
+}
+
+record Formal includes IAttribute {}
+
+trait IAttribute includes IDocumentation, IAnnotated {
+    Name : string
+    DataType : IDataType
+
+    SrcLocation : Location?
+
+    DefaultValue : IExpression?
+}
+
+trait IDocumentation {
+    Doc : string?
+}
+
+trait IAnnotated {
+    Annotations : map< AnnotationName : string, map < string, IExpression > >?
+}
+
+
+record ExtensionDef includes UdtBaseNode {
+
+}
+
+record Extension includes UdtBaseNode {
+}
+
+
+// ----------------- Part below this should be relocated outside the Model.alfa file
+
+record HierarchyUdtInfo {
+    Name : UdtVersionedName
+}
+
+record AllUdts {
+    udts : list< UdtVersionedName >
+}
+
+record AllNamespaces {
+    namespaces : map< string, Namespace >
+}
+
+record AllTypedefs {
+    defs : list< TypeDefInfo >
+}
+
+record TypeDefInfo {
+    def : TypeDefDataType
+    udtUsages : set< UdtVersionedName >
+}
+
+record AllNamespaceSummary {
+    namespaces : map< string, NamespaceSummary >
+}
+
+record Hierarchy {
+    NsHierarchy : map< NS: string, NSChildren : set< string > >
+//    NsDependencies : map< NS: string, Dependents : set< string > >
+    NsUdts : map< NS: string, Udts: set< HierarchyUdtInfo > >
+}
+
+internal service HierarchyService() {
+    getCompleteHierarchy() : Hierarchy
+    getAllUdts() : AllUdts
+    getAllNamespaces() : AllNamespaces
+    getAllNamespaceSummaries() : AllNamespaceSummary
+    getNamespaceDetails( name : string ) : NamespaceDetails
+
+    getImmediateHierarchy( `namespace` : string ) : Hierarchy
+    getUdtDetails( name : string ) : try< ModelBaseNode >
+    searchUdts( text : string ) : list< UdtVersionedName >
+}
+
+internal service ModelMetadataService() {
+    getAllUdtTypes() : list< UdtVersionedName >
+    getAllAnnotations() : list< string >
+    getAllTraits() : list< string >
+    getAllLibraries() : list< string >
+    getAllServices() : list< string >
+    getMethods(libOrSrv : string) : list< MethodSignature >
+    getMethod( libOrSrv : string, method : string ) : MethodSignature
+    getUdt( name : string ) : ModelBaseNode
+}
+
+record ExternalDocForNamespace {
+    NamespaceName : string
+    Doc : string?
+
+    Types : map< typeName: string, ExternalDocForType >
+}
+
+record ExternalDocForType {
+    NamespaceName : string
+    SimpleTypeName : string
+    Doc : string?
+
+    FieldDocs : map< FieldName : string, FieldDoc : string? >
+}

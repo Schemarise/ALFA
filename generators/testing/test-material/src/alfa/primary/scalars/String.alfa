@@ -1,0 +1,4 @@
+record scalars.String {
+	fString : string
+	fFixedLengthString : string(1,20)
+}

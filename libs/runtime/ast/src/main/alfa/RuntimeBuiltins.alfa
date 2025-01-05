@@ -1,0 +1,62 @@
+namespace schemarise.alfa.runtime.model
+
+record TryFailure {
+    Message : string
+    ErrorCode : string?
+    Stacktrace : compressed< string >?
+}
+
+// https://github.com/apple/swift-evolution/blob/master/proposals/0235-add-result.md
+union Try<T> {
+    Result : T
+    Failure : TryFailure
+}
+
+record Pair<L, R> {
+    Left : L
+    Right : R
+}
+
+union Either<L, R> {
+    Left : L
+    Right : R
+}
+
+trait BaseTable {
+    Def : TableDef
+}
+
+record TableDef {
+    UdtName : schemarise.alfa.runtime.model.UdtVersionedName
+    Columns : list< ColumnDef >
+}
+
+record ColumnDef {
+    Name : string
+    DataType : schemarise.alfa.runtime.model.ScalarDataType
+}
+
+record ColBasedTable includes BaseTable {
+    ColData : list< ColumnData >
+    RowCount : int
+}
+
+union ColumnData {
+    ints : list< int? >
+    shorts : list< short? >
+    longs : list< long? >
+    doubles : list< double? >
+    decimals : list< decimal? >
+    strings : list< string? >
+    booleans : list< boolean? >
+    // bytes : list< byte? >
+    binaries : list< binary? >
+    // chars : list< char? >
+    dates : list< date? >
+    durations : list< duration? >
+    times : list< time? >
+    datetimes : list< datetime? >
+    // uris : list< uri? >
+    uuids : list< uuid? >
+    voids : list< boolean? >
+}

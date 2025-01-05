@@ -1,0 +1,5 @@
+namespace com.acme
+
+trait Base {
+    Name : string
+}

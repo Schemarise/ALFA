@@ -1,0 +1,7 @@
+namespace udts
+
+library MyLibrary {
+    f( a : int ) : void {
+       let b = a + 1
+    }
+}

@@ -1,0 +1,7 @@
+namespace vectors.sets
+
+trait SetOfTemplates< T > {
+    F1 : set< T >
+}
+
+record SetOfTemplateUsages includes SetOfTemplates< int > { }

@@ -1,0 +1,181 @@
+namespace schemarise.alfa.runtime.model
+
+record Library includes ModelBaseNode, MethodsContainer {
+}
+
+enum MethodsContainerType {
+    Library
+    Testcase
+    Service
+    Assert
+    Transform
+}
+
+trait MethodsContainer includes IDocumentation, IAnnotated, ExtendedAttribs {
+    ContainerName : UdtVersionedName
+    ContainerType : MethodsContainerType
+    ConstructorFormals : map< string, Formal > = {}
+    Methods : map< string, Method > = {}
+}
+
+record Transformer includes ModelBaseNode {
+    Transform : Method
+}
+
+record AllTransformers {
+    Names : map< TransformName : string, MethodSignature >
+    UdtUsages : map< string,
+                     map< TransformName : string,
+                          UdtTransformUsageType >
+                   >
+}
+
+enum UdtTransformUsageType {
+    Input, Output, InputOutput
+}
+
+record Testcase includes ModelBaseNode, MethodsContainer {
+}
+
+record Method includes ExtendedAttribs {
+    Signature : MethodSignature
+    Statements : list< Statement > = []
+}
+
+enum MathOperatorType {
+    Divide
+    Multiply
+    Modulus
+    Add
+    Subtract
+}
+
+enum EqualityOperatorType {
+    EqualTo
+    NotEqualTo
+}
+
+enum LogicalOperatorType {
+    And
+    Or
+    Xor
+}
+
+enum RelativeOperatorType {
+    LessThan
+    LessThanEqualTo
+    GreaterThan
+    GreaterThanEqualTo
+}
+
+// needed to avoid circular dependencies causing issues in python
+trait IExpression {
+}
+
+union Expression includes IExpression {
+    NewExpr : tuple< ExprType : IDataType, udtName : string, args : list< NamedExpression > >
+    RaiseExpr : tuple< severity : schemarise.alfa.runtime.model.asserts.SeverityType,
+                       dqType : schemarise.alfa.runtime.model.asserts.DataQualityType,
+                       constraintType : schemarise.alfa.runtime.model.asserts.ConstraintType,
+                       message : IExpression >
+    FragmentExpr : tuple< ExprType : IDataType, udtName : string, args : list< NamedExpression > >
+    MethodCallExpr : tuple< ExprType : IDataType, name : string, builtin : boolean, args : list< IExpression > >
+    MathExpr : tuple< ExprType : IDataType, lhs : IExpression, operator : MathOperatorType, rhs : IExpression >
+    RelativeExpr : tuple< ExprType : IDataType, lhs : IExpression, operator : RelativeOperatorType, rhs : IExpression >
+    EqualityExpr : tuple< ExprType : IDataType, lhs : IExpression, operator : EqualityOperatorType, rhs : IExpression >
+    LogicalExpr : tuple< ExprType : IDataType, lhs : IExpression, operator : LogicalOperatorType, rhs : IExpression >
+    IfElseExpr : tuple< ExprType : IDataType, condition : IExpression, ifExp : IExpression, elseExp : IExpression? >
+    NoneExpr : IDataType
+    ThisExpr : IDataType
+    LiteralExpr : tuple< ExprType : ScalarType, Value : string >
+    IdentifierExpr : tuple< ExprType : IDataType, parentMethod : IExpression?, fieldName : string >
+    QualifiedIdentifierExpr : tuple< ExprType : IDataType, path : list<string>, IdentifierType : QualifiedIdentifierType  >
+    OptionalQualifiedIdentifierExpr : tuple< ExprType : IDataType, path : list<string> >
+
+    ParenthesisExpr : tuple< ExprType : IDataType, expr : IExpression >
+    ListExpr : tuple< ExprType : IDataType, expr : list< IExpression > >
+    TupleExpr : tuple< ExprType : IDataType, expr : list< NamedExpression > >
+    SetExpr : tuple< ExprType : IDataType, expr : set< IExpression > >
+    MapExpr : tuple< ExprType : IDataType, expr : map< IExpression, IExpression > >
+    ObjectExpr : tuple< udtName : string, keyObject : IExpression?, fieldValues : map< string, IExpression > >
+
+    NotExpr : IExpression
+
+    LambdaExpr : tuple< ExprType : IDataType, args : list<Formal>, statements : list< Statement > >
+
+    DecisionTableExpr : DecisionTable
+}
+
+enum QualifiedIdentifierType {
+    EnumReference FieldReference TypeReference
+}
+
+record NamedExpression {
+    Name : string
+    Expr : IExpression
+}
+
+trait IDecisionExpression { }
+
+union DecisionExpression includes IDecisionExpression {
+    LiteralExpr : tuple< Type : ScalarType, Value : string >
+    EnumConstExpr : tuple< EnumType : string, EnumField : string >
+    WildcardExpr : void
+    RangeExpr : tuple< NotIn : boolean, Start : RangeValue, End : RangeValue >
+    RelativeExpr : tuple< operator : RelativeOperatorType, rhs : IExpression >
+    EqualityExpr : tuple< operator : EqualityOperatorType, rhs : IExpression >
+}
+
+record DecisionRule {
+    Input : list< DecisionExpression >
+    Output : IExpression
+}
+
+/*
+Unique
+======
+Only a single rule can be satisfied. The decision table result contains the output entries of the satisfied rule.
+If more than one rule is satisfied, the Unique hit policy is violated.
+
+Any
+===
+Multiple rules can be satisfied. However, all satisfied rules must generate the same output. The decision table result
+contains only the output of one of the satisfied rules.
+If multiple rules are satisfied which generate different outputs, the hit policy is violated.
+
+First
+=====
+Multiple rules can be satisfied. The decision table result contains only the output of the first satisfied rule.
+
+All
+===
+Multiple rules can be satisfied. The decision table result contains the output of all satisfied rules in an
+arbitrary order as a list.
+ */
+
+record DecisionTable {
+    Criteria : list< IExpression >
+    HitPolicy : enum< unique,
+                      anyof,
+                      first,
+                      all
+                      >
+    DecisionRules : list< DecisionRule >
+}
+
+record Assert includes MethodsContainer {
+    Name : string
+    IsAssertAll : boolean = false
+    // ArgName : string?
+    // Statements : list< Statement >
+}
+
+union Statement {
+    LetStmt : tuple< Name : string, dataType : IDataType, Expr : IExpression >
+    VarStmt : tuple< Name : string, dataType : IDataType >
+    AssignStmt : tuple< QualifiedIdentifier : IExpression, Expr : IExpression >
+    ReturnStmt : tuple< expr : IExpression, dataType : IDataType >
+    ExpressionStmt : IExpression
+    TripleQuestionmarkStmt : tuple<>
+}
+

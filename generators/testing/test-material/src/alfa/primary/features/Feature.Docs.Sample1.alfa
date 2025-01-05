@@ -1,0 +1,42 @@
+
+# This namespace has couple of example types for use with documentation
+namespace Feature.Docs
+
+# This is another example of Alfa Docs against a record.
+record Sample2 {
+    F1 : date?     ## This is the field F1. It is an optional date
+}
+
+
+# This is an example of Alfa Docs against a record.
+record Sample1
+{
+    F1 : int?     ## This is the field F1. It is an optional int
+
+    # This is the field F2. It is a list of UDT Feature.Docs.Sample2
+    F2 : list<Sample2>
+    F3 : map<int, Sample2>
+    F4 : map< ID: int, Value : TraitA>
+    F5 : enum< Red, Green, Blue >
+    F6 : tuple< int, string, double >
+    F7 : union< File : string, Dir : string >
+    F8 : list<int>(*, 10)
+    F9 : decimal( 10, 2 )
+    F10 : int(50,100)
+    F11 : try< string(8,12) >
+    F12 : either< date, long >
+}
+
+# This is Trait A
+trait TraitA {
+    TA1 : string
+}
+
+# This is Trait B
+trait TraitB {
+    TB1 : string
+}
+
+
+record DocTraitImpl includes TraitA, TraitB {
+}

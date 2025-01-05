@@ -1,0 +1,3 @@
+record scalars.Pattern {
+	fPattern : string( ".*" )
+}

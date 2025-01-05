@@ -1,0 +1,9 @@
+record scalars.Decimal {
+	fDecimal : decimal
+	fFixedLengthDecimal : decimal(12,8)
+}
+
+record scalars.constraints.range.Decimal {
+	fDecimal : decimal(*, *, 0.0, 1000.0)
+	fFixedLengthDecimal : decimal(12, 8, 0.0, 1000.0)
+}

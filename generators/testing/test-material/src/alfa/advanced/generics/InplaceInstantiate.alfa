@@ -1,0 +1,8 @@
+include "AbstractRecordTwoParam.alfa"
+
+namespace generics
+
+record InplaceInstantiate {
+  F1 : AbstractRecordTwoParam< long, short >
+}
+

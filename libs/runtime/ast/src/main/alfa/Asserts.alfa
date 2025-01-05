@@ -1,0 +1,92 @@
+namespace schemarise.alfa.runtime.model.asserts
+
+@alfa.db.Table(
+    StorageMode = alfa.db.StorageMode.JSONB,
+    Queryable = { Timestamp, TotalErrors, TotalWarnings,
+                  SourceSystem, SourceSubsystem,
+                  SourceFeed, SourceSubfeed, SourceInfo,
+                  DataFormat, DataFormatInfo }
+)
+entity ValidationReport key( Id : uuid ) {
+    Timestamp : datetime
+
+    SourceSystem : string?
+    SourceSubsystem : string?
+    SourceFeed : string?
+    SourceSubfeed : string?
+    SourceInfo : string?
+
+    DataFormat : string?
+    DataFormatInfo : string?
+
+    TotalRecords : long
+    TotalErrors : long
+    TotalWarnings : long
+
+    Alerts : list< ValidationAlert >
+}
+
+record ValidationAlert {
+    # Error or Warning
+    Severity : SeverityType
+
+    Timestamp : datetime
+    Message : string
+
+    # ALFA type being processed
+    TypeName : string?
+
+    # An identification of the validated object
+    Identification : string?
+
+    # Assert that caused alert
+    AssertName : string?
+
+    # Path to field
+    FieldName : string?
+
+    ViolatedConstraint : ConstraintType?
+    DataQualityCategory : DataQualityType?
+
+    # Info regarding the source of the data, such as line number
+    SourceInfo : string?
+
+    # Details such a stack trace ( should be compressed<string>? )
+    ExceptionDetails : string?
+}
+
+enum ConstraintType {
+    MandatoryFieldNotSet
+    OutsidePermittedRange
+    InvalidPattern
+    InvalidConstant
+    Duplicate
+    InvalidTypeForField
+    UnknownField
+    InvalidDecimalScale
+    InvalidDecimalPrecision
+    DataFormatError
+
+    UserDefinedAssert
+    Unknown
+}
+
+enum SeverityType {
+    Error
+    Warning
+}
+
+enum DataQualityType {
+    Accuracy
+    Completeness
+    Conformity
+    Consistency
+    Coverage
+    Integrity
+    Provenance
+    Timeliness
+    Uniqueness
+    Validity
+
+    Unclassified
+}

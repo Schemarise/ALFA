@@ -1,0 +1,3 @@
+record vectors.map.MapOfInplaceEnums {
+    F1 : map< string, enum< N, S, E, W > >
+}

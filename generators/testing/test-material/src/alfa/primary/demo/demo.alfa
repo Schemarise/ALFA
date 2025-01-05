@@ -1,0 +1,24 @@
+namespace demo
+
+trait Named {
+   Name : string
+}
+
+record Person includes Named {
+   Age : int(16,120)
+   Friends : list< string >
+}
+
+record SalesPerson {
+    Name : string
+    Customers : list< Customer >
+}
+
+record Customer {
+    Id : uuid
+    Name : string
+    DateOfBirth : date("1900-01-01", "2001-01-01")
+    Accounts : set< string(4,8) >(1,*)
+    CustomerType : enum< Standard, Gold, Platinum >
+}
+

@@ -1,0 +1,17 @@
+
+namespace udts
+
+record MyRecord {
+    intField : int
+    stringField : string
+    doubleField : double
+    optDateField : date?
+    recordField : AnotherRecord
+}
+
+record AnotherRecord {
+    intField : int
+    stringField : string
+    doubleField : double
+}
+

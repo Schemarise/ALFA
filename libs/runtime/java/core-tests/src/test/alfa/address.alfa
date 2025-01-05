@@ -1,0 +1,18 @@
+namespace hierachytest
+
+trait AddressBase {
+    Address : string
+}
+
+trait USAddress includes AddressBase {
+    State : string
+    City : string
+    ZipCode : string
+}
+
+trait UKAddress includes AddressBase {
+    Country : string
+    PostCode : string
+}
+
+union Address = UKAddress | USAddress

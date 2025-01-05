@@ -1,0 +1,3 @@
+record vectors.map.MapOfMaps {
+    F1 : map< string, map< int, string > >
+}

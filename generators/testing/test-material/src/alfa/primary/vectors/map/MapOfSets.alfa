@@ -1,0 +1,3 @@
+record vectors.map.MapOfSets {
+    F1 : map< string, set< int > >
+}

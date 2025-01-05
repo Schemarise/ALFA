@@ -1,0 +1,7 @@
+
+namespace generics.useof
+
+key SomeKey< T, R > {
+    F1 : T
+    F2 : R
+}

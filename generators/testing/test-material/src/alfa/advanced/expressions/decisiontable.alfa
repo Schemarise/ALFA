@@ -1,0 +1,15 @@
+namespace Feature.Expressions
+
+record DecisionTableTest {
+    Str1 : string
+    Num : int
+
+    assert TestValidate {
+        let a = ( Str1, Num ) match {
+            ( "A", 10 ) => 10
+            ( "B", 100 ) => 101
+            ( *, > 100 ) => 1000
+        }
+    }
+}
+

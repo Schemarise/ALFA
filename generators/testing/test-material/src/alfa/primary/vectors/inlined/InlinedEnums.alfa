@@ -1,0 +1,3 @@
+record vectors.inlined.InlineEnums {
+    F1 : enum< N, S, E, W >
+}

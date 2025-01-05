@@ -1,0 +1,5 @@
+namespace com.acme.hr
+
+trait Person {
+    Name : string
+}

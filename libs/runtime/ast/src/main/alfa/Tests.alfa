@@ -1,0 +1,55 @@
+// This service is passed into methods that are part of a 'test' user-defined-type. Number of method are available to
+// formula data required for a test, and execute functionality and assert expected results.
+// Also declared in AlfaCompiler.scala
+
+// To avoid name conflict
+
+
+
+// This service is passed into methods that are part of a 'test' user-defined-type. Number of method are available to
+// formula data required for a test, and execute functionality and assert expected results.
+internal service schemarise.alfa.test.ScenarioX() {
+    // The specified entity object is available within the test to be accessed via the 'query' or 'lookup' functions.
+    given( description : string, data : $entity ) : void
+
+    // Load JSON files from the path specified (file, or directory), and those entity objects are available within the
+    // test to be accessed via the 'query' or 'lookup' functions.
+    // givenAll( description : string, path : string ) : void
+
+    // The specified service is available in the context of this Scenario as a mocked service.
+    // When invoked, returns a random value from the results list.
+    withServiceResults( description : string, srv : $service, results : map< FunctionName : string, ReturnValues : list< string > > ) : void
+
+    // When the testBody is executed, no error is expected and completes normally
+    succeeds( description : string, testBody : func<(), void > ) : boolean
+
+    // When the testBody is executed, an error is expected.
+    // This method should be used when the exact error message expected can be implementation specific (E.g.Java, Python etc)
+    fails( description : string, testBody : func<(), void > ) : boolean
+
+    // When the testBody is executed, an error is expected on the field specified by the 'errorFieldPath' field
+    failsOn( description : string, testBody : func<(), void >, expectedErrorFieldPath : string ) : boolean
+
+    // When the testBody is executed, an error is expected with the message being reported
+    failsWith( description : string, testBody : func<(), void >, expectedErrorMessage : string ) : boolean
+
+    // Assert the lambda returns true
+    assertTrue( description : string, testBody : func<(), boolean > ) : void
+
+    // Create a random object of the given type
+    random( typeName : $udtName ) : $udt
+
+    loadObjectFromCsv( typeName : $udtName, pathOrUrl : string ) : $udt
+    loadObjectsFromCsv( typeName : $udtName, pathOrUrl : string, headerLineNo : int, colDelimiter : string ) : list< $udt >
+
+    loadObjectFromJSON( typeName : $udtName, pathOrUrl : string ) : $udt
+
+    listFiles( pathOrUrl : string, ext : string ) : list< string >
+
+    // Create a random object of the given type with give values
+    randomWith( builderObject : $udt ) : $udt
+
+    // Create copy with overriding from 2nd arg
+    copyWith( toCopy : $udt, toOverride : $udt ) : $udt
+
+}

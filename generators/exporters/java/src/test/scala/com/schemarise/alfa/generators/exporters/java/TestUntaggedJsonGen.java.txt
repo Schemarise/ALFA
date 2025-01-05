@@ -1,0 +1,39 @@
+package io.alfa.generators.exporters.java8;
+
+import alfa.rt.JsonCodec;
+import org.junit.Test;
+
+import java.io.IOException;
+
+public class TestUntaggedJsonGen {
+//    @Test
+    public void testUnionUdt() throws IOException {
+//        Example.SampleUntaggedUnion d = Example.SampleUntaggedUnion.newBuilder().set_UF0(20).build();
+//
+//        Example.SampleRecWithUntaggedUnionField a = Example.SampleRecWithUntaggedUnionField.newBuilder().setF(d).build();
+//
+//        String json = JsonCodec.toJsonString(a);
+//        System.out.println(json);
+//
+//        Example.SampleRecWithUntaggedUnionField x = JsonCodec.fromJsonString(json);
+    }
+
+//    @Test
+    public void testUnionDataType() throws IOException {
+
+//        SampleRecWithUntaggedUnionDataType.SampleRecWithUntaggedUnionDataTypeBuilder d = SampleRecWithUntaggedUnionDataType.newBuilder();
+//
+//        Union__SampleRecWithUntaggedUnionDataType__F uf = Union__SampleRecWithUntaggedUnionDataType__F.newBuilder().set_UF1("abc").build();
+//
+//        d.setF(uf);
+//
+//        SampleRecWithUntaggedUnionDataType a = d.build();
+//
+//        String json = JsonCodec.toJsonString(a);
+//        System.out.println(json);
+//
+//        SampleRecWithUntaggedUnionDataType dec = JsonCodec.fromJsonString(json);
+//
+//        System.out.println( dec.getF().caseValue() );
+    }
+}

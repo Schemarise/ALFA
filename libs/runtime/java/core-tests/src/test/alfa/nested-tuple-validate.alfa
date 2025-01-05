@@ -1,0 +1,17 @@
+
+namespace nestedtuple
+
+record TupleStrLen {
+    payload : tuple<
+                    level1 : string(1,*),
+                    nested1 : tuple < level2 : string(1,*) >,
+                    nested2 : list < tuple <
+                                         level3 : string(1,*) >
+                              >,
+                    nestedOpt1 : tuple < level4 : string(1,*) >?,
+                    nestedOpt2 : list < tuple <
+                                         level5 : string(1,*) >
+                              >?
+              >
+}
+

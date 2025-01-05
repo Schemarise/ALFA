@@ -1,0 +1,13 @@
+---
+name: com.acme.Customers
+
+dependencies:
+- com.acme.Payments
+
+compile:
+  DisallowNonSelfCyclicDeclarations: true
+
+build:
+  OutputPath: build
+
+deploy: {}

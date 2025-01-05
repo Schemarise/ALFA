@@ -1,0 +1,8 @@
+namespace Feature.MultiNamespace.NS1
+
+record Data {}
+
+namespace Feature.MultiNamespace.NS2
+
+record Data {}
+

@@ -1,0 +1,12 @@
+namespace Feature.NameTest
+
+// This fails in protobuf
+record Builder {}
+
+record Concrete {}
+
+record TypeDescriptor {}
+
+record Mutation {}
+
+

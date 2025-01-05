@@ -1,0 +1,8 @@
+record scalars.Duration {
+  //  fDuration : duration
+   // fDurationWithDefault : duration = "P5D"
+}
+
+record scalars.constraints.range.Duration {
+	//fDuration : duration( "P1D", "P5D" )
+}

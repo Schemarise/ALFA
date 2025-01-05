@@ -1,0 +1,9 @@
+namespace vectors.map
+
+record MapOfRecords {
+    F1 : map< string, UDT >
+}
+
+record UDT {
+    Data : string
+}

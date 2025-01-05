@@ -1,0 +1,26 @@
+namespace udts
+
+union MyUnion {
+    UFInt : int
+    UFString : string
+    UFDate : date
+    UFRec : UnionRefRecord
+    UVoid : void
+}
+
+union MyUnionWithConstraints {
+    UFInt : int(10, 100)
+    UFOptString : string(3,3)
+}
+
+record UnionRefRecord {
+    intField : int
+    stringField : string
+    doubleField : double
+}
+
+/*
+union UntaggedUnion {
+    int | string | double
+}
+*/

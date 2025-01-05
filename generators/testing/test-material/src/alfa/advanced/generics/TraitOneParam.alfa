@@ -1,0 +1,6 @@
+
+namespace generics
+
+trait TraitOneParam< T > {
+    OneParamField : T
+}
