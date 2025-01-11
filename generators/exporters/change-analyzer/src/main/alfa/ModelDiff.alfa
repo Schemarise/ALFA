@@ -1,0 +1,118 @@
+namespace schemarise.alfa.runtime.model.diff
+
+enum ChangeUdtType {
+    Trait
+    Record
+    Entity
+    Enum
+    Union
+    Key
+    Annotation
+    Testcase
+    Library
+    Service
+    Transform
+    NativeType
+    Dataproduct
+}
+
+enum ChangeCategoryType {
+    # 1. service definition method added/deleted/changed
+    # 2. deletion of service of library definitions, including versions
+    # 3. Change of a datatype used by a service
+    BreakingApiChange
+
+    # 1. library function signature changes can impact code that
+    #    directly uses them.. less likely, but possible
+    PotentialApiChange
+
+    # non-breaking change. e.g. new library method, new library/service,
+    # new service version
+    ApiUpsert
+
+    # changes to fields layout in any trait, record, union, enum, entity or key
+    # also removal of types
+    # e.g. new mandatory field, field type change, remove fields, enum def changes.
+    BreakingDataStructureChange
+
+    # change to a referenced definition that impacts the given definition
+    IndirectBreakingDataStructureChange
+
+    # non-breaking change e.g. adding a new type, new optional field
+    DataStructureUpsert
+
+    # annotations changes to UDT, field or method. E.g. add PII annotation to a field/type
+    ModelMetadataChange
+
+    # change logic in assert, transform or library - as the change can introduce/fix bugs
+    # add/remove methods
+    ImplementationLogicChange
+
+    # testcase additions/changes, adding asserts
+    QualityChanges
+
+    # documentation changes
+    DocumentationChanges
+
+    DataProductChange
+}
+
+record UdtReference {
+    UdtType : ChangeUdtType
+    UdtName : string
+}
+
+enum UdtEntryType {
+    Field
+    Method
+    Assert
+    Function
+    Publish
+    Consume
+    Scope
+    ReachableType
+}
+
+enum EditType {
+    Added
+    Removed
+    Updated
+}
+
+trait IModification {
+    EditType : EditType
+    ChangeCategory : ChangeCategoryType
+    BeforeSnippet : Snippet?
+    AfterSnippet : Snippet?
+    Message : string?
+}
+
+trait IUdtModification includes IModification {
+    TargetUdt : UdtReference
+}
+
+record Snippet {
+    Code : string
+}
+
+record UdtModification includes IUdtModification {
+}
+
+record UdtEntryModification includes IUdtModification {
+    EntryName : string
+    EntryType : UdtEntryType
+}
+
+record NamespaceModifications includes IModification {
+    NamespaceName : string
+}
+
+record DataproductModifications includes IModification {
+    DataproductName : string
+    PublishImpactPaths : list< string >
+    ConsumeImpactPaths : list< string >
+}
+
+record Modifications {
+    Results : map< ChangeCategoryType, list< IModification > >
+}

@@ -51,13 +51,11 @@ class TypeRegistry(context: Context) {
    * Only UDT parts declared as fragment
    */
   val udtFragmentsOnly = new HashMap[UdtVersionedName, ArrayBuffer[UdtBaseNode]]
-  //    with MultiMap[UdtVersionedName, UdtBaseNode]
 
   /**
    * Only UDT parts declared as fragment
    */
   val udtsFromRepositories = new HashMap[ArtifactEntry, ArrayBuffer[UdtBaseNode]]
-  //    with MultiMap[ArtifactEntry, UdtBaseNode]
 
   /**
    * Template types for lookup
@@ -548,15 +546,6 @@ class TypeRegistry(context: Context) {
         }
         else {
 
-          //          Lazy mode, find types from dependencies, but no need now as context loads all // TODO should this be configurable?
-
-          //          // context.logger.trace("Searching dependencies for " + ref.udtName.name )
-          //          val extDef : Option[ UdtBaseNode ] = context.lookupUdtInDependencies( requestor, ref, logError )
-          //
-          //          if ( extDef.isDefined ) {
-          //            extDef
-          //          } else
-
           if (logError) {
             val l = matchingUdts(ref, None)
             val m = new ResolutionMessage(ref.location, UnknownType)(None, l, ref.toString)
@@ -609,13 +598,6 @@ class TypeRegistry(context: Context) {
     formals.foreach(f => pushAccessibleIdentifier(ctx, f._1, f._2))
   }
 
-  //  def pushAssert( ctx : Context, assertDeclaration: AssertDeclaration) : Unit = {
-  //    val sf = new CallStackFrame()
-  //    currentCallStack.push(sf)
-  //    val udt = assertDeclaration.parentUdt()
-  //    udt.allAccessibleFields().foreach( f => pushAccessibleIdentifier( ctx, f._2.nameNode, f._2.dataType ) )
-  //  }
-
   def pushUdtFields(ctx: Context, udt: UdtBaseNode): Unit = {
     val sf = new CallStackFrame(true)
     currentCallStack.push(sf)
@@ -629,10 +611,6 @@ class TypeRegistry(context: Context) {
       udt.allAccessibleFields().foreach(f => pushAccessibleIdentifier(ctx, f._2.nameNode, f._2.dataType))
     }
   }
-
-  //  def popAssert() :Unit  = {
-  //    currentCallStack.pop()
-  //  }
 
   def pushBlock(): Unit = {
     val sf = new CallStackFrame(false)
@@ -812,14 +790,6 @@ class TypeRegistry(context: Context) {
       if (matchingTypes.size == 0)
         ctx.addResolutionWarning(e.name.location, NoMatchingTypesForImport, e.name.text)
 
-      //      matchingTypes.map( e => {
-      //        val k = if ( e.fullyQualifiedName.equals(importString))
-      //          e.fullyQualifiedName
-      //        else
-      //          e.fullyQualifiedName.substring(importString.length + 1)
-      //
-      //        k -> e
-      //      } )
       matchingTypes.map(e => e.fullyQualifiedName -> e)
 
     }).flatten.toMap

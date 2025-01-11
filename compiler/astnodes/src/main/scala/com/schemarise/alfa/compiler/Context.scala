@@ -129,10 +129,6 @@ class Context(repoMan: IRepositoryManager,
     addResolutionError(ResolutionMessage(target, errorCode)(completions, args: _*))
   }
 
-  //  def addResolutionWarning(target: ResolvableNode, errorCode: ErrorCode, args: Any*) : Unit = {
-  //    addResolutionWarning(ResolutionMessage(target, errorCode)(args:_*))
-  //  }
-
   def addResolutionError(target: ResolvableNode, errorCode: ErrorCode, location: IToken, args: Any*): Unit = {
     addResolutionError(ResolutionMessage(target, errorCode, location)(List.empty, args: _*))
   }
@@ -202,23 +198,6 @@ class Context(repoMan: IRepositoryManager,
 
     lexer.addErrorListener(errLis)
     parser.addErrorListener(errLis)
-
-    // DEBUGGING
-    //    parser.addErrorListener(new DiagnosticErrorListener() {
-    //      override def reportAttemptingFullContext(recognizer: Parser, dfa: DFA, startIndex: Int, stopIndex: Int,
-    //                                               conflictingAlts: util.BitSet, configs: ATNConfigSet): Unit = {
-    //        val format = "reportAttemptingFullContext d=%s, input='%s'";
-    //        val decision = this.getDecisionDescription(recognizer, dfa);
-    //        val ds = recognizer.getTokenStream().getText(Interval.of(startIndex, stopIndex));
-    //        val message1 = java.lang.String.format(format, decision, ds);
-    //
-    //        val alts = this.getConflictingAlts(conflictingAlts, configs)
-    //        val text = recognizer.getTokenStream.getText(Interval.of(startIndex, stopIndex))
-    //        val message2 = String.format(format, decision, alts, text)
-    //
-    //        super.reportAttemptingFullContext(recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs)
-    //      }
-    //    })
 
     val pcu: CompilationUnitContext = parser.compilationUnit
 

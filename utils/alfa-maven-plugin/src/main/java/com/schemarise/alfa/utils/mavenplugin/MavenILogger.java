@@ -15,7 +15,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 
 public class MavenILogger implements ILogger {
-    private Log mLogger;
+    private final Log mLogger;
 
     public MavenILogger(Log log) {
         mLogger = log;

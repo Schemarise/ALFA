@@ -403,47 +403,11 @@ final class AlfaRandomGenerator extends DataSupplier implements IntImpl.AlfaRand
 
                 return _enumValue(n, m.getModel().getAllFieldsMeta().size());
 
-//                List<String> l = m.getModel().getAllFieldsMeta().keySet().stream().collect(Collectors.toList());
-//                String econst = l.get(r.nextInt(l.size()));
-//                try {
-//
-//                    ClassUtils.
-//                    Field f = m.getTypeClass().getField(econst);
-//                    Object s = f.get(m.getTypeClass());
-//                    return (T) s;
-//                } catch (Exception e) {
-//                    if ( e instanceof AlfaRuntimeException)
-//                        throw (AlfaRuntimeException) e;
-//                    else
-//                        throw new AlfaRuntimeException(ConstraintType.InvalidConstant, e);
-//                }
-
             } else {
                 throw new RuntimeException();
             }
         }
     }
-//
-//    @Override
-//    public <T extends Key> T keyValue(KeyDataType t) {
-//        UdtDataType e = (UdtDataType) t.getComponentType();
-//
-//        TypeDescriptor entityModel = ClassUtils.getMeta(e.getFullyQualifiedName()).getModel();
-//
-//        String keyName = entityModel.getEntityKeyModel().get().getUdtDataType().getFullyQualifiedName();
-//
-//        return random(keyName);
-//
-////        String n = t.getFullyQualifiedName();
-////        if (randomizable(n))
-////            return random(n);
-////        else
-////            {
-////            // find derivation
-////            throw new RuntimeException();
-////        }
-//    }
-
 
     @Override
     public <T extends Record> T tupleValue(TupleDataType t) {

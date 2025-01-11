@@ -24,6 +24,8 @@
     <version>3.4.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
+    <description>Alfa Java generator integration tests</description>
+
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
         <artifactId>alfa-itests</artifactId>

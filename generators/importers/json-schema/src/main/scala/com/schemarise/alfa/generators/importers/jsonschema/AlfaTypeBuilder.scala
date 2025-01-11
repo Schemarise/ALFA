@@ -38,32 +38,28 @@ object AlfaTypeBuilder {
 
 class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
 
-  val counter = new AtomicInteger()
-
-  //  val asserts = new java.util.ArrayList[String]()
+  private val counter = new AtomicInteger()
 
   val fragments = new java.util.HashMap[String, ListBuffer[String]]()
-
-  //  private val localUdts = new ListBuffer[UdtBaseNode]()
 
   val ai = new AtomicInteger()
   val cu = ctx.readScript(None, AlfaCompiler.builtinAnnotations)
   new CompilationUnitArtifact(ctx, cu)
 
-  def validateName(name: String) = {
+  private def validateName(name: String) = {
     if (name == null)
       throw new RuntimeException
 
     name.replaceAll(" ", "_").replace(':', '_').replace('/', '_').replace('#', '_')
   }
 
-  def intNode(i: Number, adjust: Number => Number = x => x): IntNode =
+  private def intNode(i: Number, adjust: Number => Number = x => x): IntNode =
     if (i == null)
       IntNode(number = None)()
     else
       IntNode(number = Some(adjust(i).intValue()))()
 
-  def doubleNode(i: Number, adjust: Number => Number = x => x): DoubleNode =
+  private def doubleNode(i: Number, adjust: Number => Number = x => x): DoubleNode =
     if (i == null)
       DoubleNode(number = None)()
     else
@@ -72,10 +68,6 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
   def schemaToUdtDataType(s: Schema) = {
     val typeName = AlfaTypeBuilder.typeNameFromLocation(s.getSchemaLocation)
     UdtDataType.fromName(typeName)
-  }
-
-  def loadJsonSchemaAndRegisterType(s: Schema) = {
-
   }
 
   def genAlfaModel(jsonSchema: Path, namespace: String) = {
@@ -96,36 +88,6 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
     else
       ""
 
-    //    println("asserts: " + asserts.asScala.mkString("\n"))
-
-    //
-    //    val root = ctx.registry.getUdt(None, UdtDataType.fromName(rootTypeName), false)
-    //
-    //    val udts = if (root.isDefined)
-    //      Seq(root.get)
-    //    else {
-    //      Seq.empty
-    //    }
-    //
-    //    val nn = new NamespaceNode(collectedUdts = udts, nameNode = StringNode.create(namespace))
-    //    val cu = new CompilationUnit(ctx = ctx, namespaces = Seq(nn))
-    //    val cua = new CompilationUnitArtifact(ctx, cu)
-    //
-    ////    val locals = localUdts.mkString("\n")
-    //
-    //    if (root.isDefined) {
-    //      s"""namespace $namespace
-    //         |
-    //         |${root.get.toString}
-    //         |
-    //         |$locals
-    //         |${fragments.asScala.mkString("\n\n")}
-    //       """.stripMargin
-    //    }
-    //    else {
-    //      logger.warn("No types were found in " + jsonSchema.getFileName)
-    //      ""
-    //    }
   }
 
   private def convert(s: Schema, isRoot: Boolean = false, rootTypeName: String = "",
@@ -134,12 +96,8 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
     val res: (DataType, Option[IExpression]) = s match {
       case x: ObjectSchema => {
 
-        //        if (x.requiresObject()) {
         val fields = x.getPropertySchemas.asScala.map(z => {
           val name = z._1
-
-          //            if ( name.equals("identity"))
-          //              println(222)
 
           val descr = z._2.getDescription
 
@@ -149,12 +107,12 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
           val ft = if (x.getRequiredProperties.contains(name)) dt._1 else EnclosingDataType(encType = Enclosed.opt, declComponentType = dt._1)
 
           val fdescr = z._2.getDescription
-          val nm = if (fdescr != null && fdescr.size > 0) NodeMeta.withDoc(fdescr) else NodeMeta.empty
+          val nm = if (fdescr != null && fdescr.nonEmpty) NodeMeta.withDoc(fdescr) else NodeMeta.empty
           val f = new Field(rawNodeMeta = nm, nameNode = StringNode.create(validateName(name)), declDataType = ft, rawExpression = dt._2)
           f
         }).toSeq
 
-        val allFields = if (fields.size == 0 && x.getRequiredProperties.size() > 0)
+        val allFields = if (fields.isEmpty && x.getRequiredProperties.size() > 0)
           x.getRequiredProperties.asScala.map(j => new Field(nameNode = StringNode.create(j), declDataType = ScalarDataType.voidType))
         else
           fields
@@ -177,9 +135,6 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
           fields = allFields.map(u => new FieldOrFieldRef(u)), imports = Seq.empty)
         ctx.registry.registerUdt(r)
         (r.asDataType, None)
-        //        }
-        //        else
-        //          (TupleDataType.apply(allFields, NodeMeta( annotations = anns)), None)
       }
 
       case x: CombinedSchema => {
@@ -195,16 +150,6 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
               val dq = sl.map(z => convert(z)).map(_._1)
               val names = sl.map(z => convert(z)).map(e => StringNode.create(e._1.toString.replace('.', '_')))
               (new TupleDataType(declComponentTypes = dq, fieldNames = names), None)
-              //
-              //              val nm = if (x.getDescription != null)
-              //                NodeMeta.withDoc(x.getDescription)
-              //              else
-              //                NodeMeta.empty
-              //
-              //              val tup = new TupleDataType(declComponentTypes = dq).syntheticRecord.fields
-              //              val r = new Record(nodeMeta = nm, nameNode = StringNode.create(rootTypeName), fields = tup )
-              //              ctx.registry.registerUdt(r)
-              //              (r.asDataType, None)
             }
 
           case List(a: EnumSchema, _*) =>
@@ -214,9 +159,6 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
           case List(_, a: EnumSchema) =>
             val t = schemaToUdtDataType(x)
             convert(a, true, rootTypeName, accessPrefix, x.getDescription)
-
-          //          case List( cs : ConditionalSchema ) =>
-          //            ???
 
           case _ =>
             handleCombinedSchema(x, isRoot, rootTypeName, accessPrefix)
@@ -348,14 +290,6 @@ class AlfaTypeBuilder(logger: ILogger, ctx: Context) {
               }
 
             local
-
-            //            }
-            //            else {
-            //              // create stub record for externally referenced type
-            //              val l = new Record(nameNode = StringNode.create(t.fullyQualifiedName))
-            //              ctx.registry.registerUdt(l)
-            //              l.asDataType
-            //            }
 
           }
 

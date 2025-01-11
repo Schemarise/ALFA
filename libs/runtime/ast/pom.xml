@@ -50,16 +50,6 @@
                             <goal>package</goal>
                         </goals>
 
-                        <!--
-                        <configuration>
-                            <exportSettings>
-                                <exportSetting>
-                                    <exportClass>io.alfa-lang.generators.exporters.java8.Java8Exporter</exportClass>
-                                    <outputDir>${project.build.directory}/generated-sources/java</outputDir>
-                                </exportSetting>
-                            </exportSettings>
-                        </configuration>
-                        //-->
                     </execution>
                 </executions>
             </plugin>

@@ -10,14 +10,6 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class TestJavaGen extends AnyFunSuite {
 
-
-//  test("Rosetta") {
-//    val cua = TestCompiler.compileScriptOnly(Paths.get("/Users/sadia/IdeaProjects/alfa-core/generators/importers/rosetta/target/generated-test-sources/alfa"))
-//
-//    println(cua.getErrors.mkString("\n"))
-//
-//  }
-
   test("obj assign nested") {
     genJava(
       """
@@ -488,12 +480,6 @@ class TestJavaGen extends AnyFunSuite {
         |}
       """.stripMargin)
   }
-//
-//  test("QUICK TEST") {
-//
-//     testGenFromPath(Paths.get("/Users/sadia/dev/alfa-suade-fire-demo/model"))
-//  }
-
 
   test("Test Tuple max len") {
     genJava(
@@ -1748,11 +1734,6 @@ class TestJavaGen extends AnyFunSuite {
 
     testGenFromPath(fs.getPath("src"))
   }
-
-  //  test("genFromScript" ) {
-  //    val cua = TestCompiler.compileScriptOnly(
-  //      Paths.get("/Users/sadia/IdeaProjects/alfa-applibs-fpml/fpml-5.11/projects/confirmation/target/generated-sources/alfa"))
-  //  }
 
   def testGenFromPath(p: Path) {
     val cua = TestCompiler.compileScriptOnly(p)

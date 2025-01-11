@@ -2,7 +2,6 @@ package com.schemarise.alfa.generators.importers.jsonschema
 
 import com.schemarise.alfa.compiler.Context
 import com.schemarise.alfa.compiler.ast.model.IUdtBaseNode
-import com.schemarise.alfa.compiler.utils.ILogger
 import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, GeneratorException}
 
 import java.nio.file.{Files, Path}
@@ -22,6 +21,7 @@ class JsonSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) 
   override def writeTopComment() = false
 
   private def processInputFiles() = {
+    logger.info("Reading JSON Schema files from " + rootPath)
     if (Files.isDirectory(rootPath)) {
       Files.list(rootPath).filter(p => p.getFileName.toString.endsWith(".json")).forEach(f => {
         processInputFile(f)
@@ -41,36 +41,6 @@ class JsonSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) 
 
     ns
   }
-
-  //  def writeAlfaFiles() = {
-  //
-  //    val types = ctx.registry.allUserDeclarations
-  //
-  //    val udts = types.map( t => ctx.registry.getUdt(None, UdtDataType.fromName(t), false ).get).toList
-  //
-  //
-  //    val nn = new NamespaceNode(collectedUdts = udts, nameNode = StringNode.create(alfaNamespace))
-  //    val cu = new CompilationUnit(ctx = ctx, namespaces = Seq(nn))
-  //    val cua = new CompilationUnitArtifact(ctx, cu)
-  //
-  //    udts.foreach( u => {
-  //      val tn = u.name.fullyQualifiedName
-  //
-  //      enterFile(tn + ".alfa")
-  //
-  //
-  //      writeln(
-  //        s"""
-  //           |namespace $alfaNamespace
-  //           |
-  //           |${u.toString}
-  //         """.stripMargin)
-  //      exitFile()
-  //
-  //      logger.debug("Generated " + tn)
-  //    })
-  //  }
-
 
   private def processInputFile(p: Path) = {
 

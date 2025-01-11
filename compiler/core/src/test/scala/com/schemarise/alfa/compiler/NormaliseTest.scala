@@ -90,17 +90,4 @@ class NormaliseTest extends AnyFunSuite {
 
     TestCompiler.compileValidScript(all)
   }
-
-  //  test("EMIR") {
-  //    val d = TestCompiler.compileScriptOnly(Paths.get("/Users/sadia/IdeaProjects/alfa-core/generators/importers/xsd/xml-schema/target/generated-test-sources/alfa/auth.030.001.03_ESMAUG_DATTAR_1.0.0.alfa"))
-  //
-  //    val u1 = d.getUdt("urn.iso.std.iso.n20022.tech.xsd.auth.n030.n001.n03.TradeTransaction49__2").get
-  //    val u2 = d.getUdt("urn.iso.std.iso.n20022.tech.xsd.auth.n030.n001.n03.TradeTransaction49__5").get
-  //
-  //    val a1 = u1.allFields.map( e => e._2).toList.sortBy( e => e.name ).map( e => s"${e.name}:${e.dataType}" )
-  //    val a2 = u2.allFields.map( e => e._2).toList.sortBy( e => e.name ).map( e => s"${e.name}:${e.dataType}" )
-  //
-  //    deduplicate(d)
-  //
-  //  }
 }

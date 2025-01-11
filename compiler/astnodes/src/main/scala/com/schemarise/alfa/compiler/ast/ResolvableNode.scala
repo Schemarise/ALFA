@@ -182,37 +182,6 @@ trait ResolvableNode extends IResolvableNode with BaseNode {
   protected def asSeq(item: Option[ResolvableNode]): Seq[ResolvableNode] =
     if (item.isDefined) Seq(item.get) else Seq.empty
 
-  //  def locateCompilationUnitParent() : CompilationUnit =
-  //    locateCompilationUnitParent( this )
-  //
-  //  private def locateCompilationUnitParent( from : ResolvableNode ) : CompilationUnit = {
-  //    if ( from.parent.isInstanceOf[CompilationUnit])
-  //    {
-  //      from.parent.asInstanceOf[CompilationUnit]
-  //    }
-  //    else if ( from.parent.isInstanceOf[ResolvableNode]) {
-  //      locateCompilationUnitParent(from.parent.asInstanceOf[ResolvableNode])
-  //    }
-  //    else {
-  //      throw new com.schemarise.alfa.compiler.AlfaInternalException("???")
-  //    }
-  //  }
-  //
-
-  //  def locateStatementParent() : Option[Statement] =
-  //    locateStatementParent(this)
-  //
-  //  private def locateStatementParent(from: ResolvableNode): Option[Statement] = {
-  //    if (from.parent.isInstanceOf[Statement]) {
-  //      Some(from.parent.asInstanceOf[Statement])
-  //    }
-  //    else if (from.parent.isInstanceOf[ResolvableNode]) {
-  //      locateStatementParent(from.parent.asInstanceOf[ResolvableNode])
-  //    }
-  //    else
-  //      None
-  //  }
-
   def immediateParent(): BaseNode = {
     parent
   }

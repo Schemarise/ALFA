@@ -26,7 +26,6 @@ import com.schemarise.alfa.compiler.types.AllFieldTypes
 import com.schemarise.alfa.compiler.types.AllFieldTypes.FieldType
 import com.schemarise.alfa.compiler.utils.TokenImpl
 
-// REVISIT ASANKA
 class UdtOrTypeDefedDataType(val location: IToken = TokenImpl.empty,
                              namespace: NamespaceNode = NamespaceNode.empty,
                              val name: StringNode,

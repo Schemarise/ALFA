@@ -36,6 +36,8 @@
 
     <modules>
         <module>java</module>
+        <module>markdown</module>
+        <module>change-analyzer</module>
     </modules>
 
     <dependencies>
