@@ -1,9 +1,6 @@
 package com.schemarise.alfa.generators.exporters.java;
 
-import com.schemarise.alfa.runtime.Alfa;
-import com.schemarise.alfa.runtime.AlfaRuntimeException;
-import com.schemarise.alfa.runtime.BuilderConfig;
-import com.schemarise.alfa.runtime.IBuilderConfig;
+import com.schemarise.alfa.runtime.*;
 import org.junit.Assert;
 import org.junit.Test;
 import udts.MyUnion;
@@ -31,7 +28,7 @@ public class TestJavaUnion {
 
     @Test
     public void testUnionFieldConstrait() throws Exception {
-        IBuilderConfig cfg = BuilderConfig.builder().build();
+        IBuilderConfig cfg = BuilderConfig.builder().setAssertListener(new ValidationCollectingListener()).build();
         MyUnionWithConstraints.builder(cfg).setUFInt(1000).build();
         Assert.assertTrue(cfg.getAssertListener().getValidationReport().getAlerts().size() > 0);
     }

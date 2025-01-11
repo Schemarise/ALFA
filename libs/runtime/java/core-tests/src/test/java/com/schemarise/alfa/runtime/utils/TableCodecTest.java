@@ -1,7 +1,6 @@
 package com.schemarise.alfa.runtime.utils;
 
-import com.schemarise.alfa.runtime.Alfa;
-import com.schemarise.alfa.runtime.AlfaObject;
+import com.schemarise.alfa.runtime.*;
 import schemarise.alfa.runtime.model.ColBasedTable;
 import schemarise.alfa.runtime.model.asserts.ValidationReport;
 import com.schemarise.alfa.runtime.codec.CodecConfig;
@@ -58,11 +57,12 @@ public class TableCodecTest {
 
         AlfaRandomizer r = new AlfaRandomizer();
 
+        CodecConfig cfg = CodecConfig.builder().setAssertListener(new ValidationCollectingListener()).build();
+
         Path csvPath = Paths.get(TestUtils.getTestResourcesPath(getClass()) + "plain-obj.csv");
 
         Stream<AlfaObject> res = TableCodec.importCsv(csvPath, TableCodec.CsvReaderConfig.defaultCsvReaderConfig(),
-                CodecConfig.defaultCodecConfig(), PlainObj.PlainObjDescriptor.TYPE_NAME,
-                Optional.empty(), Collections.emptyMap());
+                cfg, PlainObj.PlainObjDescriptor.TYPE_NAME, Optional.empty(), Collections.emptyMap());
 
         long d = res.count();
 
@@ -74,7 +74,7 @@ public class TableCodecTest {
             count = res.count();
         }
 
-        ValidationReport vr = CodecConfig.defaultCodecConfig(false).getAssertListener().getValidationReport().build();
+        ValidationReport vr = cfg.getAssertListener().getValidationReport().build();
 
         // expect errors for the wrong enum
         Assert.assertEquals(5001, vr.getTotalErrors());
