@@ -1,8 +1,7 @@
 package com.schemarise.alfa.runtime.utils
 
 import java.util.{Collections, Optional}
-
-import com.schemarise.alfa.runtime.{Alfa, AlfaObject, JsonCodec}
+import com.schemarise.alfa.runtime.{Alfa, AlfaObject, JsonCodec, ValidationCollectingListener}
 import schemarise.alfa.runtime.model.asserts.ConstraintType
 import com.schemarise.alfa.runtime.codec.CodecConfig
 import com.schemarise.alfa.runtime.codec.json.JsonCodecConfig
@@ -48,6 +47,7 @@ class NestedTupleValidationTest extends AnyFunSuite {
     val cc = JsonCodecConfig.builder().
       setAssignableToClass(classOf[TupleStrLen]).
       setShouldValidateOnBuild(false).
+      setAssertListener(new ValidationCollectingListener() ).
       build()
 
     val d: TupleStrLen = Alfa.jsonCodec.fromJsonString(cc, json1)
@@ -73,6 +73,7 @@ class NestedTupleValidationTest extends AnyFunSuite {
     val cc = JsonCodecConfig.builder().
       setAssignableToClass(classOf[TupleStrLen]).
       setShouldValidateOnBuild(false).
+      setAssertListener(new ValidationCollectingListener() ).
       build()
 
     val d: TupleStrLen = Alfa.jsonCodec.fromJsonString(cc, json1)

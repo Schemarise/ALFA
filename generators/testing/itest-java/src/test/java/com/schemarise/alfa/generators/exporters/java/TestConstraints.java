@@ -3,6 +3,7 @@ package com.schemarise.alfa.generators.exporters.java;
 import com.schemarise.alfa.runtime.AlfaObject;
 import com.schemarise.alfa.runtime.BuilderConfig;
 import com.schemarise.alfa.runtime.IBuilderConfig;
+import com.schemarise.alfa.runtime.ValidationCollectingListener;
 import com.schemarise.alfa.runtime.utils.AlfaRandomizer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class TestConstraints {
 
     @Test
     public void testIntConstraints() {
-        IBuilderConfig cfg = BuilderConfig.builder().build();
+        IBuilderConfig cfg = BuilderConfig.builder().setAssertListener(new ValidationCollectingListener()).build();
 
         Integer.IntegerBuilder b = Integer.builder(cfg).setFRange(2000);
         b.build();
@@ -32,7 +33,7 @@ public class TestConstraints {
 
     @Test
     public void testDateConstraints() {
-        IBuilderConfig cfg = BuilderConfig.builder().build();
+        IBuilderConfig cfg = BuilderConfig.builder().setAssertListener(new ValidationCollectingListener()).build();
         Date.DateBuilder b = Date.builder(cfg).setFLowerBound(LocalDate.of(1200, 1, 1));
         b.build();
         Assert.assertTrue(cfg.getAssertListener().getValidationReport().getAlerts().size() > 0);
