@@ -79,15 +79,6 @@ object AllSettingsFactory {
       compileNode.get.asInstanceOf[Map[String, Object]]
     else Map.empty
 
-    //    val buildNode = parsedYaml.get("build")
-    //    val build : Map[String,Object] = if ( buildNode.isDefined )
-    //      buildNode.get.asInstanceOf[Map[String,Object]]
-    //    else Map.empty
-    //
-    //    val deployNode = parsedYaml.get("deploy")
-    //    val deploy : Map[String,Object] = if ( deployNode.isDefined )
-    //      deployNode.get.asInstanceOf[Map[String,Object]]
-    //    else Map.empty
 
     val exportNode = parsedYaml.get("export")
     val export: Map[String, Object] = if (exportNode.isDefined)

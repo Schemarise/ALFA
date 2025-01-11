@@ -32,6 +32,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -190,23 +191,7 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
         String FILE = "file:" + (SystemUtils.IS_OS_WINDOWS ? "/" : "");
         String JAR = ".zip!/";
 
-//		Enumeration<URL> resourcesYaml;
-//		Enumeration<URL> resourcesJson;
-
         List<URL> allResources = new ArrayList<URL>();
-
-//		try {
-//			resourcesYaml = getClass().getClassLoader().getResources(".alfa-meta/settings.alfa-proj.yaml");
-//			resourcesJson = getClass().getClassLoader().getResources(".alfa-meta/settings.alfa-proj.json");
-//		} catch (IOException e) {
-//			throw new CompilerException("Failed to find dependencies", e );
-//		}
-//
-//		allResources.addAll( Collections.list(resourcesYaml) );
-//		allResources.addAll( Collections.list(resourcesJson) );
-//
-//		logger.debug("Loaded from plugin path : " + allResources);
-
 
         dependencies = new ArrayList<>();
 
@@ -279,14 +264,15 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
         try {
             init();
 
-            if (importSettings.size() != 0) {
+            if (!importSettings.isEmpty()) {
+                logger.debug("Executing " + importSettings.size() + " importers ... ");
                 importSettings.forEach(e -> runImport(e, this.getSourcePath()));
             } else {
                 if (srcPath != null) {
                     CompilerRunner runner = new CompilerRunner(this, logger);
                     ICompilationUnitArtifact cua = runner.execute();
 
-                    if (exportSettings.size() == 0)
+                    if (exportSettings.isEmpty())
                         logger.info("No Alfa exporters configured.");
 
 
@@ -299,6 +285,10 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
 
         } catch (Exception e) {
             throw new MojoExecutionException("Alfa compiler error.", e);
+        }
+
+        if ( importSettings.isEmpty() || exportSettings.isEmpty() ) {
+            logger.debug("Generation completed");
         }
     }
 
@@ -356,11 +346,11 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
             }
         }
 
-        List<String> reqd = Arrays.asList(exporter.requiredConfig());
+        String[] reqd = exporter.requiredConfig();
         for (String s : reqd) {
-            if (e.getConfig().keySet().contains(s)) {
-                throw new CompilerException("The export type " + e.getExportType() + " class '" + e.getExportClass() + "' requires <" + s +
-                        "> as an exportSetting config entry");
+            if (! e.getConfig().containsKey(s)) {
+                throw new CompilerException("The export type " + e.getExportType() + " class '" + e.getExportClass() + "' requires <config><" + s +
+                        ">... as an exportSetting config entry");
             }
         }
 
@@ -375,14 +365,16 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
 
     private void runImport(ImportSetting e, Path sourcePath) {
         e.inferDefaults(logger, getProject().getBuild().getOutputDirectory());
+
+        if (!Files.exists( sourcePath )) {
+            throw new CompilerException("The specified path does not exist '" + sourcePath + "'");
+        }
+
         logger.info("Running importer: " + e.getImportType());
 
         e.getOutputDir().mkdirs();
 
-
         AlfaImporterParams importerParams = new AlfaImporterParams(logger, sourcePath, e.getOutputDir().toPath(), e.getConfig());
-
-        logger.info("Running importer: " + e.getImportType());
 
         logger.debug("Importer: " + e.getImportType() + " Config " +
                 importerParams.importConfig() );

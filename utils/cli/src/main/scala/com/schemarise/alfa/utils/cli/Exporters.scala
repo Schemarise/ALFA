@@ -4,11 +4,12 @@ import com.schemarise.alfa.compiler.ast.model.ICompilationUnitArtifact
 import com.schemarise.alfa.compiler.ast.model.graph.GraphReachabilityScopeType
 import com.schemarise.alfa.compiler.utils.{ILogger, VFS}
 import com.schemarise.alfa.generators.common.{AlfaExporter, AlfaExporterParams, SupportedGenerator}
+import com.schemarise.alfa.generators.exporters.changeanalysis.ChangeAnalysisExporter
+import com.schemarise.alfa.generators.exporters.markdown.MarkdownExporter
 import com.schemarise.alfa.generators.exporters.java._
 
 import java.io.File
 import java.nio.file.Path
-import java.util.Properties
 import scala.collection.JavaConverters.mapAsJavaMap
 import scala.io.Source
 import scala.collection.JavaConverters._
@@ -41,6 +42,8 @@ class Exporters(logger : ILogger) extends GeneratorConfigBase(logger) {
       "java" -> classOf[JavaExporter].getName,
       "javatest" -> classOf[JavaTestExporter].getName,
       "javarest" -> classOf[JavaRestEndpointExporter].getName,
+      "markdown" -> classOf[MarkdownExporter].getName,
+      "changeanalyzer" -> classOf[ChangeAnalysisExporter].getName,
 
       "javajaxb" -> classOf[JaxbJavaInteropExporter].getName,
       "protobufjavawrapper" -> classOf[JavaProtobufWrapperExporter].getName,

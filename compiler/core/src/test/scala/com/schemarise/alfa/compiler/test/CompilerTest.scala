@@ -53,16 +53,6 @@ class CompilerTest extends AnyFunSuite {
     assert(cua1.asInstanceOf[CompilationUnitArtifact].compilationUnit.modelVersion.get.text.equals("iso-123:1"))
   }
 
-
-
-  //  test("compile as external path file") {
-  //    val p = Paths.get("/Users/sadia/IdeaProjects/smt/libs/runtime/ast/src/main/alfa/Test.alfa")
-  //    val cua = compiler.compile(p, new AllSettings())
-  //
-  //    val c1 = cua.getUdt("Sample.C1").get
-  //    assert( c1.allFields.map( f => f._1).equals( List("b3", "b2", "b1", "cref", "a", "fa1", "fa2") ) )
-  //  }
-
   test("compile as path file") {
     val fs = VFS.create()
     val p = fs.getPath("sample.alfa")

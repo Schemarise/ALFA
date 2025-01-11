@@ -58,8 +58,6 @@ class AlfaCliTest extends AnyFunSuite {
 
     assert(Files.exists(fs.getPath("/gen/com/acme/Customer.java")))
     assert(Files.exists(fs.getPath("/gen/com/acme/CustomerKey.java")))
-
-    //    VFS.printFileSystemContents(output)
   }
 
   private def makeCustomersPackage(fs: FileSystem): Path = {

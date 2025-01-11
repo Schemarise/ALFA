@@ -27,6 +27,8 @@
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
+    <description>Alfa Compiler root project</description>
+
     <parent>
         <groupId>com.schemarise</groupId>
         <artifactId>alfa</artifactId>

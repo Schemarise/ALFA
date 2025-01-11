@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.schemarise.alfa.generators.exporters</groupId>
+    <artifactId>alfa-gen-exp-analyzer</artifactId>
+    <version>3.4.2-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <description>Alfa model version change analyzer</description>
+
+    <parent>
+        <groupId>com.schemarise.alfa.generators</groupId>
+        <artifactId>alfa-gen-exp</artifactId>
+        <version>3.4.2-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>alfa-gen-common</artifactId>
+            <groupId>com.schemarise.alfa.generators</groupId>
+            <version>3.4.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.schemarise.alfa.compiler</groupId>
+            <artifactId>alfa-compiler-core</artifactId>
+            <version>3.4.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.schemarise.alfa.runtime</groupId>
+            <artifactId>alfa-runtime-java</artifactId>
+            <version>3.4.2-SNAPSHOT</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>javagen</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.schemarise.alfa.utils</groupId>
+                        <artifactId>alfa-maven-plugin</artifactId>
+                        <version>3.4.2-SNAPSHOT</version>
+                        <executions>
+
+                            <execution>
+                                <id>alfa-test-build</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                    <goal>package</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+
+                                <configuration>
+                                    <srcPath>src/main/alfa</srcPath>
+                                    <exportSettings>
+                                        <exportSetting>
+                                            <exportType>java</exportType>
+                                            <outputDir>${basedir}/src/main/java
+                                            </outputDir>
+                                        </exportSetting>
+                                    </exportSettings>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

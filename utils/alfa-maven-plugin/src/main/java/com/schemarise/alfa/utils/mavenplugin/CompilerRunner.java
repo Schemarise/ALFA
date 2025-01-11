@@ -48,19 +48,9 @@ public class CompilerRunner {
         if (warnings.size() > 0)
             logger.warn(srcRootDir, warnings);
 
-//        while ( warnings.hasNext() ) {
-//            IResolutionMessage v = warnings.next();
-//            logger.warn( v.location().toString() + Console.BOLD() + v.formattedMessage() );
-//        }
-
         Seq<IResolutionMessage> errors = cua.getErrors();
         if (errors.size() > 0)
             logger.error(srcRootDir, errors);
-
-//        while ( errors.hasNext() ) {
-//            IResolutionMessage v = errors.next();
-//            logger.error( v.location().toString() + " " + Console.BOLD() + v.formattedMessage() );
-//        }
 
         if (cua.getErrors().size() > 0)
             throw new CompilerException("See compiler output.");

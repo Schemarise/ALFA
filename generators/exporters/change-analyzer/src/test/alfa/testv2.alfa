@@ -1,0 +1,55 @@
+// https://fib-dm.com/finance-business-commerce-diagrams/
+// https://fib-dm.com/wp-content/uploads/diagrams/FBC/Finance-Business-Commerce-Products-Services-Clients-Accounts.svg
+
+namespace ClientData
+
+union Identification {
+    PassportNo : string
+    DrivingLicNo : string
+}
+
+record AccountHolder {
+    Id : Identification
+    FirstName : string
+    LastName : string
+    Dob : date
+    Address : list< string >
+}
+
+trait Account {
+    AccountHolder : AccountHolder
+}
+
+record BankAccount includes Account {
+    SortCode : string(6,6)
+    AccountNo : string(8,8)
+}
+
+
+trait FinancialServiceAccount includes Account {
+
+}
+
+record LoanAccount includes FinancialServiceAccount {
+
+}
+
+record InvestmentAccount includes FinancialServiceAccount {
+    Broker : BrokerKey
+}
+
+# Deposit Account
+record DepositAccount includes FinancialServiceAccount {
+
+}
+
+# Broker info from external DB
+entity Broker key(Id: uuid) {
+
+}
+
+# This service enables access to BankAccount related services
+@alfa.lang.IgnoreServiceWarnings
+service BankAccountService {
+    openAccount( accHolder : AccountHolder, accountType : string ) : Account
+}

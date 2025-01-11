@@ -28,10 +28,6 @@ case class NodeMeta( // val namespace: NamespaceNode = NamespaceNode.empty,
                      samelineDocs: Seq[Documentation] = Seq.empty
                    ) extends ResolvableNode with IDocAndAnnotated {
 
-  //  def setTargetUdt(node: UdtBaseNode) = {
-  //    annotations.foreach( _.setTargetUdt( node ))
-  //  }
-
   def withAlternateAnnotations(newAnns: Seq[Annotation]) = {
     NodeMeta(newAnns, topDocs, samelineDocs)
   }
