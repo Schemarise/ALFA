@@ -22,13 +22,4 @@ object TraverseUtils {
 
   def onlyUdts(l: Seq[IdentifiableNode]) = l.filter(_.isInstanceOf[UdtBaseNode]).map(_.asInstanceOf[UdtBaseNode])
 
-  //  def dependencyOrderedUdts(): List[UdtBaseNode] = {
-  //    directedGraph.udtDependencyOrdered
-  //  }
-
-  //  def topologicallyOrderedUdts(): Seq[UdtBaseNode] = {
-  //    directedGraph.topologicallyOrdered.filter(_.node.isInstanceOf[UdtBaseNode]).map(_.node.asInstanceOf[UdtBaseNode])
-  //  }
-
-
 }

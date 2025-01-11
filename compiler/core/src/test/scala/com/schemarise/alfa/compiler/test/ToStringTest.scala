@@ -51,39 +51,5 @@ class ToStringTest extends AnyFunSuite {
     val rec = cua.getUdt("Feature.ToString.SampleRec").get
     val asStr = rec.toString
 
-    //    val expectedSampleRec =
-    //      """
-    // record Feature.ToString.SampleRec includes Feature.ToString.SampleTrait {
-    //   F0 : int( *, 100 )
-    //
-    //   F1 : int( 100, 1000 )
-    //
-    //   F2 : string( 1, 10 )
-    //
-    //   F3 : string( ".*" )
-    //
-    //   F4 : date( *, "2021-01-01" )
-    //
-    //   F5 : date( "2020-01-01", "2021-01-01" )
-    //
-    //   F6 : date( *, *, "YYYY-MM" )
-    //
-    //   F7 : datetime( *, "2021-01-01T08:42:32.232", "DD-MM-YYYY" )
-    //
-    //   F9 : time( "12:42:21.321", *, "HH:mm:SS" )
-    //
-    //   F10 : decimal( 12, 10 )
-    //
-    //   F11 : decimal( 12, 10, 0.0, * )
-    //
-    //   F12 : decimal( 12, 2, *, 100.0 )
-    // }
-    //      """
-    //
-    //    println(asStr)
-    //    println(expectedSampleRec)
-    //
-    //    assert(expectedSampleRec.trim.equals(asStr.trim))
-
   }
 }

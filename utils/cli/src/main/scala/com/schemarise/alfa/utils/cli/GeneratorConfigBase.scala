@@ -6,18 +6,20 @@ import java.util.Properties
 import scala.collection.JavaConverters._
 
 abstract class GeneratorConfigBase(logger : ILogger) {
-  def loadClasspathGenerators(genType: String) = {
+  def loadClasspathGenerators(genType: String): Map[String, String] = {
     val exporterUrls = getClass.getClassLoader.getResources(s"META-INF/schemarise/alfa/generators/$genType.properties").asScala.toSeq
 
-    logger.debug(s"Found $genType " + exporterUrls.mkString(", ") + " from dependencies" )
+    if ( exporterUrls.nonEmpty ) {
+      logger.debug(s"Found $genType generators " + exporterUrls.mkString(", ") + " from dependencies" )
+    }
 
     val fromClasspath : Map[String, String] =
-      exporterUrls.map( u => {
+      exporterUrls.flatMap(u => {
         val p = new Properties
-        p.load( u.openStream() )
+        p.load(u.openStream())
 
-        p.stringPropertyNames().asScala.toSeq.map( k => k -> p.getProperty(k) )
-      }).flatten.toMap
+        p.stringPropertyNames().asScala.toSeq.map(k => k -> p.getProperty(k))
+      }).toMap
 
     // validate class exists
     fromClasspath.foreach( f => {

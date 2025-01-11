@@ -14,38 +14,12 @@
  * limitations under the License.
  */
 
-package com.schemarise.alfa.generators.exporters.java
+package com.schemarise.alfa.generators.importers.java
 
-import java.nio.file.Paths
-import java.util
 
 import com.schemarise.alfa.compiler.utils._
 import org.scalatest.funsuite.AnyFunSuite
 
 class JavaClassImporterTest extends AnyFunSuite with AlfaTestPaths {
-
-  //  test("test 2") {
-  //
-  //    val output = VFS.createAndGetPath()
-  //    val exporter = new JavaClassImporter( new StdoutLogger(), TargetTestClassesDir, output, Collections.emptyMap() )
-  //
-  //    exporter.importSchema()
-  //
-  //    VFS.printFileSystemContents(output)
-  //  }
-  //
-  test("test 1") {
-
-    //    val m = new util.HashMap[String, String]()
-    //    val output = VFS.createAndGetPath()
-    //
-    //    //    m.put("filter", "pl.com.bottega.ecommerce.system.infrastructure,pl.com.bottega.ecommerce.system.saga")
-    //    val exporter = new JavaClassImporter(new StdoutLogger(), Paths.get("/Users/sadia/dev/alfa-sample-project/projects/java/import/target/classes"), output, m)
-    //
-    //    exporter.importSchema()
-    //
-    //    VFS.printFileSystemContents(output)
-  }
-
 
 }

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class DecimalTests {
     @Test
     public void testDecimalOverflow() throws Exception {
-        BigDecimal d1 = new BigDecimal("234908.22343");
+        BigDecimal d1 = new BigDecimal("234908.23");
         BigDecimal d2 = new BigDecimal("20890.2342");
         BigDecimal d3 = new BigDecimal("20890.2342");
 

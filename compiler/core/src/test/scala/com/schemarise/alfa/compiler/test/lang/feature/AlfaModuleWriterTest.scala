@@ -30,13 +30,6 @@ class AlfaModuleWriterTest extends AnyFunSuite with AlfaTestPaths {
     projectId = Some(ArtifactReference(None, "com.acme.models:Example"))
   )
 
-  //  test("Compile ext project") {
-  //    val p = Paths.get("/Users/sadia/dev/gcp-alfa-sample-model/model")
-  //    val cua = compiler.compile(p, settings)
-  //
-  //    build(cua)
-  //  }
-
   test("Simple test") {
     val s =
       """

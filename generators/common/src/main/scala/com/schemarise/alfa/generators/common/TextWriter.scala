@@ -139,12 +139,6 @@ abstract class TextWriter(val logger: ILogger) {
     write(str + "\n")
   }
 
-  //  def getAndClearBuffer(): String = {
-  //    val s = memBuffer.toString()
-  //    memBuffer.clear()
-  //    return s
-  //  }
-
   def write(str: String): Unit = {
     if (files.size > 0)
       buffers.peek().append(str)

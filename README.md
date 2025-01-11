@@ -2,11 +2,18 @@
 
 ## Introduction
 
-ALFA is a data modelling technology that enables users to fully capture all aspects about their data.
+ALFA is a data modelling technology that enables users to fully capture all aspects of their data.
 
-It is agnostic of how the model will be implemented - i.e. it is not coupled to a particular programming language, technology or framework. It focuses on letting Modellers express their abstractions and rules concisely close as possible to how they best see fit. Those models can be extended by Architects with Governance, controls and define Data Products. Engineers can then build applications using ALFA models, rules and generated code.
+It is agnostic of how the model will be implemented - i.e. it is not coupled to a particular programming language, technology or 
+framework. It focuses on letting Modellers express their abstractions and rules concisely and close as possible to how they best 
+see fit. Those models can be extended by Architects with Governance, controls and define Data Products. 
+Engineers then build applications using ALFA models, rules and generated code.
 
-Creating ALFA models can be approached using different paradigms. E.g. more 'relational' style models using entities and attributes with cardinalities, or more object-oriented with a rich type system hierachies using container types such as `map<>`, `set<>`, `pair<>`. Furthermore, APIs, DQ/Business logic, testcases and Data Product contracts can be expressed on the models using ALFA. 
+Creating ALFA models can be approached using different paradigms. E.g. 
+- relational style models using entities and attributes with cardinalities, or
+- object-oriented with a rich type system hierarchies using container types such as `map<>`, `set<>`, `pair<>`.
+
+Furthermore, APIs, DQ/Business logic, testcases and Data Product contracts can be expressed on the models using ALFA. 
 
 ## Project Structure
 
@@ -24,8 +31,8 @@ The source is organised into directories as described below;
 #### Build
 
 Prerequisites:
-- Java 17 
-- Maven 3.9.9 
+- Java 17 or higher
+- Maven 3.9.9 or higher
 
 To build the complete project, simply run;
 ```
@@ -43,5 +50,6 @@ Please visit www.alfa-lang.io
 
 ## Licensing
 
-Schemarise ALFA is licensed under the Apache License, Version 2.0 (the "License"); you may not use this project except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
+Schemarise ALFA is licensed under the Apache License, Version 2.0 (the "License"); you may not use this project except in compliance 
+with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
 

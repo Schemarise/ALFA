@@ -33,16 +33,7 @@
     <version>3.4.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
-    <description>
-        ALFA Data Modelling Toolset
-        ===========================
-
-        This parent project and its modules contains;
-        - The ALFA compiler
-        - ALFA Maven Plugin and CLI tools
-        - Utilities to import external models into ALFA, and exporters to generated code
-        - Java runtime library and other integration libraries
-    </description>
+    <description>Schemarise ALFA Data Modelling Toolset</description>
 
     <url>https://github.com/Schemarise/ALFA</url>
 
@@ -95,6 +86,8 @@
         <alfa.everit.version>1.14.1</alfa.everit.version>
         <alfa.javax.annotation.api>1.3.2</alfa.javax.annotation.api>
         <alfa.h2db.version>2.2.222</alfa.h2db.version>
+        <alfa.commonmark.version>0.16.1</alfa.commonmark.version>
+        <alfa.plantuml.version>1.2024.1</alfa.plantuml.version>
     </properties>
 
     <build>

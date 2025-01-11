@@ -23,6 +23,8 @@
     <version>3.4.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
+    <description>Alfa testing utilities</description>
+
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-utils</artifactId>

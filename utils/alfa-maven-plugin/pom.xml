@@ -16,18 +16,6 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <licenses>
-        <license>
-            <name>Alfa Community Edition Software License 1.0</name>
-            <url>https://alfa-lang.io/LICENSE.CE.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>Schemarise Limited</name>
-        <url>https://schemarise.com</url>
-    </organization>
 
     <modelVersion>4.0.0</modelVersion>
 

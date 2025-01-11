@@ -2,7 +2,7 @@ package com.schemarise.alfa.generators.importers.jsonschema
 
 import org.everit.json.schema.loader.internal.DefaultSchemaClient
 
-import java.io.{File, FileInputStream, InputStream}
+import java.io.InputStream
 import java.net.URL
 import java.nio.file.{Files, Path}
 
@@ -13,10 +13,17 @@ class AlfaJsonSchemaClient(root:Path) extends DefaultSchemaClient {
     if ( u.getProtocol == "file") {
       val p = root.toString + u.getFile
       Files.newInputStream(root.resolve(p))
-//      new FileInputStream(new File(p))
     }
     else {
-      super.get(url)
+      // If local version exists, use that. Maybe this should be configurable?
+      val localVersion = root.resolve( u.getFile.split("/").last )
+
+      if ( Files.exists(localVersion)) {
+        Files.newInputStream(localVersion)
+      }
+      else {
+        super.get(url)
+      }
     }
   }
 }

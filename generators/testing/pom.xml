@@ -25,6 +25,8 @@
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
+    <description>Alfa generators testing root project</description>
+
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-gen</artifactId>

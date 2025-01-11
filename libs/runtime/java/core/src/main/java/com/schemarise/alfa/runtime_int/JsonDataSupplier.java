@@ -751,11 +751,6 @@ final class JsonDataSupplier extends DataSupplier {
 
                         getCodecConfig().getAssertListener().addFailure(va);
                         continue;
-
-//                        throw new AlfaRuntimeException( ConstraintType.UnknownField,
-//                                "Unknown field '" + fieldName + "' at " + parser.getCurrentLocation() +
-//                                ". For type " + cm.getModel().getUdtDataType().getFullyQualifiedName() +
-//                                ", available fields " + cm.getModel().getAllFieldsMeta().keySet());
                     }
 
                     try {
@@ -763,7 +758,7 @@ final class JsonDataSupplier extends DataSupplier {
                     } catch (AlfaRuntimeException tx) {
                         tx.setValidationErrorTypeName(cm.getModel().getUdtDataType().getFullyQualifiedName());
                         getCodecConfig().getAssertListener().addFailure(
-                                tx.toValidationAlert("Failed to process field ").
+                                tx.toValidationAlert("Failed to process field '" + fieldName + "'").
                                         setSourceInfo(Optional.of(parser.getCurrentLocationStr())));
                     } catch (Throwable tx) {
                         getCodecConfig().getAssertListener().addFailure(ValidationAlert.builder().

@@ -1,0 +1,77 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <groupId>com.schemarise.alfa.generators.exporters</groupId>
+    <artifactId>alfa-gen-exp-markdown</artifactId>
+    <version>3.4.2-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <description>Alfa to Markdown exporter</description>
+
+    <parent>
+        <groupId>com.schemarise.alfa.generators</groupId>
+        <artifactId>alfa-gen-exp</artifactId>
+        <version>3.4.2-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.schemarise.alfa.generators</groupId>
+            <artifactId>alfa-gen-common</artifactId>
+            <version>3.4.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atlassian.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+            <version>${alfa.commonmark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.plantuml</groupId>
+            <artifactId>plantuml</artifactId>
+            <version>${alfa.plantuml.version}</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>gendocs</id>
+            <activation>
+                <property>
+                    <name>!skipTests</name>
+                </property>
+            </activation>
+            <build>
+                <!--
+                <plugins>
+                    <plugin>
+                        <groupId>kr.motd.maven</groupId>
+                        <artifactId>sphinx-maven-plugin</artifactId>
+                        <version>1.7.0</version>
+                        <configuration>
+                            <sourceDirectory>${project.build.directory}/generated-test-resources/rst/simple-rst</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-test-resources/html/simple-rst</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                -->
+            </build>
+        </profile>
+    </profiles>
+</project>
+
