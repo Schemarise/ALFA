@@ -11,8 +11,9 @@ Engineers then build applications using ALFA models, rules and generated code.
 
 Creating ALFA models can be approached using different paradigms. E.g. 
 - relational style models using entities and attributes with cardinalities, or
-- object-oriented with a rich type system hierarchies using container types such as `map<>`, `set<>`, `pair<>`. Furthermore, 
-  APIs, DQ/Business logic, testcases and Data Product contracts can be expressed on the models using ALFA. 
+- object-oriented with a rich type system hierarchies using container types such as `map<>`, `set<>`, `pair<>`.
+
+Furthermore, APIs, DQ/Business logic, testcases and Data Product contracts can be expressed on the models using ALFA. 
 
 ## Project Structure
 
