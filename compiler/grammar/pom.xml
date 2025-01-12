@@ -22,13 +22,13 @@
 
     <artifactId>alfa-compiler-grammar</artifactId>
     <groupId>com.schemarise.alfa.compiler</groupId>
-    <version>3.4.2</version>
+    <version>3.4.3-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-compiler</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
