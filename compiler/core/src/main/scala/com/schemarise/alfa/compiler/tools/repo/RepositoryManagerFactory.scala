@@ -80,21 +80,14 @@ class RepositoryManagerFactory(log: ILogger, rootUri: String, clientLogger: ILog
 
     val pomDir = pom.getParent
 
-    //    log.info("Running " + cmd)
-    //    val output = Process(cmd, pomDir.toFile).!!
-    //    log.info("Execution log for " + cmd)
-    //    log.info(output)
-
-    //    log.info("Maven execution completed" )
-
     val targetDir = pomDir.resolve(readBuildOutputDir(pom))
 
     val depsDir = targetDir.resolve("dependency")
 
-    log.debug("Looking for dependency directory " + targetDir)
+    log.debug("Looking for dependency directory " + depsDir)
 
     if (!Files.exists(depsDir)) {
-      log.warn(s"If project depends on other ALFA projects run '$cmd' in '$pomDir' directory")
+      log.info(s"If project depends on other ALFA projects run '$cmd' in '$pomDir' directory")
       (new NoOpRepositoryManager(), AllSettingsFactory.empty)
     }
     else {

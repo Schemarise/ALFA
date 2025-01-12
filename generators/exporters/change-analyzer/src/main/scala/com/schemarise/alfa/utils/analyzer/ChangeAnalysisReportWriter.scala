@@ -34,7 +34,10 @@ class ChangeAnalysisReportWriter(logger: ILogger, outputDir: Path) extends TextW
     writeln(
       s"""
          |<body>
-         |<h1>Impact Analysis Report</h1>
+         |<h1>
+         |    <img src="https://alfa-lang.io/_images/AlfaLogo4c4c4c.svg" alt="ALFA" width="88" style="vertical-align:baseline"/>
+         |    Impact Analysis Report
+         |</h1>
          |<p>Created: <span class="text-monospace">${new Date()}</span></p>
          |<h5>Between branch/tag version <span class="text-monospace text-secondary">$v1</span> and <span class="text-monospace text-secondary">$v2</span> </h5>
          |<br/>

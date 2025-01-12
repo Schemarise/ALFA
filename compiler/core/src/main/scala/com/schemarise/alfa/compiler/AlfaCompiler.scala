@@ -148,9 +148,11 @@ final object AlfaCompiler {
 
   def getVersion = {
     val loc = classOf[AlfaCompiler].getProtectionDomain.getCodeSource.getLocation.toString
-    if (loc.endsWith(".jar"))
-      " v" + loc.split("/").last.replace(".jar", "").split("-").last
-    else
+    if (loc.endsWith(".jar")) {
+      val parts = loc.split("/").last.replace(".jar", "").split("-")
+      val ver = if ( parts.last == "SNAPSHOT" ) parts.takeRight(2).mkString("-") else parts.last
+      " v" + ver
+    } else
       ""
   }
 }
