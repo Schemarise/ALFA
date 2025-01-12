@@ -46,7 +46,7 @@ Source can be opened in any Java editor - IntelliJ, Eclipse, NetBeans, VSCode (i
 
 
 ## Documentation 
-Please visit www.alfa-lang.io
+Please visit [alfa-lang.io](https://alfa-lang.io)
 
 ## Licensing
 
