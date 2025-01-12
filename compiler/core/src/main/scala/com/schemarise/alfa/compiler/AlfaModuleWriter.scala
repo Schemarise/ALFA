@@ -117,10 +117,10 @@ object AlfaModuleWriter {
     if (!e.isSynthetic && e.writeAsModuleDefinition && e.repositoryEntry.isEmpty) {
       entryNames += e.versionedName.fullyQualifiedName
       val path = e.versionedName.asUnixPath(".alfa")
-      logger.debug(s"Writing: ${e.name.udtType}")
+      logger.debug(s"Writing: ${e.name.udtType} ${e.name.fullyQualifiedName}")
       writeEntry(pathRoot, path, e.toString)
     } else
-      logger.debug(s"Skipped writing: ${e.name.udtType}")
+      logger.debug(s"Skipped writing: ${e.name.udtType} ${e.name.fullyQualifiedName}")
   }
 
   private def writeEntry(pathRoot: Path, filePath: String, contents: String): Unit = {

@@ -76,6 +76,7 @@
         <alfa.jgrapht.version>1.0.1</alfa.jgrapht.version>
         <alfa.commons.io.version>2.5</alfa.commons.io.version>
         <alfa.commons.lang.version>2.6</alfa.commons.lang.version>
+        <alfa.commons.text.version>1.13.0</alfa.commons.text.version>
         <alfa.google.jimfs.version>1.1</alfa.google.jimfs.version>
         <alfa.google.javaformat.version>1.6</alfa.google.javaformat.version>
         <alfa.jansi.version>1.18</alfa.jansi.version>

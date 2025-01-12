@@ -11,6 +11,7 @@ import java.nio.file.{Files, Path, Paths}
 class ChangeAnalysisExporter(param: AlfaExporterParams) extends AlfaExporter(param) {
 
   private val BaseDir = "baseDir"
+  private val ReportFileName = "reportFile"
   private val StartVersion = "startVersion"
   private val EndVersion = "endVersion"
 
@@ -18,6 +19,7 @@ class ChangeAnalysisExporter(param: AlfaExporterParams) extends AlfaExporter(par
     val startVersion = param.exportConfig.get(StartVersion).toString
     val baseDir = param.exportConfig.get(BaseDir).toString
     val endVersion = param.exportConfig.getOrDefault(EndVersion, GitInteractions.LOCAL_CHECKOUT).toString
+    val reportFileName = param.exportConfig.getOrDefault(ReportFileName, "report").toString
 
     if ( !Files.exists(Paths.get(baseDir))) {
       throw new RuntimeException(s"baseDir directory $baseDir does not exist")
@@ -33,16 +35,16 @@ class ChangeAnalysisExporter(param: AlfaExporterParams) extends AlfaExporter(par
 
     val endVer = if ( endVersion == GitInteractions.LOCAL_CHECKOUT) gi.getWorkingBranchName else endVersion
 
-    r.write("report", startVersion, endVer, analysis)
+    r.write(reportFileName, startVersion, endVer, analysis)
 
     val json = Alfa.jsonCodec().toFormattedJson(analysis)
-    VFS.write( outputDirectory.resolve("report.json"), json)
+    VFS.write( outputDirectory.resolve(reportFileName + ".json"), json)
 
     List.empty
   }
 
   override def supportedConfig(): Array[String] = {
-    Array(StartVersion, EndVersion, BaseDir)
+    Array(StartVersion, EndVersion, BaseDir, ReportFileName)
   }
 
   override def requiredConfig(): Array[String] = {
