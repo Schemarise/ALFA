@@ -20,7 +20,7 @@
 
     <groupId>com.schemarise.alfa</groupId>
     <artifactId>alfa-utils</artifactId>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.4.2</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
@@ -29,7 +29,7 @@
     <parent>
         <groupId>com.schemarise</groupId>
         <artifactId>alfa</artifactId>
-        <version>3.4.2-SNAPSHOT</version>
+        <version>3.4.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
