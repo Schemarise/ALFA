@@ -318,12 +318,17 @@ field
 methodSignature
 	: docAndAnnotations
 	  fname=idOnly typeParameters?
-       LEFT_BRACKET  functionParams?  RIGHT_BRACKET  ( COLON  returnType = fieldType )?
+      LEFT_BRACKET  functionParams?  RIGHT_BRACKET  ( COLON  returnType = fieldType )?
+      ( RAISES (idOrQidWithOptTmplArgRefs ( COMMA  idOrQidWithOptTmplArgRefs )* )? )?
       sameline_docstrings
     ;
 
 functionParams
-    : field ( COMMA  field )*
+    : functionParam ( COMMA  functionParam )*
+    ;
+
+functionParam
+    : ( IN | OUT | INOUT )? field
     ;
 
 fieldDecl

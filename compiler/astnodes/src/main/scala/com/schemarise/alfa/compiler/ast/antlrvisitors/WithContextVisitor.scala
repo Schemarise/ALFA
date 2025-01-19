@@ -273,7 +273,7 @@ abstract class WithContextVisitor[T](resolveCtx: Context) extends AlfaBaseVisito
 
     val v = new FieldOrFieldRefVisitor(resolveCtx, namespace)
     val fields = if (ctx.functionParams() == null) Seq.empty
-    else j2sNoParseExcpStream(ctx.functionParams().field()).map(v.visitField(_))
+    else j2sNoParseExcpStream(ctx.functionParams().functionParam()).map( fp => v.visitField(fp.field()))
 
 
     var ret = new DataTypeVisitor(resolveCtx, namespace)
