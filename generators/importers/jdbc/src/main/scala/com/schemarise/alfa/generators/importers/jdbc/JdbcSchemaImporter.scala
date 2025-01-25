@@ -20,51 +20,44 @@ import java.nio.file.Path
 import java.sql.{Connection, DriverManager}
 import com.schemarise.alfa.compiler.ast.model.IUdtBaseNode
 import com.schemarise.alfa.compiler.ast.nodes.{NamespaceNode, StringNode}
-import com.schemarise.alfa.compiler.utils.ILogger
-import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, GeneratorException}
+import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams}
 
 import scala.collection.mutable.ListBuffer
 
 class JdbcSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
 
-  private val reqdKeys = Seq("catalog", "schema", "namespace", "url", "user", "password")
+  private val Catalog = "catalog"
+  private val Schema = "schema"
+  private val Namespace = "namespace"
+  private val Url = "url"
+  private val User = "user"
+  private val Password = "password"
 
-  private var errored = false
-  reqdKeys.foreach(k => {
-    if (!param.importConfig.containsKey(k)) {
-      logger.error(s"Missing setting for setting '$k'")
-      errored = true
-    }
-  })
-
-  if (errored)
-    throw new GeneratorException("Missing settings. See log messages.")
-
-  val connection = connect()
+  private val connection = connect()
 
   private val tBuilder: TypeBuilder = loadModel()
 
-  writeAlfaFile(tBuilder.cua, outputDirectory, importConfigStr("namespace"))
+  writeAlfaFile(tBuilder.cua, outputDirectory, importConfigStr(Namespace))
 
 
   def loadModel(): TypeBuilder = {
 
     val md = connection.getMetaData
 
-    val tables = md.getTables(importConfigStr("catalog"), importConfigStr("schema"), null, Array("TABLE"))
+    val tables = md.getTables(importConfigStr(Catalog), importConfigStr(Schema), null, Array("TABLE"))
 
     val names = new ListBuffer[String]()
     while (tables.next()) {
       names += tables.getString("TABLE_NAME")
     }
 
-    val ns = NamespaceNode(nameNode = StringNode.create(importConfigStr("namespace")))
+    val ns = NamespaceNode(nameNode = StringNode.create(importConfigStr(Namespace)))
 
     new TypeBuilder(connection, ns, names)
   }
 
 
-  override def supportedConfig(): Array[String] = reqdKeys.toArray
+  override def supportedConfig(): Array[String] = requiredConfig()
 
   override def name: String = "JdbcImporter"
 
@@ -75,12 +68,12 @@ class JdbcSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) 
   override def importSchema(): List[Path] = List.empty
 
   def connect(): Connection = {
-    val url = importConfigStr("url")
-    val username = importConfigStr("user")
-    val password = importConfigStr("password")
+    val url = importConfigStr(Url)
+    val username = importConfigStr(User)
+    val password = importConfigStr(Password)
     val conn = DriverManager.getConnection(url, username, password)
     conn
   }
 
-  override def requiredConfig(): Array[String] = Array.empty
+  override def requiredConfig(): Array[String] = Array(Catalog, Schema, Namespace, Url, User, Password)
 }

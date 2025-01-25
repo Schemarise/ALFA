@@ -2,7 +2,10 @@ package com.schemarise.alfa.utils.cli
 
 import com.schemarise.alfa.compiler.utils.ILogger
 import com.schemarise.alfa.generators.common.{AlfaImporter, GeneratorException, SupportedGenerator}
+import com.schemarise.alfa.generators.importers.java.JavaClassImporter
+import com.schemarise.alfa.generators.importers.jdbc.JdbcSchemaImporter
 import com.schemarise.alfa.generators.importers.jsonschema.JsonSchemaImporter
+import com.schemarise.alfa.generators.importers.structureddata.StructuredDataSchemaImporter
 
 import java.nio.file.Path
 import scala.collection.JavaConverters.mapAsJavaMap
@@ -31,6 +34,9 @@ class Importers(logger : ILogger) extends GeneratorConfigBase(logger) {
   private def baseImporters = {
     val fixed = Map(
       "jsonschema" -> classOf[JsonSchemaImporter].getName,
+      "jdbc" -> classOf[JdbcSchemaImporter].getName,
+      "structureddata" -> classOf[StructuredDataSchemaImporter].getName,
+      "java" -> classOf[JavaClassImporter].getName,
     )
 
     val fromClasspath = loadClasspathGenerators("importer")
