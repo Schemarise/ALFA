@@ -17,8 +17,9 @@ package com.schemarise.alfa.compiler.ast.nodes
 
 import com.schemarise.alfa.compiler.ast.model.{IToken, NodeVisitor}
 import com.schemarise.alfa.compiler.ast.NodeMeta
+import com.schemarise.alfa.compiler.ast.model.types.FormalScopeType.FormalScope
 import com.schemarise.alfa.compiler.ast.model.types.Nodes
-import com.schemarise.alfa.compiler.ast.model.{IFormal, IToken, NodeVisitMode}
+import com.schemarise.alfa.compiler.ast.model.{IFormal, NodeVisitMode}
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.DataType
 import com.schemarise.alfa.compiler.utils.TokenImpl
 
@@ -26,7 +27,8 @@ class Formal(location: IToken = TokenImpl.empty,
              nodeMeta: NodeMeta = NodeMeta.empty,
              isConst: Boolean = false,
              name: StringNode,
-             declDataType: DataType
+             declDataType: DataType,
+             val scope : Option[FormalScope] = None
             ) extends Field(location, nodeMeta, isConst, name, declDataType) with IFormal {
   override def nodeType: Nodes.NodeType = Nodes.FormalNode
 
@@ -36,12 +38,15 @@ class Formal(location: IToken = TokenImpl.empty,
       v.exit(this)
     }
   }
-
-
 }
 
 object Formal {
-  def from(f: Field) = {
-    new Formal(f.location, f.rawNodeMeta, f.isConst, f.nameNode, f.dataType)
+  def from(f: Field, formalScope: Option[FormalScope] = None) = {
+    if ( f.isInstanceOf[Formal] ) {
+      f.asInstanceOf[Formal]
+    }
+    else {
+      new Formal(f.location, f.rawNodeMeta, f.isConst, f.nameNode, f.dataType, formalScope)
+    }
   }
 }

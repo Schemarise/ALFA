@@ -40,6 +40,11 @@ final class AlfaCli(compileFlag: Boolean = false,
       cliEarlyExit()
     }
 
+    if ( ( importers.isDefined || exporters.isDefined ) && ! outputDir.isDefined ) {
+      logger.error("outputDir required if importer or exporter specified")
+      cliEarlyExit()
+    }
+
     if (importers.isDefined)
       runImporters(importers.get, path.get, outputDir.get, settings)
     else {
@@ -209,7 +214,7 @@ object AlfaCli {
     parseAndRun(args)
   }
 
-  private def parseAndRun(args: Array[String]): Unit = {
+  def parseAndRun(args: Array[String]): Unit = {
     val opts = new ScallopConf(args) {
       banner(
         s"""

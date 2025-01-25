@@ -6,6 +6,9 @@ import com.schemarise.alfa.generators.importers.java.JavaClassImporter
 import com.schemarise.alfa.generators.importers.jdbc.JdbcSchemaImporter
 import com.schemarise.alfa.generators.importers.jsonschema.JsonSchemaImporter
 import com.schemarise.alfa.generators.importers.structureddata.StructuredDataSchemaImporter
+import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, GeneratorException, SupportedGenerator}
+import com.schemarise.alfa.generators.importers.jsonschema.JsonSchemaImporter
+import com.schemarise.alfa.generators.importers.idl.IDLImporter
 
 import java.nio.file.Path
 import scala.collection.JavaConverters.mapAsJavaMap
@@ -37,6 +40,7 @@ class Importers(logger : ILogger) extends GeneratorConfigBase(logger) {
       "jdbc" -> classOf[JdbcSchemaImporter].getName,
       "structureddata" -> classOf[StructuredDataSchemaImporter].getName,
       "java" -> classOf[JavaClassImporter].getName,
+      "idl" -> classOf[IDLImporter].getName,
     )
 
     val fromClasspath = loadClasspathGenerators("importer")
@@ -53,14 +57,12 @@ class Importers(logger : ILogger) extends GeneratorConfigBase(logger) {
     if (impClass.isEmpty)
       None
     else {
-      val ctor = Class.forName(impClass.get).getConstructor(
-        classOf[ILogger],
-        classOf[Path],
-        classOf[Path],
-        classOf[java.util.Map[String, String]])
+      val ctor = Class.forName(impClass.get).getConstructor(classOf[AlfaImporterParams])
 
       try {
-        val impInstance = ctor.newInstance(logger, i, o, mapAsJavaMap(cfg)).asInstanceOf[AlfaImporter]
+        val param = AlfaImporterParams(logger, i, o, mapAsJavaMap(cfg))
+        val impInstance = ctor.newInstance(param).asInstanceOf[AlfaImporter]
+
         Some(impInstance)
       } catch {
         case g: GeneratorException =>

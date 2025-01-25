@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>net.sourceforge.plantuml</groupId>
-            <artifactId>plantuml</artifactId>
+            <artifactId>plantuml-mit</artifactId>
             <version>${alfa.plantuml.version}</version>
         </dependency>
 

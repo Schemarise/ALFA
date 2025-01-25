@@ -19,12 +19,42 @@ import com.schemarise.alfa.compiler.Context
 import com.schemarise.alfa.compiler.antlr.AlfaParser
 import com.schemarise.alfa.compiler.ast.NodeMeta
 import com.schemarise.alfa.compiler.ast.model.IToken
-import com.schemarise.alfa.compiler.ast.model.types.Scalars
+import com.schemarise.alfa.compiler.ast.model.types.{FormalScopeType, Scalars}
 import com.schemarise.alfa.compiler.ast.nodes._
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.{DataType, ScalarDataType}
 import com.schemarise.alfa.compiler.err.ExpressionError
 
 class FieldOrFieldRefVisitor(resolveCtx: Context, namespace: NamespaceNode) extends WithContextVisitor[FieldOrFieldRef](resolveCtx) {
+
+  override def visitFunctionParam(ctx: AlfaParser.FunctionParamContext): FieldOrFieldRef = {
+    val scope = if (ctx.IN() != null ) {
+      Some( FormalScopeType.in )
+    }
+    else if (ctx.OUT() != null ) {
+      Some( FormalScopeType.out )
+    }
+    else if (ctx.INOUT() != null ) {
+      Some( FormalScopeType.inout )
+    }
+    else
+      None
+
+    val ffr = visitField( ctx.field() )
+
+    if ( scope.isDefined ) {
+      if ( ffr.field.isDefined ) {
+        new FieldOrFieldRef( Formal.from(ffr.field.get, scope) )
+      }
+      else {
+        resolveCtx.addResolutionError(ffr, ExpressionError, "Formal scope not supported when global field used")
+        ffr
+      }
+    } else {
+      ffr
+    }
+
+  }
+
   override def visitField(ctx: AlfaParser.FieldContext): FieldOrFieldRef = {
     val id = ctx.idOnly()
     if (id != null) {

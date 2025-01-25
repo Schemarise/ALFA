@@ -15,7 +15,7 @@
  */
 package com.schemarise.alfa.compiler
 
-import com.schemarise.alfa.compiler.ast.model.IAnnotation.{AnnotationGenSkip, Annotation_Deprecated, Annotation_IgnoreServiceWarnings}
+import com.schemarise.alfa.compiler.ast.model.IAnnotation.{AnnotationGenSkip, Annotation_Deprecated, Annotation_Exception, Annotation_IgnoreServiceWarnings}
 import com.schemarise.alfa.compiler.ast.model._
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.UdtDataType
 import com.schemarise.alfa.compiler.err.{InternalErrorMsg, MultipleProjectConfigurationsFound, ResolutionMessage}
@@ -83,6 +83,7 @@ final object AlfaCompiler {
        |annotation ${AnnotationGenSkip}( service, annotation ) { }
        |
        |annotation ${Annotation_IgnoreServiceWarnings}( service ) { }
+       |annotation ${Annotation_Exception}( record ) { }
        |
        |annotation ${IAnnotation.Annotation_Parse_SkipUnknownFields}( record, entity, trait, union, key, tuple ) { }
        |

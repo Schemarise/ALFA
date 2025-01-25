@@ -34,6 +34,7 @@ object IAnnotation {
   val Meta_DB_Table = "alfa.db.Table"
   val Meta_DB_Column = "alfa.db.Column"
   val Annotation_IgnoreServiceWarnings = "alfa.lang.IgnoreServiceWarnings"
+  val Annotation_Exception = "alfa.lang.Exception"
   val Annotation_Deprecated = "alfa.lang.Deprecated"
 }
 

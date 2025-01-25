@@ -68,6 +68,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-structured-data</artifactId>
+            <artifactId>alfa-gen-imp-idl</artifactId>
             <version>3.4.4-SNAPSHOT</version>
         </dependency>
 
