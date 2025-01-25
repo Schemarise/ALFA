@@ -3,9 +3,6 @@ name: Release deploy
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch used to build release'
-        required: true
       version:
         description: 'Release version (unused for now)'
         required: true
@@ -17,10 +14,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: 0      
 
       - name: Setup JDK
         uses: actions/setup-java@v4
@@ -41,3 +37,4 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          
