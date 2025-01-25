@@ -30,4 +30,6 @@ trait IMethodSignature extends IDocAndAnnotated {
   def formals: ListMap[String, IFormal]
 
   def returnType: IDataType
+
+  val exceptionTypes : Seq[IDataType]
 }

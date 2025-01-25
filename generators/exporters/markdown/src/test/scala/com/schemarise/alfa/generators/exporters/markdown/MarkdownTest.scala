@@ -281,6 +281,9 @@ class MarkdownTest extends AnyFunSuite {
         |    flights : table< AllConfirmedFlights >
         |}
         |
+        |@alfa.lang.Exception
+        |record CreateError {}
+        |
         |@alfa.lang.IgnoreServiceWarnings
         |service DataManager {
         |    getPassenger( k : PassengerId ) : Passenger
@@ -302,7 +305,7 @@ class MarkdownTest extends AnyFunSuite {
         |    getAllFlights() : list< Flight >
         |    getAllConfirmedFlightSummaries() : list< ConfirmedFlightSummary >
         |    getAllConfirmedFlights() : AllConfirmedFlights
-        |    createOrUpdateFlight( f : Flight ) : void
+        |    createOrUpdateFlight( in f : Flight ) : void raises ( CreateError )
         |}
 
       """.stripMargin)

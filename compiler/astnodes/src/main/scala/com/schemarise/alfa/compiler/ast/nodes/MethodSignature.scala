@@ -36,6 +36,7 @@ class MethodSignature(token: IToken = TokenImpl.empty,
                       typeArgumentsNode: Option[Map[String, DataType]] = None,
                       rawFormals: Seq[FieldOrFieldRef],
                       val result: DataType,
+                      val exceptionTypes : Seq[DataType] = Seq.empty,
                       imports: Seq[ImportDef] = Seq.empty)
   extends UdtBaseNode(
     None, token, namespace, nodeMeta, Seq.empty, nameNode, None, typeParamsNode, typeArgumentsNode,
@@ -46,7 +47,7 @@ class MethodSignature(token: IToken = TokenImpl.empty,
   private var formals_ : ListMap[String, Formal] = ListMap.empty
 
   override def resolvableInnerNodes() = {
-    super.resolvableInnerNodes() ++ Seq(result) ++ formals_.values.toSeq
+    super.resolvableInnerNodes() ++ Seq(result) ++ formals_.values.toSeq ++ exceptionTypes
   }
 
   def returnType = result.unwrapTypedef
@@ -124,6 +125,34 @@ class MethodSignature(token: IToken = TokenImpl.empty,
 
     if (ann.size > 1)
       ctx.addResolutionError(this, ExpressionError, s"Only 1 annotation out of ${ann.mkString(", ")} can be specified")
+  }
+
+  override def resolve(ctx: Context): Unit = {
+    if ( !hasErrors ) {
+      exceptionTypes.filter( !_.hasErrors ).foreach( b => {
+
+        val t = b.unwrapTypedef
+
+        if ( ! t.isUdtRecord ) {
+          ctx.addResolutionError(t, ExpressionError, "Exceptions need to be a record type")
+        }
+        else {
+          t.whenUDT( u => {
+            val r = u.udt.asInstanceOf[Record]
+
+            val excpAnnotations = r.annotations.
+              filter( !_.hasErrors ).
+              filter( a => a.versionedName.fullyQualifiedName == IAnnotation.Annotation_Exception )
+
+            if ( excpAnnotations.isEmpty ) {
+              ctx.addResolutionError(t, ExpressionError, s"Exceptions record type ${r.name.name} needs @alfa.lang.Exception annotation")
+            }
+          })
+        }
+      })
+    }
+
+    super.resolve(ctx)
   }
 
   override def toString: String = {

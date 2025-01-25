@@ -1,0 +1,105 @@
+// Example IDL Module
+module UniversityB
+{
+    typedef unsigned long CourseNumber;
+    typedef sequence<CourseNumber> CourseNumberList;
+
+    // Definition of a Course
+    struct CourseSynopsis
+    {
+        // Course Id
+        CourseNumber course_number;
+        // Full name of the course
+        string title;
+    };
+
+    typedef sequence<CourseSynopsis> CourseSynopsisList;
+
+    // Interface to access Courses
+    interface CourseSynopsisEnumerator
+    {
+        const Days SAT = "SAT";
+        const Days SUN = "SUN";
+
+        // Get the next n courses
+        CourseSynopsisList get_next_n( in unsigned long number_to_get, out unsigned long number_remaining );
+
+        // Self destruct
+        void destroy();
+    };
+
+    typedef unsigned short Days;
+
+    const Days MONDAY = 1;
+    const Days TUESDAY = 2;
+    const Days WEDNESDAY = 4;
+    const Days THURSDAY = 8;
+    const Days FRIDAY = 16;
+
+    // Definition of a Schedule for a Class
+    struct ClassSchedule
+    {
+        Days class_days; // bitmask of days
+        unsigned short start_hour; // whole hours in military time
+        unsigned short duration; // minutes
+    };
+
+    // Day of week enumeration
+    enum DayOfWeek {
+        S, M, T, W, Th, F, Sa
+    };
+
+    // Detailed information on a Course
+    struct CourseDetails
+    {
+        // Course Id
+        CourseNumber course_number;
+
+        // Annual cost of the course
+        double cost;
+
+        // Credits that can be gained from the course
+        unsigned short number_of_credits;
+
+        // Schedule for the course
+        ClassSchedule class_schedule;
+
+        // Places available for the course
+        unsigned short number_of_seats;
+
+        // Course Full Title
+        string title;
+
+        // Taught by professor
+        string professor;
+
+        // Long description of course
+        string description;
+    };
+
+    typedef sequence<CourseDetails> CourseDetailsList;
+
+    // Course registration interface
+    interface Registrar
+    {
+        // Get course synopsis
+        CourseSynopsisList get_courses_synopsis( in string search_criteria,
+                                                 in unsigned long number_to_get,
+                                                 out unsigned long number_remaining,
+                                                 out CourseSynopsisEnumerator rest );
+
+        CourseDetailsList get_courses_details(in CourseNumberList courses);
+    };
+
+    // Error reported if registrar not found
+    exception RegistrarFindError {
+        string reason;
+    };
+
+    // Registrar creation interface
+    interface RegistrarFactory
+    {
+        // Get the registrar
+        Registrar find_registrar() raises ( RegistrarFindError );
+    };
+};

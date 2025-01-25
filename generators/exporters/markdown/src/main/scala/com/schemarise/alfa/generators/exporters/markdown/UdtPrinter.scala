@@ -1,7 +1,6 @@
 package com.schemarise.alfa.generators.exporters.markdown
 
 import java.nio.file.Path
-
 import schemarise.alfa.runtime.model._
 import com.schemarise.alfa.compiler.ast.model.ICompilationUnitArtifact
 import com.schemarise.alfa.compiler.utils.ILogger
@@ -9,6 +8,7 @@ import com.schemarise.alfa.generators.common.{CompilerToRuntimeTypes, TextWriter
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
 
+import java.util
 import scala.collection.JavaConverters._
 import scala.collection.immutable.ListMap
 
@@ -277,6 +277,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
           |      <th>Name</th>
           |      <th>Arguments</th>
           |      <th>Return type</th>
+          |      <th>Exceptions</th>
           |      <th>Description</th>
           |    </tr>
           |  </thead>
@@ -306,9 +307,12 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
           """.stripMargin
 
         val fmls = m.formals.values.map(f => {
+
+          val scope = if ( f.scope.isEmpty ) "" else " : " + f.scope.get
+
           s"""
              |              <tr>
-             |                <td>${f.name}</td>
+             |                <td>${f.name}${scope}</td>
              |                <td>${f.dataType}</td>
              |                <td>${f.docs.mkString("\n")}</td>
              |              </tr>""".stripMargin
@@ -320,6 +324,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
              |        <td>
              |$fmls</td>
              |        <td>${m.returnType}</td>
+             |        <td>${m.exceptionTypes.mkString(", ")}</td>
              |        <td>$doc</td>
              |    </tr>""".stripMargin)
       })
@@ -398,6 +403,9 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
         writeln(s"\n**Includes:**$SPACE" + incs)
       }
 
+      if ( uBase.getAnnotations.isPresent )
+        writeAnnotations( uBase.getAnnotations.get() )
+
       uBase match {
         case udt: UdtBaseNode =>
           printUdt(udt)
@@ -411,6 +419,14 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
       }
 
       exitFile()
+    })
+  }
+
+  private def writeAnnotations(ann: util.Map[String, util.Map[String, IExpression]]) = {
+    writeln(s"\n**Annotations:**")
+
+    ann.asScala.foreach( e => {
+      writeln( "  - @" + e._1 )
     })
   }
 

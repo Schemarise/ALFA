@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.schemarise.alfa.generators.exporters.java
+package com.schemarise.alfa.generators.importers.java
 
 import java.lang.annotation.{ElementType, Target}
 import java.lang.reflect.{Modifier, ParameterizedType}

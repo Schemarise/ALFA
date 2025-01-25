@@ -18,8 +18,32 @@ package com.schemarise.alfa.generators.importers.java
 
 
 import com.schemarise.alfa.compiler.utils._
+import com.schemarise.alfa.generators.common.AlfaImporterParams
 import org.scalatest.funsuite.AnyFunSuite
 
+import java.io.File
+import java.nio.file.Paths
+import java.util
+
 class JavaClassImporterTest extends AnyFunSuite with AlfaTestPaths {
+//   com.opengamma.strata.product.Product
+  val targetDir = new File(getClass.getResource("/").getPath + "../").getCanonicalPath + "/"
+  val testDir = new File(targetDir, "../src/test/resources/").getCanonicalPath + "/"
+  val testSources = new File(targetDir, "generated-test-sources/alfa").getCanonicalPath + "/"
+
+
+  test("import opengamma") {
+    val m = new util.HashMap[String, Object]()
+
+    m.put(JavaClassImporter.ImportPackageFilter, "com.opengamma.strata")
+    m.put(JavaClassImporter.ImportClassBaseType, "org.joda.beans.ImmutableBean")
+
+    val sd = new JavaClassImporter(  new
+        AlfaImporterParams( new StdoutLogger(false), Paths.get(testSources), Paths.get(testSources), m) )
+
+    sd.importSchema()
+  }
+
+
 
 }

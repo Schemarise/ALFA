@@ -130,13 +130,6 @@ case class ScalarDataType(location: IToken = TokenImpl.empty,
 
   def validateScalar(ctx: Context): Unit = {
 
-    val container = locateFieldParent(false)
-
-    if ( container.isDefined && container.get._2.nodeType == Nodes.FormalNode &&
-      ( this.precisionAndScaleArgs.size > 0 || this.formatArg.isDefined || this.sizeRange.isDefined ) ) {
-      ctx.addResolutionError(this.location, InvalidScalarArgs, "Scalar constraints can only be specified on fields")
-    }
-
     if ( sizeRange.isDefined ) {
       // this will parse and validate the figures
       sizeRange.get.min

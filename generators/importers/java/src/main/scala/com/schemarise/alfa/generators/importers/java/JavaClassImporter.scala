@@ -14,72 +14,77 @@
  * limitations under the License.
  */
 
-package com.schemarise.alfa.generators.exporters.java
+package com.schemarise.alfa.generators.importers.java
 
-import java.io.File
-import java.net.{URL, URLClassLoader}
 import java.nio.file.{Files, Path}
 import com.schemarise.alfa.compiler.ast.model.IUdtBaseNode
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.UdtDataType
 import com.schemarise.alfa.compiler.ast.nodes.{CompilationUnit, NamespaceNode, StringNode}
-import com.schemarise.alfa.compiler.utils.ILogger
 import com.schemarise.alfa.compiler.{CompilationUnitArtifact, Context}
 import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, GeneratorException}
-import org.apache.commons.io.FileUtils
+import org.reflections.Reflections
+import org.reflections.scanners.Scanners
+import org.reflections.util.{ClasspathHelper, ConfigurationBuilder}
 
+import java.net.URLClassLoader
 import scala.collection.JavaConverters._
 
+object JavaClassImporter {
+  val ImportPackageFilter = "importPackageFilter"
+  val ImportClassBaseType = "importClassBaseType"
+}
 class JavaClassImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
 
-  private var errored = false
-  val ctx = new Context()
-
-  if (errored)
-    throw new GeneratorException("Missing settings. See log messages.")
-
-  processInputClasses()
-
+  private val ctx = new Context()
   override def writeTopComment() = false
 
-  private def processInputClasses() = {
+  private def processInputClasses(): Unit = {
+
+    val pkgs = param.importConfig.get(JavaClassImporter.ImportPackageFilter).toString.split(",")
+    val urls = pkgs.map( s => ClasspathHelper.forPackage(s).asScala.head )
+
+    val reflections = new Reflections(new ConfigurationBuilder().setUrls(urls:_*))
+
+    val baseClassName = param.importConfig.get(JavaClassImporter.ImportClassBaseType)
+    val baseClass = if ( baseClassName != null ) Some( Class.forName(baseClassName.toString) ) else None
+
+    param.importConfig.get()
+    val targetClasses = reflections.getAll(Scanners.SubTypes).asScala
+      .map( n => Class.forName(n))
+      .filter(e => !e.isInterface && !java.lang.reflect.Modifier.isAbstract(e.getModifiers))
+      .filter( e => baseClass.isEmpty || baseClass.get.isAssignableFrom(e) )
+
+
+
+//      .filter(e => !e.getTypeName.endsWith("Function"))
 
     val classLoader = new URLClassLoader(
       Array(param.rootPath.toUri.toURL),
       this.getClass().getClassLoader()
     )
+//
+//    val rootCanonical = param.rootPath.toFile.getCanonicalPath
 
-    val rootCanonical = param.rootPath.toFile.getCanonicalPath
-
-    val classFiles = FileUtils.listFiles(param.rootPath.toFile, Array("class"), true)
-
-    val classNames = classFiles.asScala.map(m => {
-      val subPath = m.getCanonicalPath.substring(rootCanonical.length + 1)
-      subPath.replace(File.separator, ".").dropRight(".class".length)
-    }).toSeq.filter(e => {
-      val f = importConfigStr("filter")
-
-      if (f != null && f.trim.length > 0) {
-        val nspaces = f.split(",")
-        nspaces.filter(ns => e.startsWith(ns)).length > 0
-      }
-      else
-        true
-    })
-
-
-    val tBuilder = new AlfaTypeBuilder(logger, ctx, classLoader, classNames)
+//    val classFiles = FileUtils.listFiles(param.rootPath.toFile, Array("class"), true)
+//
+//    val classNames = classFiles.asScala.map(m => {
+//      val subPath = m.getCanonicalPath.substring(rootCanonical.length + 1)
+//      subPath.replace(File.separator, ".").dropRight(".class".length)
+//    }).toSeq.filter(e => {
+//      val f = importConfigStr(ImportPackageFilter)
+//
+//      if (f != null && f.trim.nonEmpty) {
+//        val nspaces = f.split(",")
+//        nspaces.exists(ns => e.startsWith(ns))
+//      }
+//      else
+//        true
+//    })
+//
+    val tBuilder = new AlfaTypeBuilder(logger, ctx, classLoader, targetClasses.map( _.getName).toList )
     tBuilder.genAlfaModel()
 
     writeAlfaFiles()
-  }
-
-  private def alfaNamespace = {
-    var ns = importConfigStr("namespace")
-
-    if (ns == null)
-      ns = "defaultnamespace"
-
-    ns
   }
 
   def writeAlfaFiles() = {
@@ -89,7 +94,7 @@ class JavaClassImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
     val udts = types.map(t => ctx.registry.getUdt(None, UdtDataType.fromName(t), false).get).toList
 
 
-    val nn = new NamespaceNode(collectedUdts = udts, nameNode = StringNode.create(alfaNamespace))
+    val nn = new NamespaceNode(collectedUdts = udts)
     val cu = new CompilationUnit(ctx = ctx, namespaces = Seq(nn))
     val cua = new CompilationUnitArtifact(ctx, cu)
 
@@ -107,9 +112,9 @@ class JavaClassImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
     })
   }
 
-  override def supportedConfig(): Array[String] = Array("namespace")
+  override def supportedConfig(): Array[String] = Array(JavaClassImporter.ImportPackageFilter, JavaClassImporter.ImportClassBaseType)
 
-  override def requiredConfig(): Array[String] = Array("namespace")
+  override def requiredConfig(): Array[String] = Array(JavaClassImporter.ImportPackageFilter)
 
   override def name: String = "java"
 
@@ -117,6 +122,10 @@ class JavaClassImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
 
   override def getDefinition(name: String): Option[IUdtBaseNode] = None
 
-  override def importSchema(): List[Path] = List.empty
+  override def importSchema(): List[Path] = {
+    processInputClasses()
+
+    List.empty
+  }
 
 }
