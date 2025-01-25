@@ -15,6 +15,8 @@
  */
 package com.schemarise.alfa.compiler.ast.model
 
-trait IFormal extends IField {
+import com.schemarise.alfa.compiler.ast.model.types.FormalScopeType.FormalScope
 
+trait IFormal extends IField {
+  val scope : Option[FormalScope]
 }

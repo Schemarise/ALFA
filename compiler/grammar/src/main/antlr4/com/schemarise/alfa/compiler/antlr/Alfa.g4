@@ -23,9 +23,9 @@ compilationUnit
 	( LANGUAGE_VERSION  alfaVersion=INT )?
 	( MODEL_ID  modelVersion=STRING )?
 
-	( include | localize | exprconst )*
+	( include | localize )*
 
-	( fields | typeDefs | extensionDecl )*
+	( fields | typeDefs | exprconst | extensionDecl )*
 
     udt*
 
@@ -318,9 +318,12 @@ field
 methodSignature
 	: docAndAnnotations
 	  fname=idOnly typeParameters?
-      LEFT_BRACKET  functionParams?  RIGHT_BRACKET  ( COLON  returnType = fieldType )?
-      ( RAISES (idOrQidWithOptTmplArgRefs ( COMMA  idOrQidWithOptTmplArgRefs )* )? )?
+      LEFT_BRACKET  functionParams?  RIGHT_BRACKET  ( COLON  returnType = fieldType )? methodExceptions?
       sameline_docstrings
+    ;
+
+methodExceptions
+    : RAISES LEFT_BRACKET idOrQidWithOptTmplArgRefs ( COMMA  idOrQidWithOptTmplArgRefs )* RIGHT_BRACKET
     ;
 
 functionParams

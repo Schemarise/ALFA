@@ -88,7 +88,7 @@
         <alfa.javax.annotation.api>1.3.2</alfa.javax.annotation.api>
         <alfa.h2db.version>2.2.222</alfa.h2db.version>
         <alfa.commonmark.version>0.16.1</alfa.commonmark.version>
-        <alfa.plantuml.version>1.2024.1</alfa.plantuml.version>
+        <alfa.plantuml.version>1.2025.0</alfa.plantuml.version>
     </properties>
 
     <build>

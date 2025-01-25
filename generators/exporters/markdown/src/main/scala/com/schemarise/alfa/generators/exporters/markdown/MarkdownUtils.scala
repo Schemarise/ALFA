@@ -248,7 +248,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       val extendz = e.extendsDef.map(e => e).
         filter(i => matchingNamespace(e, i.asInstanceOf[com.schemarise.alfa.compiler.ast.nodes.datatypes.UdtDataType])).
         map(i => {
-          nameOnly(i.fullyQualifiedName) + " <|-- " + nameOnly(e.name.fullyQualifiedName)
+          nameOnly(i.fullyQualifiedName) + " <|-[#grey]- " + nameOnly(e.name.fullyQualifiedName)
         })
 
       val entToKeys = cua.graph.outgoingEdgeNodes(e, IsEntityKeyEdgePredicate).
@@ -276,9 +276,9 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
           // if synth key link to entity
           if (ku.isKey && !ku.writeAsModuleDefinition && ku.asInstanceOf[com.schemarise.alfa.compiler.ast.nodes.Key].entityName.isDefined) {
             val k = ku.asInstanceOf[com.schemarise.alfa.compiler.ast.nodes.Key]
-            nameOnly(e.name.fullyQualifiedName) + " -- " + nameOnly(k.entityName.get)
+            nameOnly(e.name.fullyQualifiedName) + " -[#grey]- " + nameOnly(k.entityName.get)
           } else {
-            nameOnly(e.name.fullyQualifiedName) + " -- " + nameOnly(ku.name.fullyQualifiedName)
+            nameOnly(e.name.fullyQualifiedName) + " -[#grey]- " + nameOnly(ku.name.fullyQualifiedName)
           }
         })
 
@@ -293,7 +293,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
         val multi = if (l.isList) "{" else ">"
         val linkStyle = if (l.isOptional) "line.dashed;" else "line.dotted;"
 
-        nameOnly(e.name.fullyQualifiedName) + " --" + multi + " " + nameOnly(tgtFqn) + s" #gray;${linkStyle}text:gray : \uD83D\uDD17 //" + l.name + "//"
+        nameOnly(e.name.fullyQualifiedName) + " -[#grey]-" + multi + " " + nameOnly(tgtFqn) + s" #gray;${linkStyle}text:gray : \uD83D\uDD17 //" + l.name + "//"
       })
 
 
@@ -330,7 +330,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       filter(e => udt.extendsDef.get.fullyQualifiedName == e.asInstanceOf[UdtBaseNode].name.fullyQualifiedName).
       map(i => {
         related += i.asInstanceOf[UdtBaseNode]
-        nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " <|-- " + nameOnly(udt.name.fullyQualifiedName)
+        nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " <|-[#grey]- " + nameOnly(udt.name.fullyQualifiedName)
       })
 
     val included = cua.graph.incomingEdgeNodes(udt, IsIncludesOnlyPredicate).
@@ -344,7 +344,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       filter(e => e.asInstanceOf[UdtBaseNode].extendsDef.get.fullyQualifiedName == udt.name.fullyQualifiedName).
       map(i => {
         related += i.asInstanceOf[UdtBaseNode]
-        nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " --|> " + nameOnly(udt.name.fullyQualifiedName)
+        nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " -[#grey]-|> " + nameOnly(udt.name.fullyQualifiedName)
       })
 
     val entToKeys = cua.graph.outgoingEdgeNodes(udt, IsEntityKeyEdgePredicate).map(i => {
@@ -373,7 +373,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
           e => !(entityToKey.isDefined && e.getFullyQualifiedName == entityToKey.get)). // key relations are shown separately
         map(i => {
           related += cua.getUdt(i.getFullyQualifiedName).get
-          nameOnly(i.getFullyQualifiedName) + " --> " + nameOnly(udt.name.fullyQualifiedName)
+          nameOnly(i.getFullyQualifiedName) + " -[#grey]-> " + nameOnly(udt.name.fullyQualifiedName)
         })
     else
       List.empty

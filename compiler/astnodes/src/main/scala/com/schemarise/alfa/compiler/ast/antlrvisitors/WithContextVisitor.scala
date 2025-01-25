@@ -273,13 +273,21 @@ abstract class WithContextVisitor[T](resolveCtx: Context) extends AlfaBaseVisito
 
     val v = new FieldOrFieldRefVisitor(resolveCtx, namespace)
     val fields = if (ctx.functionParams() == null) Seq.empty
-    else j2sNoParseExcpStream(ctx.functionParams().functionParam()).map( fp => v.visitField(fp.field()))
-
+    else j2sNoParseExcpStream(ctx.functionParams().functionParam()).map( fp => v.visitFunctionParam(fp))
 
     var ret = new DataTypeVisitor(resolveCtx, namespace)
     var retType = ret.visitFieldType(ctx.returnType)
 
-    new MethodSignature(token, meta, namespace, name, typeParams, None, fields, retType, imports)
+    val excps =
+      if ( ctx.methodExceptions() != null ) {
+        val dv = new DataTypeVisitor(resolveCtx, namespace)
+        val excps = j2sNoParseExcpStream( ctx.methodExceptions().idOrQidWithOptTmplArgRefs()).map( ex => dv.visitUdtOrTypedefed(ex))
+        excps
+      } else {
+        Seq.empty
+      }
+
+    new MethodSignature(token, meta, namespace, name, typeParams, None, fields, retType, excps, imports)
   }
 
   def readToken(ctx: ParserRuleContext): IToken = new TokenImpl(ctx.start, ctx.stop)

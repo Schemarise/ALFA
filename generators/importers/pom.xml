@@ -39,6 +39,7 @@
         <module>java</module>
         <module>jdbc</module>
         <module>structured-data</module>
+        <module>idl</module>
     </modules>
 </project>
 

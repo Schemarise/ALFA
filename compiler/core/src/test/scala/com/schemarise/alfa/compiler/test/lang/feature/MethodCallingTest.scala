@@ -15,6 +15,8 @@
  */
 package com.schemarise.alfa.compiler.test.lang.feature
 
+import com.schemarise.alfa.compiler.ast.model.types.FormalScopeType
+import com.schemarise.alfa.compiler.ast.nodes.{MethodSignature, Service}
 import com.schemarise.alfa.compiler.utils.TestCompiler
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -105,35 +107,6 @@ class MethodCallingTest extends AnyFunSuite {
     println(cua.getUdt("NestedMethods.C").get)
   }
 
-  //  test("FlatMap") {
-  //    val cua = TestCompiler.compileValidScript(
-  //      s"""
-  //          |namespace NestedMethods
-  //          |
-  //          |record A {
-  //          |   F3 : int?
-  //          |}
-  //          |
-  //          |record B {
-  //          |   F2 : try< A >
-  //          |}
-  //          |
-  //          |record C {
-  //          |   F1 : B ?
-  //          |
-  //          |   assert isValid {
-  //          |       let a = flatMap( F1.F2.F3 )
-  //          |       let b = get( a ) + 10
-  //          |
-  //          |       return none
-  //          |   }
-  //          |}
-  //         """.stripMargin)
-  //
-  //    println(cua.getUdt("NestedMethods.C").get)
-  //  }
-
-
   test("void method result") {
     val cua = TestCompiler.compileValidScript(
       """
@@ -153,6 +126,76 @@ class MethodCallingTest extends AnyFunSuite {
         |
         |    bar( a : int, b : int ) : void {
         |    }
+        |}
+        |
+      """)
+  }
+
+  test("method raises and formal scopes") {
+    val cua = TestCompiler.compileValidScript(
+      """
+        |namespace Example
+        |
+        |entity Bar {
+        |  Name : string
+        |}
+        |
+        |@alfa.lang.Exception
+        |record Excp1 {
+        |}
+        |
+        |@alfa.lang.Exception
+        |record Excp2 {
+        |}
+        |
+        |service Svc {
+        |  foo( in a : int, out b : list< int >, inout c : list< int >) : void raises ( Excp1 )
+        |  bar(in a : int) : int raises ( Excp1, Excp2 )
+        |}
+        |
+      """)
+
+    val svc = cua.getUdt("Example.Svc").get.asInstanceOf[Service]
+    val bar = svc.getMethodSignatures().get("bar").get
+
+    assert( bar.exceptionTypes.mkString(",") == "Example.Excp1,Example.Excp2")
+
+    val formal = bar.formals.get("a").get
+    assert( formal.scope.get == FormalScopeType.in )
+  }
+
+  test("method raises error handling") {
+    val cua = TestCompiler.compileInvalidScript(
+      "@12:23 Failed in expression. Exceptions record type Excp1 needs @alfa.lang.Exception annotation",
+      """
+        |namespace Example
+        |
+        |entity Bar {
+        |  Name : string
+        |}
+        |
+        |record Excp1 {
+        |}
+        |
+        |service Svc {
+        |  bar() : int raises ( Excp1 )
+        |}
+        |
+      """)
+  }
+
+
+  test("method exception type error handling") {
+    val cua = TestCompiler.compileInvalidScript(
+      "@8:23 Failed in expression. Exceptions record type Excp1 needs @alfa.lang.Exception annotation",
+      """
+        |namespace Example
+        |
+        |record Excp1 {
+        |}
+        |
+        |service Svc {
+        |  bar() : int raises ( Excp1 )
         |}
         |
       """)

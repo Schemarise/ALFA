@@ -130,8 +130,6 @@ case class ScalarDataType(location: IToken = TokenImpl.empty,
 
   def validateScalar(ctx: Context): Unit = {
 
-    val container = locateFieldParent(false)
-
     if ( sizeRange.isDefined ) {
       // this will parse and validate the figures
       sizeRange.get.min

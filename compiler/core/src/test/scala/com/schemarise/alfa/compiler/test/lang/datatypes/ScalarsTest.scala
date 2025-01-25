@@ -280,7 +280,7 @@ class ScalarsTest extends AnyFunSuite {
       """.stripMargin)
   }
 
-  test("Type presedence test") {
+  test("Type precedence test") {
 
     TestCompiler.compileValidScript(
       """

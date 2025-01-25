@@ -1,0 +1,95 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <licenses>
+        <license>
+            <name>Alfa software License 1.0</name>
+            <url>https://alfa-lang.io/LICENSE.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Schemarise Limited</name>
+        <url>https://schemarise.com</url>
+    </organization>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <description>OMG IDL Importer for ALFA</description>
+
+    <groupId>com.schemarise.alfa.generators.importers</groupId>
+    <artifactId>alfa-gen-imp-idl</artifactId>
+    <version>3.4.4-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <parent>
+        <groupId>com.schemarise.alfa.generators</groupId>
+        <artifactId>alfa-gen-imp</artifactId>
+        <version>3.4.4-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.schemarise.alfa.generators</groupId>
+            <artifactId>alfa-gen-common</artifactId>
+            <version>3.4.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.schemarise.alfa.generators</groupId>
+            <artifactId>alfa-gen-common</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <version>3.4.4-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${alfa.antlr.version}</version>
+                <executions>
+                    <execution>
+                        <id>proc-antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <visitor>true</visitor>
+                            <libDirectory>src/main/antlr/com/schemarise/alfa/generators/importers/idl</libDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-java-gen-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
+
