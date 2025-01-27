@@ -284,8 +284,11 @@ class IDLReader(logger: ILogger, outputDir: Path) extends TextWriter(logger) {
 
     if (doc.isBlank)
       ""
-    else
+    else if ( doc.contains("\n") ) {
       s"/# $doc #/\n"
+    } else {
+      s"# $doc\n"
+    }
   }
 
   private def currentInterfacePrefixed(): String = {

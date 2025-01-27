@@ -73,32 +73,32 @@ class IDLImporterTest extends AlfaFunSuite {
         |namespace MM
         |
         |
-        |/# foo bar2 #/
+        |# foo bar2
         |record Data {
-        |    /# field A #/
+        |    # field A
         |    data : MM.A
         |}
         |
-        |/# foo bar3 #/
+        |# foo bar3
         |record A {
-        |    /# field a #/
+        |    # field a
         |    a : int
         |}
         |
         |@alfa.lang.IgnoreServiceWarnings
-        |/# Some interface #/
+        |# Some interface
         |service BasicTester
         |{
-        |    /# gest #/
+        |    # gest 
         |    ping(  ) : void
         |}
         |
         |/# My enum
         |   doc  #/
         |enum E {
-        |   /# const a #/
+        |   # const a 
         |   A,
-        |   /# const b #/
+        |   # const b 
         |   B,
         |   C
         |}
