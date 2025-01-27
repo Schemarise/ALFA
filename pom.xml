@@ -64,7 +64,8 @@
         <maven.compiler.release>11</maven.compiler.release>
 
         <scala.version>2.12.17</scala.version>
-        <alfa.java.version>${maven.compiler.release}</alfa.java.version>
+        <alfa.java.src.version>17</alfa.java.src.version>
+        <alfa.java.tgt.version>${maven.compiler.release}</alfa.java.tgt.version>
         <alfa.scala.compat.version>2.12</alfa.scala.compat.version>
         <alfa.scalatest.version>3.2.18</alfa.scalatest.version>
         <alfa.scala-maven-plugin.version>4.7.1</alfa.scala-maven-plugin.version>
@@ -105,8 +106,8 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
-                            <source>${alfa.java.version}</source>
-                            <target>${alfa.java.version}</target>
+                            <source>${alfa.java.src.version}</source>
+                            <target>${alfa.java.tgt.version}</target>
                         </configuration>
                     </execution>
 <!--                    <execution>-->
@@ -153,8 +154,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${alfa.maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${alfa.java.version}</source>
-                    <target>${alfa.java.version}</target>
+                    <source>${alfa.java.src.version}</source>
+                    <target>${alfa.java.tgt.version}</target>
                     <debug>false</debug>
                     <debuglevel>none</debuglevel>
                 </configuration>
