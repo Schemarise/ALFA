@@ -21,7 +21,7 @@
 
     <groupId>com.schemarise.alfa.utils</groupId>
     <artifactId>alfa-utils-cli</artifactId>
-    <version>3.4.5-SNAPSHOT</version>
+    <version>3.4.5</version>
     <name>${project.artifactId}</name>
 
     <description>Alfa Command Line Utility</description>
@@ -29,7 +29,7 @@
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-utils</artifactId>
-        <version>3.4.5-SNAPSHOT</version>
+        <version>3.4.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -38,55 +38,55 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators.exporters</groupId>
             <artifactId>alfa-gen-exp-java</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.exporters</groupId>
             <artifactId>alfa-gen-exp-analyzer</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-jsonschema</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-jdbc</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-java</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-structured-data</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-idl</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.generators.exporters</groupId>
             <artifactId>alfa-gen-exp-markdown</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.schemarise.alfa.utils</groupId>
             <artifactId>alfa-utils-testing</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
             <scope>test</scope>
         </dependency>
 

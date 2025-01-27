@@ -22,7 +22,7 @@
 
     <groupId>com.schemarise.alfa.generators.importers</groupId>
     <artifactId>alfa-gen-imp-java</artifactId>
-    <version>3.4.5-SNAPSHOT</version>
+    <version>3.4.5</version>
     <name>${project.artifactId}</name>
 
     <description>Java Importer for ALFA</description>
@@ -30,7 +30,7 @@
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
         <artifactId>alfa-gen-imp</artifactId>
-        <version>3.4.5-SNAPSHOT</version>
+        <version>3.4.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators</groupId>
             <artifactId>alfa-gen-common</artifactId>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
@@ -52,7 +52,7 @@
             <artifactId>alfa-gen-common</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-            <version>3.4.5-SNAPSHOT</version>
+            <version>3.4.5</version>
         </dependency>
 
         <dependency>
