@@ -37,7 +37,7 @@ abstract class AlfaImporter(param: AlfaImporterParams) extends TextWriter(param.
       d
     }
     else {
-      Paths.get(uri.getPath)
+      Paths.get(uri)
     }
   }
 

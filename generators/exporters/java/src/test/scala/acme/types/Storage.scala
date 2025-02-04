@@ -1,8 +1,8 @@
 package acme.types
 
-import com.schemarise.alfa.runtime.{NativeAlfaObject, TypeDescriptor}
+import com.schemarise.alfa.runtime.{ExternalAlfaObject, TypeDescriptor}
 
-class Storage extends NativeAlfaObject {
+class Storage extends ExternalAlfaObject {
   /**
    * Access the TypeDescriptor for this object
    *

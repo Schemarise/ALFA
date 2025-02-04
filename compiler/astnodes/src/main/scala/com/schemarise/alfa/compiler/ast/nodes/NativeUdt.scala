@@ -40,7 +40,7 @@ class NativeUdt(ctx: Option[Context], token: IToken,
   override def toString: String = {
     s"""
        |typedefs {
-       |  ${newTypeName.text} = native ${nameNode.text}
+       |  ${newTypeName.text} = external ${nameNode.text}
        |}
        """.stripMargin
   }

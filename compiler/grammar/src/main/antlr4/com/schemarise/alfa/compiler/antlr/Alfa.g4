@@ -158,7 +158,7 @@ typeDefDecl
 	(
 	       currType=fieldType
 	    |
-	        NATIVE  nativeImplClass=QID
+	        EXTERNAL nativeImplClass=QID
 	)
 	sameline_docstrings;
 

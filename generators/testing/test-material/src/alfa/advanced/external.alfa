@@ -1,5 +1,5 @@
 typedefs {
-    storage = native acme.types.Storage
+    storage = external acme.types.Storage
 }
 
 record Feature.NativeUsage {

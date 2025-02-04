@@ -50,7 +50,7 @@ class DocCommentsTest extends AlfaCoreFunSuite {
 
     assert(r1.docs.head.text.equals("Comment on top"))
     val ml = r2.docs.head.text
-    assert(ml.trim.equals("Comment on\nmultiple lines") || ml.equals("Comment on\r\nmultiple lines"))
+    assert(ml.trim.equals("Comment on\nmultiple lines") || ml.trim.equals("Comment on\r\nmultiple lines"))
     assert(r3.docs.head.text.equals("Comment on same line"))
 
     assert(f1.docs.head.text.equals("comments on F1"))

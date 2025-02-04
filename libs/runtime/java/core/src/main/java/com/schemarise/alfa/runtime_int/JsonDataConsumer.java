@@ -65,8 +65,8 @@ final class JsonDataConsumer extends DataConsumer {
                 jGenerator.writeString(v.toString());
 
             return;
-        } else if (v instanceof NativeAlfaObject) {
-            NativeAlfaObject nao = (NativeAlfaObject) v;
+        } else if (v instanceof ExternalAlfaObject) {
+            ExternalAlfaObject nao = (ExternalAlfaObject) v;
             jGenerator.writeString(nao.encodeToString());
         } else if (v instanceof Union && !((Union) v).isTagged()) {
             Union u = (Union) v;

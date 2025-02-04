@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -394,7 +393,7 @@ final class AlfaRandomGenerator extends DataSupplier implements IntImpl.AlfaRand
         if (randomizable(n))
             return random(n);
 
-        else if (NativeAlfaObject.class.isAssignableFrom(m.getTypeClass())) {
+        else if (ExternalAlfaObject.class.isAssignableFrom(m.getTypeClass())) {
             Builder v = m.getNewBuilder(BuilderConfig.getInstance());
             v.modify(null, "ignore");
             return (T) v.build();

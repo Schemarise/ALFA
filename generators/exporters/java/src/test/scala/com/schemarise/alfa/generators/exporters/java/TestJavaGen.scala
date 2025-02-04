@@ -862,7 +862,7 @@ class TestJavaGen extends AnyFunSuite {
     genJava(
       """
         |typedefs {
-        |   storage = native acme.types.Storage
+        |   storage = external acme.types.Storage
         |}
         |
         |namespace com.test
@@ -1668,7 +1668,7 @@ class TestJavaGen extends AnyFunSuite {
     genJava(
       """
         |typedefs {
-        |    storage = native acme.types.Storage
+        |    storage = external acme.types.Storage
         |}
         |
         |record store.Database {
