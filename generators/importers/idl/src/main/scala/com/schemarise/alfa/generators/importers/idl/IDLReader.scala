@@ -260,11 +260,15 @@ class IDLReader(logger: ILogger, outputDir: Path) extends TextWriter(logger) {
   }
 
   private def getDocs(node: TerminalNode, left: Boolean = true): String = {
+    val ti = node.getSymbol.getTokenIndex
     val tok =
-      if (left)
-        tokens.getHiddenTokensToLeft(node.getSymbol.getTokenIndex, 2)
-      else
-        tokens.getHiddenTokensToRight(node.getSymbol.getTokenIndex, 2)
+      if ( ti >= tokens.size() ) {
+        null
+      }
+      else if (left) {
+        tokens.getHiddenTokensToLeft(ti, 2)
+      } else
+        tokens.getHiddenTokensToRight(ti, 2)
 
     if (tok == null) {
       return ""

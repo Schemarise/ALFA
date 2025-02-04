@@ -12,13 +12,13 @@ import java.util.Map;
  * Storage is an example Alfa 'native' typedef type. It can be declared as
  * <pre>
  * typedefs {
- *     storage = native acme.types.Storage
+ *     storage = external acme.types.Storage
  * }
  * </pre>
  *
  * Once declared, storage as be used a normal data type in Alfa.
  */
-public class Storage implements NativeAlfaObject {
+public class Storage implements ExternalAlfaObject {
     private final String _size;
 
     /**

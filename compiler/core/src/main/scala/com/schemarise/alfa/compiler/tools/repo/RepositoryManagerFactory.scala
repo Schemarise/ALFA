@@ -29,9 +29,11 @@ import scala.collection.JavaConverters._
 
 class RepositoryManagerFactory(log: ILogger, rootUri: String, clientLogger: ILogger) {
   def getRepoMgrAndSettings(): (IRepositoryManager, AllSettings) = {
-    log.debug("Discovering pom.xml paths based on " + rootUri)
 
-    val rootDir = Paths.get(new URI(rootUri))
+    val uri = new URI(rootUri.replace("\\", "/"))
+    log.debug("Discovering pom.xml paths based on " + uri)
+    val rootDir = Paths.get(uri)
+
     val pom = rootDir.resolve("pom.xml")
     val buildpom = rootDir.resolve("build" + File.separator + "pom.xml")
 

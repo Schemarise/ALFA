@@ -65,8 +65,8 @@ class AlfaFlattener extends NoOpDataConsumer {
             table.update(Converters.DataTypeString, currentFieldName(), en.toString());
         } else if (v instanceof Trait) {
             table.update(Converters.DataTypeString, currentFieldName() + "__Type", v.descriptor().getUdtDataType().getFullyQualifiedName());
-        } else if (v instanceof NativeAlfaObject) {
-            NativeAlfaObject no = (NativeAlfaObject) v;
+        } else if (v instanceof ExternalAlfaObject) {
+            ExternalAlfaObject no = (ExternalAlfaObject) v;
             table.update(Converters.DataTypeString, genColName(), no.encodeToString());
         }
 

@@ -1,9 +1,9 @@
 package com.schemarise.alfa.runtime;
 
-public abstract class DefaultNativeAlfaObject implements NativeAlfaObject {
+public abstract class DefaultExternalAlfaObject implements ExternalAlfaObject {
     private final String value;
 
-    public DefaultNativeAlfaObject(String s) {
+    public DefaultExternalAlfaObject(String s) {
         this.value = s;
     }
 

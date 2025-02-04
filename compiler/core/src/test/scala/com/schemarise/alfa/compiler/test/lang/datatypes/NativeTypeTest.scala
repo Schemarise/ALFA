@@ -24,7 +24,7 @@ class NativeTypeTest extends AnyFunSuite {
     val cua = TestCompiler.compileValidScript(
       """
         |typedefs {
-        |   storage = native com.acme.types.StorageUnit
+        |   storage = external com.acme.types.StorageUnit
         |}
         |
         |record PC {
@@ -45,7 +45,7 @@ class NativeTypeTest extends AnyFunSuite {
     val cua = TestCompiler.compileValidScript(
       """
         |typedefs {
-        |   storage = native com.acme.types.StorageUnit
+        |   storage = external com.acme.types.StorageUnit
         |}
         |
         |record PC {
