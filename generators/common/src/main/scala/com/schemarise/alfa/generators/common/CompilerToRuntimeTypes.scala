@@ -989,9 +989,11 @@ class CompilerToRuntimeTypes protected(logger: ILogger, cua: ICompilationUnitArt
       setFullyQualifiedName(udt.name.fullyQualifiedName).
       setAttribCount(Math.max(udt.allFields.size, udt.getMethodSignatures().size))
 
-    if (udt.docs.size > 0)
-      d.setDoc(udt.docs.mkString("\n").trim)
-
+    if (udt.docs.size > 0) {
+      val txt = udt.docs.mkString("\n").trim
+      d.setDoc(txt.split("\\.").head)
+    }
+    
     if (udt.isInternal)
       d.setIsInternal(true)
 

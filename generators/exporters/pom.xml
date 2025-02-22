@@ -36,6 +36,7 @@
 
     <modules>
         <module>java</module>
+        <module>cpp</module>
         <module>markdown</module>
         <module>change-analyzer</module>
     </modules>

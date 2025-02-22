@@ -32,7 +32,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <description>Alfa Runtime Models</description>
+    <description>ALFA Runtime Models</description>
 
     <build>
         <sourceDirectory>src/main/alfa</sourceDirectory>

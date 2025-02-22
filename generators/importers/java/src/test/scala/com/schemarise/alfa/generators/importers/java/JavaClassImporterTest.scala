@@ -31,7 +31,6 @@ class JavaClassImporterTest extends AnyFunSuite with AlfaTestPaths {
   val testDir = new File(targetDir, "../src/test/resources/").getCanonicalPath + "/"
   val testSources = new File(targetDir, "generated-test-sources/alfa").getCanonicalPath + "/"
 
-
   test("import opengamma") {
     val m = new util.HashMap[String, Object]()
 

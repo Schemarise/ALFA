@@ -33,7 +33,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <description>Alfa Compiler Core</description>
+    <description>ALFA Compiler Core</description>
 
     <dependencies>
 

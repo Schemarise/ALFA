@@ -24,7 +24,7 @@
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
-    <description>Alfa utilities root project</description>
+    <description>ALFA utilities root project</description>
 
     <parent>
         <groupId>com.schemarise</groupId>

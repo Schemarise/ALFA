@@ -103,9 +103,18 @@ object TextUtils {
     else
       items.mkString(start, sep, end)
 
-  def equalsIgnoreWhitespace(l: String, r: String): Boolean =
-    l.replaceAll("\\s+", "").contentEquals(r.replaceAll("\\s+", ""))
+  def equalsIgnoreWhitespace(l: String, r: String): Boolean = {
+    val al = l.replaceAll("\\s+", "")
+    val ar = r.replaceAll("\\s+", "")
+    val matched = al.contentEquals(ar)
 
+    if ( !matched ) {
+      println("LEFT :" + al)
+      println("RIGHT:" + ar)
+    }
+    matched
+  }
+  
   def validAlfaIdentifier(s: String) =
     LexerUtils.validAlfaIdentifier(s)
 

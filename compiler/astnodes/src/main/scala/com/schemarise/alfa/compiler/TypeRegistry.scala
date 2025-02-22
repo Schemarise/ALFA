@@ -83,8 +83,6 @@ class TypeRegistry(context: Context) {
 
   private val transformers = Map[IMethodSignature, Transformer]()
 
-  private val LimitMsg = " evaluation limit reached"
-
   private val allNamespaces = new HashMap[INamespaceNode, Set[NamespaceNode]] with MultiMap[INamespaceNode, NamespaceNode]
 
   private val assertCounter = new AtomicInteger(0)
@@ -122,6 +120,16 @@ class TypeRegistry(context: Context) {
 
   def getAllNamespaces() = {
     allNamespaces.keySet.toSeq
+  }
+
+  def getNamespaceDecls(node: INamespaceNode) = {
+    val d = allNamespaces.get(node)
+
+    if ( d.isDefined ) {
+      d.get.toSeq
+    }
+    else
+      Seq.empty
   }
 
   def getNamespaceMeta(node: INamespaceNode): Option[NodeMeta] = {

@@ -9,7 +9,7 @@
     <version>3.4.7-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
-    <description>Alfa to Markdown exporter</description>
+    <description>ALFA to Markdown exporter</description>
 
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
