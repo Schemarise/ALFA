@@ -62,10 +62,26 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.opengamma.strata</groupId>
+            <artifactId>strata-basics</artifactId>
+            <version>2.12.48</version>
+            <type>java-source</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opengamma.strata</groupId>
+            <artifactId>strata-product</artifactId>
+            <version>2.12.48</version>
+            <scope>test</scope>
+            <classifier>sources</classifier>
+        </dependency>
+
     </dependencies>
 
     <build>
-        <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>       
     </build>
 
 </project>

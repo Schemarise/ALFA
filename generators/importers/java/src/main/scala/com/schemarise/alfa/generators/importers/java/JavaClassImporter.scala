@@ -16,6 +16,8 @@
 
 package com.schemarise.alfa.generators.importers.java
 
+import com.schemarise.alfa.compiler.ast.NodeMeta
+
 import java.nio.file.{Files, Path}
 import com.schemarise.alfa.compiler.ast.model.IUdtBaseNode
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.UdtDataType
@@ -48,39 +50,16 @@ class JavaClassImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
     val baseClassName = param.importConfig.get(JavaClassImporter.ImportClassBaseType)
     val baseClass = if ( baseClassName != null ) Some( Class.forName(baseClassName.toString) ) else None
 
-    param.importConfig.get()
     val targetClasses = reflections.getAll(Scanners.SubTypes).asScala
       .map( n => Class.forName(n))
       .filter(e => !e.isInterface && !java.lang.reflect.Modifier.isAbstract(e.getModifiers))
       .filter( e => baseClass.isEmpty || baseClass.get.isAssignableFrom(e) )
 
-
-
-//      .filter(e => !e.getTypeName.endsWith("Function"))
-
     val classLoader = new URLClassLoader(
       Array(param.rootPath.toUri.toURL),
       this.getClass().getClassLoader()
     )
-//
-//    val rootCanonical = param.rootPath.toFile.getCanonicalPath
 
-//    val classFiles = FileUtils.listFiles(param.rootPath.toFile, Array("class"), true)
-//
-//    val classNames = classFiles.asScala.map(m => {
-//      val subPath = m.getCanonicalPath.substring(rootCanonical.length + 1)
-//      subPath.replace(File.separator, ".").dropRight(".class".length)
-//    }).toSeq.filter(e => {
-//      val f = importConfigStr(ImportPackageFilter)
-//
-//      if (f != null && f.trim.nonEmpty) {
-//        val nspaces = f.split(",")
-//        nspaces.exists(ns => e.startsWith(ns))
-//      }
-//      else
-//        true
-//    })
-//
     val tBuilder = new AlfaTypeBuilder(logger, ctx, classLoader, targetClasses.map( _.getName).toList )
     tBuilder.genAlfaModel()
 
@@ -97,6 +76,18 @@ class JavaClassImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
     val nn = new NamespaceNode(collectedUdts = udts)
     val cu = new CompilationUnit(ctx = ctx, namespaces = Seq(nn))
     val cua = new CompilationUnitArtifact(ctx, cu)
+
+    ctx.registry.getAllNamespaces().foreach( nsz => {
+
+      val nns = ctx.registry.getNamespaceDecls(nsz)
+      val nsWithDoc = nns.filter(z => ! z.docs.isEmpty).headOption
+
+      if ( nsWithDoc.isDefined ) {
+        enterFile( nsz.name + ".alfa")
+        writeln(nsWithDoc.get.toString)
+        exitFile()
+      }
+    })
 
     udts.foreach(u => {
       val tn = u.name.fullyQualifiedName

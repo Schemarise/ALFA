@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <licenses>
         <license>
-            <name>Alfa software License 1.0</name>
+            <name>ALFA software License 1.0</name>
             <url>https://alfa-lang.io/LICENSE.html</url>
             <distribution>repo</distribution>
         </license>
