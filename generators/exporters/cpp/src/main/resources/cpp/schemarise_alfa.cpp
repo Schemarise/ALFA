@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
- #include "schemarise_alfa.h"
+#include "schemarise_alfa.h"
 
 using namespace schemarise::alfa;
 
