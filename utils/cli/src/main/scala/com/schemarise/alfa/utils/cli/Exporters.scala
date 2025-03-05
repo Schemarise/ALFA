@@ -5,6 +5,7 @@ import com.schemarise.alfa.compiler.ast.model.graph.GraphReachabilityScopeType
 import com.schemarise.alfa.compiler.utils.{ILogger, VFS}
 import com.schemarise.alfa.generators.common.{AlfaExporter, AlfaExporterParams, SupportedGenerator}
 import com.schemarise.alfa.generators.exporters.changeanalysis.ChangeAnalysisExporter
+import com.schemarise.alfa.generators.exporters.cpp.CppExporter
 import com.schemarise.alfa.generators.exporters.markdown.MarkdownExporter
 import com.schemarise.alfa.generators.exporters.java._
 
@@ -47,6 +48,8 @@ class Exporters(logger : ILogger) extends GeneratorConfigBase(logger) {
 
       "javajaxb" -> classOf[JaxbJavaInteropExporter].getName,
       "protobufjavawrapper" -> classOf[JavaProtobufWrapperExporter].getName,
+
+      "cpp" -> classOf[CppExporter].getName,
     )
 
     val fromClasspath = loadClasspathGenerators("exporter")

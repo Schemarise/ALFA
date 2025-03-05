@@ -22,8 +22,11 @@ import com.schemarise.alfa.compiler.ast.nodes.{Entity, EnumDecl, Key, Record, Se
 import com.schemarise.alfa.compiler.utils.VFS
 import com.schemarise.alfa.generators.common._
 import com.schemarise.alfa.generators.exporters.cpp.udt._
+import org.apache.commons.io.IOUtils
 
+import java.nio.charset.Charset
 import java.nio.file.Path
+import scala.collection.mutable
 import scala.collection.mutable.{MultiMap, _}
 
 
@@ -45,7 +48,7 @@ class CppExporter(param: AlfaExporterParams)
 
     val topOrdered = typesToGenerate()
 
-    var nspaceUdts = new HashMap[INamespaceNode, Set[IUdtBaseNode]] with MultiMap[INamespaceNode, IUdtBaseNode]
+    var nspaceUdts = new mutable.HashMap[INamespaceNode, Set[IUdtBaseNode]] with MultiMap[INamespaceNode, IUdtBaseNode]
 
     topOrdered.foreach(e => {
       if (e.isInstanceOf[IUdtBaseNode]) {
@@ -82,6 +85,12 @@ class CppExporter(param: AlfaExporterParams)
         }
       })
     })
+
+    val cpp = IOUtils.toString(getClass.getResourceAsStream("/cpp/schemarise_alfa.cpp"), Charset.defaultCharset())
+    val h = IOUtils.toString(getClass.getResourceAsStream("/cpp/schemarise_alfa.h"), Charset.defaultCharset())
+
+    VFS.write(outputDir.resolve("schemarise_alfa.cpp"), cpp )
+    VFS.write(outputDir.resolve("schemarise_alfa.h"), h )
 
     List.empty
   }

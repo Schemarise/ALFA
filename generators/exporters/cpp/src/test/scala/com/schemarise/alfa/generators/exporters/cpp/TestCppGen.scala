@@ -179,7 +179,7 @@ class TestCppGen extends AnyFunSuite {
     val j = new CppExporter(AlfaExporterParams(new StdoutLogger(), CppGen, cua, Collections.emptyMap()))
     j.exportSchema()
 
-    // compileCpp(CppGen, genDir)
+//    compileCpp(CppGen, genDir)
   }
 
   def compileCpp(p: Path, genDir : String): Unit = {
@@ -192,7 +192,7 @@ class TestCppGen extends AnyFunSuite {
 
       if (fs.size > 0) {
         val base =  TestUtils.getLocalProjectRootPath(classOf[TestCppGen])
-        val incs = base + "src/main/cpp"
+        val incs = base + "src/main/resources/cpp"
 
         val headers = base + "target/generated-sources/cpp/" + genDir
 
