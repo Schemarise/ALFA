@@ -28,8 +28,12 @@ object LexerUtils {
 
 
   def validAlfaIdentifier(nn: String) = {
-    if (LexerUtils.keywords.contains(nn) ||
-      (!Character.isJavaIdentifierStart(nn.head) && !nn.head.equals("`"))
+
+    val allValid = nn.filter( c => !Character.isJavaIdentifierPart(c)).isEmpty
+
+    if (!allValid ||
+        LexerUtils.keywords.contains(nn) ||
+        (!Character.isJavaIdentifierStart(nn.head) && !nn.head.equals("`"))
     )
       s"`$nn`"
     else

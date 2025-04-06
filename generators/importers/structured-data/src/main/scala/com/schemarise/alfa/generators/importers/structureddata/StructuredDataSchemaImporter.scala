@@ -27,6 +27,7 @@ import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, 
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
+import java.time.format.DateTimeFormatter
 
 class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
   private val reqdKeys = Seq("namespace")
@@ -51,29 +52,41 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
     if (Files.isDirectory(rootPath))
       throw new AlfaSettingsException("Expected file, got directory " + rootPath)
 
-    val pathstr = rootPath.toString
-    val jf: JsonFactory =
-      if (pathstr.endsWith(".json"))
-        null
-      else if (pathstr.endsWith(".yaml"))
-        new YAMLFactory()
-      else if (pathstr.endsWith(".xml"))
-        new XmlFactory()
-      else
-        throw new AlfaSettingsException("Unsupported file extension " + pathstr)
-
-    val mapper = new ObjectMapper(jf)
-    val contents = new String(Files.readAllBytes(rootPath), StandardCharsets.UTF_8)
-    val node = mapper.readTree(contents)
-
     val ctx = new Context()
-    val tb = new TypeBuilder(ctx, importConfigStr("namespace"), node)
 
-    tb
+    val pathstr = rootPath.toString
+
+    if ( pathstr.endsWith(".csv") ) {
+      val tb = new CsvTypeBuilder(ctx, rootPath,
+        importConfigStr("namespace"),
+        importConfigStr("typename", "CsvImported" ),
+        importConfigStr("dateformat", "yyyy-MM-dd" ),
+        importConfigStr("datetimeformat", "yyyy-MM-dd'T'HH:mm:ss. SSSXXX"))
+      tb
+    }
+    else {
+      val jf: JsonFactory =
+        if (pathstr.endsWith(".json"))
+          null
+        else if (pathstr.endsWith(".yaml"))
+          new YAMLFactory()
+        else if (pathstr.endsWith(".xml"))
+          new XmlFactory()
+        else
+          throw new AlfaSettingsException("Unsupported file extension " + pathstr)
+
+      val mapper = new ObjectMapper(jf)
+      val contents = new String(Files.readAllBytes(rootPath), StandardCharsets.UTF_8)
+      val node = mapper.readTree(contents)
+
+      val tb = new JsonBasedTypeBuilder(ctx, importConfigStr("namespace"), node)
+
+      tb
+    }
   }
 
 
-  override def supportedConfig(): Array[String] = Array.empty
+  override def supportedConfig(): Array[String] = Array("dateformat")
 
   override def name: String = "StructuredDataImporter"
 
@@ -86,4 +99,6 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
   override def importSchema(): List[Path] = List.empty
 
   override def requiredConfig(): Array[String] = Array.empty
+
+  override def writeTopComment() = false
 }

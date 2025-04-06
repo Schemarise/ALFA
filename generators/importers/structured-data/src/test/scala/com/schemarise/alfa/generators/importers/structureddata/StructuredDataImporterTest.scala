@@ -66,7 +66,6 @@ class StructuredDataImporterTest extends AnyFunSuite {
     })
   }
 
-
   test("YAML Structured Data Import tester") {
     val m = new util.HashMap[String, Object]()
     m.put("namespace", "demo")
@@ -81,4 +80,15 @@ class StructuredDataImporterTest extends AnyFunSuite {
     })
   }
 
+  test("CSV Schema Test 1") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(),
+      Paths.get(testDir + "csv/test1.csv"),
+      Paths.get(genAlfa, "csv-test1"),
+      m) )
+
+    sd.getDefinitions()
+  }
 }
