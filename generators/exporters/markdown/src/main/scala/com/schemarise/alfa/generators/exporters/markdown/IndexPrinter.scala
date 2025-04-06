@@ -127,7 +127,7 @@ class IndexPrinter(logger: ILogger, outputDir: Path,
 
   private def addUmlDiagram(n:Namespace) = {
     if (includeUml) {
-      val defs = utils.generateIndexPageMermaid(logger, cua, n)
+      val defs = utils.generateIndexPageUml(logger, cua, n)
 
       val uml =
         s"""

@@ -3,7 +3,6 @@ package com.schemarise.alfa.generators.exporters.markdown
 import java.nio.file.Path
 import com.schemarise.alfa.compiler.utils.VFS
 import com.schemarise.alfa.generators.common._
-import com.schemarise.alfa.generators.exporters.markdown.{IndexPrinter, MarkdownUtils, UdtPrinter}
 import schemarise.alfa.runtime.model.UdtMetaType
 
 class MarkdownExporter(param: AlfaExporterParams) extends AlfaExporter(param) with SupportedGenerator {
@@ -20,7 +19,7 @@ class MarkdownExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
     val ip = new IndexPrinter(logger, param.outputDir, c2r, param.cua, includeUml)
     ip.print()
 
-    val htmlLinks =  "true" == param.exportConfig.getOrDefault("htmlLinks", "true")
+    val htmlLinks =  "true" == param.exportConfig.getOrDefault("htmlLinks", "false")
 
     val up = new UdtPrinter(logger, param.outputDir, c2r, param.cua, includeUml, htmlLinks)
     up.print()
