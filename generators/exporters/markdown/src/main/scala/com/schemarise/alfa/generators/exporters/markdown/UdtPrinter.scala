@@ -1,5 +1,7 @@
 package com.schemarise.alfa.generators.exporters.markdown
 
+import com.schemarise.alfa.compiler.ast.model
+
 import java.nio.file.Path
 import schemarise.alfa.runtime.model._
 import com.schemarise.alfa.compiler.ast.model.ICompilationUnitArtifact
@@ -82,6 +84,9 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
 
       case s: EitherDataType => s"either< ${printType(s.getLeftComponentType, asHtml)}, ${printType(s.getRightComponentType, asHtml)} >"
 
+      case s: MetaDataType =>
+        "$" + s.getMetaType.value().toLowerCase
+
       case _ => "Unhandled type " + t.getClass.getName
     }
   }
@@ -152,7 +157,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
          |  <tbody>""".stripMargin)
 
     fields.foreach(m => {
-      val doc = mdToHtml(m.getDoc.orElse(""))
+      val doc = mdToHtml(m.getDoc.orElse("").replace('\n', ' '))
 
       writeln(
         s"""    <tr>
@@ -175,7 +180,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
     writeln(s"| ----------- | ----------- |")
 
     fields.values.map(f => {
-      writeln(s"| ${f.getName} | ${f.getDoc.orElse("")}  |")
+      writeln(s"| ${f.getName} | ${f.getDoc.orElse("").replace('\n', ' ')}  |")
     })
   }
 
@@ -285,8 +290,6 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
 
 
       sigs.keySet.toList.sorted.map( k => sigs.get(k).get).foreach(m => {
-        val doc = m.docs.mkString("\n")
-
         val argTableStart =
           """          <!-- start -->
             |          <table>
@@ -314,7 +317,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
              |              <tr>
              |                <td>${f.name}${scope}</td>
              |                <td>${f.dataType}</td>
-             |                <td>${f.docs.mkString("\n")}</td>
+             |                <td>${oneLineDoc(f.docs)}</td>
              |              </tr>""".stripMargin
         }).mkString(argTableStart, "", argTableEnd)
 
@@ -325,7 +328,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
              |$fmls</td>
              |        <td>${m.returnType}</td>
              |        <td>${m.exceptionTypes.mkString(", ")}</td>
-             |        <td>$doc</td>
+             |        <td>${oneLineDoc(m.docs)}</td>
              |    </tr>""".stripMargin)
       })
 
@@ -335,6 +338,10 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
           |</table>
         """.stripMargin)
     }
+  }
+
+  private def oneLineDoc(docs: Seq[model.IDocumentation]) = {
+    docs.mkString(" ").replace('\n', ' ')
   }
 
 

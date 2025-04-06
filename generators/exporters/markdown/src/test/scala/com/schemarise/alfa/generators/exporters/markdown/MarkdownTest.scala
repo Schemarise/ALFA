@@ -45,7 +45,17 @@ class MarkdownTest extends AnyFunSuite {
       """
         |namespace RefData
         |
+        |/#
+        |   Multi
+        |   line
+        |   doc
+        | #/
         |record Person {
+        |   /#
+        |      Multi
+        |      line
+        |      doc for name
+        |    #/
         |   Name : string(".*")
         |   Alias :   string(10, 20)
         |   Salary : decimal(20, 8, 100.0, 2100.0)

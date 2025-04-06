@@ -108,7 +108,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       udt.asInstanceOf[NativeType].getAliasedType
     }
     else if (asHtml)
-      s"<a href='UDT-$fullName.md'>$deco&nbsp;$name</a>"
+      s"<a href='UDT-$fullName.html'>$deco&nbsp;$name</a>"
     else
       s"$deco [$name](UDT-$fullName.md)"
   }
@@ -152,7 +152,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
   }
 
 
-  def generateIndexPageMermaid(l: ILogger, cua: ICompilationUnitArtifact, ns: Namespace) = {
+  def generateIndexPageUml(l: ILogger, cua: ICompilationUnitArtifact, ns: Namespace) = {
     val indexPageUml = new StringBuilder()
 
     val udtsx = cua.graph.topologicalOrPermittedOrdered().get.
@@ -242,7 +242,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       val incsx = e.includes.
         filter(i => matchingNamespace(e, i.asInstanceOf[com.schemarise.alfa.compiler.ast.nodes.datatypes.UdtDataType])).
         map(i => {
-          nameOnly(i.fullyQualifiedName) + " <|.. " + nameOnly(e.name.fullyQualifiedName)
+          nameOnly(i.fullyQualifiedName) + " <|.[#grey]. " + nameOnly(e.name.fullyQualifiedName)
         })
 
       val extendz = e.extendsDef.map(e => e).
@@ -256,7 +256,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
         .map(i => {
           val ku = i.asInstanceOf[UdtBaseNode]
           //if (ku.writeAsModuleDefinition)
-          nameOnly(ku.name.fullyQualifiedName) + " <.. " + nameOnly(e.name.fullyQualifiedName) + " : Key"
+          nameOnly(ku.name.fullyQualifiedName) + " <.[#grey]. " + nameOnly(e.name.fullyQualifiedName) + " : Key"
           //else
           //  ""
         })
@@ -323,7 +323,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       filter(e => udt.includes.filter(x => x.fullyQualifiedName == e.asInstanceOf[UdtBaseNode].name.fullyQualifiedName).size > 0).
       map(i => {
         related += i.asInstanceOf[UdtBaseNode]
-        nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " <|.. " + nameOnly(udt.name.fullyQualifiedName)
+        nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " <|.[#grey]. " + nameOnly(udt.name.fullyQualifiedName)
       })
 
     val extendz = cua.graph.outgoingEdgeNodes(udt, IsExtendsOnlyPredicate).
@@ -337,7 +337,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
       filter(e => e.asInstanceOf[UdtBaseNode].includes.filter(x => x.fullyQualifiedName == udt.name.fullyQualifiedName).size > 0).
       map(i => {
         related += i.asInstanceOf[UdtBaseNode]
-        nameOnly(udt.name.fullyQualifiedName) + " <|.. " + nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName)
+        nameOnly(udt.name.fullyQualifiedName) + " <|.[#grey]. " + nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName)
       })
 
     val extended = cua.graph.incomingEdgeNodes(udt, IsExtendsOnlyPredicate).
@@ -349,12 +349,12 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
 
     val entToKeys = cua.graph.outgoingEdgeNodes(udt, IsEntityKeyEdgePredicate).map(i => {
       related += i.asInstanceOf[UdtBaseNode]
-      nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " <.. " + nameOnly(udt.name.fullyQualifiedName) + " : Key"
+      nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " <.[#grey]. " + nameOnly(udt.name.fullyQualifiedName) + " : Key"
     })
 
     val keyToEnt = cua.graph.incomingEdgeNodes(udt, IsEntityKeyEdgePredicate).map(i => {
       related += i.asInstanceOf[UdtBaseNode]
-      nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " ..> " + nameOnly(udt.name.fullyQualifiedName) + " : Key"
+      nameOnly(i.asInstanceOf[UdtBaseNode].name.fullyQualifiedName) + " .[#grey].> " + nameOnly(udt.name.fullyQualifiedName) + " : Key"
     })
 
     val modelVal = c2r.getUdtDetails(udt.name.fullyQualifiedName).getResult
@@ -380,7 +380,7 @@ class MarkdownUtils(cua: ICompilationUnitArtifact, c2r: CompilerToRuntimeTypes) 
 
     val tests = cua.graph.outgoingEdgeNodes(udt, IsTestcasePredicate).map(i => {
       related += i.asInstanceOf[UdtBaseNode]
-      nameOnly(udt.asInstanceOf[Testcase].targetUdt.get.name.fullyQualifiedName) + " .. " + nameOnly(udt.name.fullyQualifiedName)
+      nameOnly(udt.asInstanceOf[Testcase].targetUdt.get.name.fullyQualifiedName) + " .[#grey]. " + nameOnly(udt.name.fullyQualifiedName)
     })
 
     val linksDefs = (tests ++ referencedFrom ++ entToKeys ++ keyToEnt ++ incs ++ extendz ++ included ++ extended)
