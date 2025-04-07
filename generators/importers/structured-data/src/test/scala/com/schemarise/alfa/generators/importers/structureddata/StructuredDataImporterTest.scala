@@ -16,15 +16,16 @@
 
 package com.schemarise.alfa.generators.importers.structureddata
 
-import com.schemarise.alfa.compiler.utils.StdoutLogger
+import com.schemarise.alfa.compiler.utils.{StdoutLogger, VFS}
 import com.schemarise.alfa.generators.common.AlfaImporterParams
+import com.schemarise.alfa.utils.testing.AlfaFunSuite
 import org.scalatest.funsuite.AnyFunSuite
 
 import java.io.File
 import java.nio.file.Paths
 import java.util
 
-class StructuredDataImporterTest extends AnyFunSuite {
+class StructuredDataImporterTest extends AlfaFunSuite {
   val targetDir = new File(getClass.getResource("/").getPath + "../").getCanonicalPath + "/"
   val testDir = new File(targetDir, "../src/test/resources/").getCanonicalPath + "/"
   val genAlfa = new File(targetDir, "generated-test-sources/alfa").getCanonicalPath + "/"
@@ -66,7 +67,6 @@ class StructuredDataImporterTest extends AnyFunSuite {
     })
   }
 
-
   test("YAML Structured Data Import tester") {
     val m = new util.HashMap[String, Object]()
     m.put("namespace", "demo")
@@ -81,4 +81,105 @@ class StructuredDataImporterTest extends AnyFunSuite {
     })
   }
 
+  test("CSV Schema Test 1") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+
+    val p = VFS.create().getPath("/")
+    val csvFile = p.resolve("data.csv")
+    VFS.write(csvFile,
+      """Name,Age,AddressLine1,AddressLine2,Salary,Dob,Id,Enabled
+        |Rob,27,Street 1,,391823.12,1990-01-01,e58ed763-928c-4155-bee9-fdbaaadc15f3,True
+        |Paul,28,Street 1,London,239083,1990-06-01,8c8d17c8-e78c-4050-86b0-7456c1f68753,false
+        |Liam,30,Street 1,,908901.54,1990-05-01,4c6661ce-cdae-4e68-aaa2-60f5670c406a,true
+        |John,30,Street 1,,239089.32,1990-03-01,2b18bb29-27a9-4b2b-8f4c-fbd27930046c,False
+        |""".stripMargin)
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record CsvImported {
+        |  Name : string
+        |  Age : int
+        |  AddressLine1 : string
+        |  AddressLine2 : string ?
+        |  Salary : double
+        |  Dob : date
+        |  Id : uuid
+        |  Enabled : boolean
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
+
+  test("CSV Schema Test 2") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+
+    val p = VFS.create().getPath("/")
+    val csvFile = p.resolve("data.csv")
+
+    VFS.write(csvFile,
+      """NumberA,NumberB,NumberC,AlmostDate
+        |10,20,10.5,1990-01-01
+        |1000000000000,3,1000000000000,1990-10-01
+        |10.10,1000000000000,20.1,ABC
+        |""".stripMargin)
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record CsvImported {
+        |  NumberA : double
+        |  NumberB : long
+        |  NumberC : double
+        |  AlmostDate : string
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
+
+
+  test("CSV Schema Test temporal formats") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+    m.put("dateformat", "dd.MM.yyyy")
+    m.put("datetimeformat", "HH:mm:ss.SSSXXX")
+
+    val p = VFS.create().getPath("/")
+    val csvFile = p.resolve("data.csv")
+
+    VFS.write(csvFile,
+      """DateA,DatetimeB
+        |02.01.1990,11:30:00.000-05:00
+        |""".stripMargin)
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record CsvImported {
+        |  DateA : date
+        |  DatetimeB : datetime
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
 }

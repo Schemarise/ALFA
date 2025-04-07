@@ -24,8 +24,6 @@ object Scalars extends com.schemarise.alfa.compiler.SearchableEnumeration {
   val long = Value("long")
   val double = Value("double")
 
-  val string = Value("string")
-
   val boolean = Value("boolean")
 
   val binary = Value("binary")
@@ -41,10 +39,5 @@ object Scalars extends com.schemarise.alfa.compiler.SearchableEnumeration {
   val void = Value("void")
   val uuid = Value("uuid")
 
-  //  val char = Value("char")
-  //  val byte = Value("byte")
-  //  val float = Value("float")
-  //  val uri = Value("uri")
-  //  val pattern = Value("pattern")
-
+  val string = Value("string")
 }

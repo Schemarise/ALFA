@@ -14,8 +14,8 @@ abstract class AlfaImporter(param: AlfaImporterParams) extends TextWriter(param.
     toLocalPath(u.toUri)
   }
 
-  def importConfigStr( k : String ) = {
-    val v = param.importConfig.get(k)
+  def importConfigStr( k : String, dft : String = null ) = {
+    val v = param.importConfig.getOrDefault(k, dft)
     if ( v != null )
       v.toString
     else
