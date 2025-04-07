@@ -41,7 +41,7 @@ class CsvTypeBuilder(ctx: Context,
     val rowsRead: AtomicLong = new AtomicLong
 
     val colnames = ListBuffer[String]()
-    val colTypes = new HashMap[String, Set[DataType]] with MultiMap[String, DataType]
+    val colTypes = new mutable.LinkedHashMap[String, Set[DataType]] with MultiMap[String, DataType]
     val notColTypes = new HashMap[String, Set[DataType]] with MultiMap[String, DataType]
 
     while (it.hasNext()) {
@@ -129,9 +129,9 @@ class CsvTypeBuilder(ctx: Context,
         val cn = TextUtils.validAlfaIdentifier(ct._1)
         val st = ct._2.filter(x => x.isScalar).
           map(x => x.asInstanceOf[ScalarDataType]).toList.
-          sortBy(x => x.scalarType).headOption.getOrElse(ScalarDataType.stringType)
+          sortBy(x => x.scalarType).lastOption.getOrElse(ScalarDataType.stringType)
 
-        val isOpt = !ct._2.filter(x => x == optionalType).isEmpty
+        val isOpt = ct._2.contains(optionalType)
 
         val t = if (isOpt) EnclosingDataType.optional(compType = st) else st
 
@@ -140,8 +140,7 @@ class CsvTypeBuilder(ctx: Context,
       })
     }
 
-    val rec = new Record(namespace = new NamespaceNode(nameNode = StringNode.create(namespace)),
-      nameNode = StringNode.create(typename),
+    val rec = new Record(nameNode = StringNode.create(typename),
       fields = fields.toSeq
     )
 

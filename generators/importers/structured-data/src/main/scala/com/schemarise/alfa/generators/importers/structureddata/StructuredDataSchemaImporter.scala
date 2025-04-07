@@ -61,7 +61,7 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
         importConfigStr("namespace"),
         importConfigStr("typename", "CsvImported" ),
         importConfigStr("dateformat", "yyyy-MM-dd" ),
-        importConfigStr("datetimeformat", "yyyy-MM-dd'T'HH:mm:ss. SSSXXX"))
+        importConfigStr("datetimeformat", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
       tb
     }
     else {
