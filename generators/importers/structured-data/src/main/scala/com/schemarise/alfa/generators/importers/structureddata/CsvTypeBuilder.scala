@@ -160,7 +160,7 @@ class CsvTypeBuilder(ctx: Context,
 
         val finalType =
           if ( st == ScalarDataType.stringType ) {
-            val uniqueStrValues = strColValues.get(cn).get
+            val uniqueStrValues = strColValues.get(ct._1).get
             if ( uniqueStrValues.size <= settings.enumUniqueValueLimit && rowsRead.get() > 100 ) {
               EnumDataType( fields = uniqueStrValues.map(v => new Field(nameNode=StringNode.create(v), declDataType=ScalarDataType.stringType)).toSeq )
             }
