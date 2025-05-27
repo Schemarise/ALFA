@@ -73,7 +73,7 @@ class AnnotationDecl(ctx: Option[Context] = None,
 
     sb ++= "annotation " + versionedName.fullyQualifiedName + annotationTargets.mkString("( ", ", ", " )")
 
-    sb ++= toStringIncludesAndBody
+    sb ++= toStringIncludesAndBody()
 
     sb.toString()
   }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.schemarise.alfa.compiler.types
+package com.schemarise.alfa.compiler.ast.model.types
 
 object Modifiers extends com.schemarise.alfa.compiler.SearchableEnumeration {
   type ModifierType = Value

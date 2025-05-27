@@ -41,6 +41,7 @@ public class AlfaCliMojo extends AbstractMojo {
                     collect(Collectors.toList());
 
             List<String> cliArgs = new ArrayList<>();
+
             alfaProps.stream().forEach(k -> {
                 cliArgs.add("--" + k);
                 Object v = System.getProperty("alfa." + k);

@@ -66,6 +66,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.schemarise.alfa.generators.exporters</groupId>
+            <artifactId>alfa-gen-exp-refactor</artifactId>
+            <version>3.4.9-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.schemarise.alfa.generators.importers</groupId>
             <artifactId>alfa-gen-imp-java</artifactId>
             <version>3.4.9-SNAPSHOT</version>

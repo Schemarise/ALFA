@@ -21,10 +21,10 @@ import com.schemarise.alfa.compiler.ast._
 import com.schemarise.alfa.compiler.ast.model.NodeVisitMode.Mode
 import com.schemarise.alfa.compiler.ast.model.expr.IQualifiedStringLiteral
 import com.schemarise.alfa.compiler.ast.model.types._
-import com.schemarise.alfa.compiler.ast.model.{IToken, IUdtBaseNode, IdentifiableNode, NodeVisitor, _}
+import com.schemarise.alfa.compiler.ast.model._
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.{DataType, TypeParameterDataType, UdtDataType}
 import com.schemarise.alfa.compiler.err._
-import com.schemarise.alfa.compiler.types.{AnnotationTargetType, Modifiers}
+import com.schemarise.alfa.compiler.types.AnnotationTargetType
 import com.schemarise.alfa.compiler.utils.{TextUtils, TokenImpl}
 import org.jgraph.graph.DefaultEdge
 import org.jgrapht.graph.DefaultDirectedGraph
@@ -35,8 +35,11 @@ import scala.collection.immutable.{ListMap, ListSet}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import com.schemarise.alfa.compiler.antlr.AlfaParser.ExpressionUnitContext
+import com.schemarise.alfa.compiler.ast.model.types.Modifiers.ModifierType
 import com.schemarise.alfa.compiler.ast.model.types.UdtType.UdtType
 import com.schemarise.alfa.compiler.tools.repo.ArtifactEntry
+
+import java.util.function.Supplier
 
 abstract class UdtBaseNode(
                             ctx: Option[Context] = None,
@@ -45,7 +48,7 @@ abstract class UdtBaseNode(
                             rawNodeMeta: NodeMeta = NodeMeta.empty,
                             modifiersNode: Seq[ModifierNode] = Seq.empty,
                             val declaredRawName: StringNode,
-                            val versionNo: Option[IntNode] = None,
+                            val versionNoNode: Option[IntNode] = None,
                             val typeParamsNode: Option[Seq[TypeParameter]] = None,
                             val typeArgumentsNode: Option[Map[String, DataType]] = None,
                             rawExtendedNode: Option[UdtDataType] = None,
@@ -97,7 +100,7 @@ abstract class UdtBaseNode(
 
   private val nsInName = if (this.nodeType == Nodes.Method) NamespaceNode.empty else declaredRawNamespace
   private val un = UdtName.create(nsInName, declaredRawName, typeParamsNode, typeArgumentsNode)
-  private val vn = if (versionNo.isDefined) Some(versionNo.get) else None
+  private val vn = if (versionNoNode.isDefined) Some(versionNoNode.get) else None
 
   val versionedName = UdtVersionedName(un, vn)(Some(udtType))
 
@@ -130,6 +133,8 @@ abstract class UdtBaseNode(
     udtTestcases += testcase
   }
 
+  override def typeParams: Option[Seq[ITypeParameter]] = typeParamsNode
+
   def getTestcases = udtTestcases.toList
 
   override def docNodes: Seq[IDocumentation] = localAndFragNodeMeta.map(_.docs).flatten
@@ -137,6 +142,8 @@ abstract class UdtBaseNode(
   override def annotationNodes = localAndFragNodeMeta.map(_.annotations).flatten
 
   def nodeMetas = _localAndFragNodeMeta
+
+  override def modifiers : Set[ModifierType] = modifiersSet
 
   def methodDecls = _localAndFragMethodDecls
 
@@ -153,6 +160,8 @@ abstract class UdtBaseNode(
   def isSynthetic = false
 
   def writeAsModuleDefinition = true
+
+  override def versionNo: Option[Int] = if (vn.isDefined ) Some(vn.get.number.get) else None
 
   override def allAsserts = allAccessibleAsserts()
 
@@ -828,6 +837,11 @@ abstract class UdtBaseNode(
   }
 
   override def toString: String = {
+    toStringWith(() => includes, () => fields)
+  }
+
+  def toStringWith( _includes:Supplier[Seq[IUdtDataType]],
+                    _fields:Supplier[Seq[FieldOrFieldRef]] ) : String = {
     val sb = new StringBuilder
 
     sb ++= annotationNodes.mkString("", "\n", "")
@@ -835,17 +849,16 @@ abstract class UdtBaseNode(
     if (docs.size > 0)
       sb ++= docs.map("  " + _.toString).mkString("\n/#\n  ", "\n  ", "\n #/\n")
 
-
     var mods = modifiersNode.map(m => m.modifier.toString.toLowerCase()).mkString("", " ", " ")
     if (mods.trim.isBlank)
       mods = ""
 
-    val v = if (versionNo.isDefined) " @ " + versionNo.get.number.get.toString else ""
+    val v = if (versionNo.isDefined) " @ " + versionNoNode.get.number.get.toString else ""
 
     sb ++= "\n" + mods + name.udtType.toString.toLowerCase + " " +
       versionedName.fullyQualifiedName + TextUtils.mkString(typeParamsNode) + v
 
-    sb ++= toStringIncludesAndBody
+    sb ++= toStringIncludesAndBody(_includes, _fields)
 
     sb.toString()
   }
@@ -854,22 +867,25 @@ abstract class UdtBaseNode(
     ""
   }
 
-  protected def toStringIncludesAndBody(): String = {
+  protected def toStringIncludesAndBody(
+                   _includes:Supplier[Seq[IUdtDataType]] = () => includes,
+                   _fields:Supplier[Seq[FieldOrFieldRef]] = () => fields
+                 ): String = {
     val sb = new StringBuilder
     if (rawExtendedNode.isDefined) {
       sb ++= " extends " + rawExtendedNode.get.name.text
     }
 
-    if (includes.size > 0) {
+    if (_includes.get().size > 0) {
       sb ++= " includes "
-      sb ++= includes.mkString("", ", ", "")
+      sb ++= _includes.get().mkString("", ", ", "")
     }
 
     sb ++= toStringBeforeBody()
 
     sb ++= " {\n"
 
-    sb ++= fields.mkString("", "\n", "").replaceAll("^", "  ").replaceAll("\n", "\n  ")
+    sb ++= _fields.get().mkString("", "\n", "").replaceAll("^", "  ").replaceAll("\n", "\n  ")
 
     //    fields.foreach(f => {
     //      sb ++= "\n" + f

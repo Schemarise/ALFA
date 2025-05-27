@@ -8,6 +8,8 @@ import com.schemarise.alfa.generators.exporters.changeanalysis.ChangeAnalysisExp
 import com.schemarise.alfa.generators.exporters.cpp.CppExporter
 import com.schemarise.alfa.generators.exporters.markdown.MarkdownExporter
 import com.schemarise.alfa.generators.exporters.java._
+import com.schemarise.alfa.generators.exporters.refactor.RefactorExporter
+import com.schemarise.alfa.runtime.AlfaRuntimeException
 
 import java.io.File
 import java.nio.file.Path
@@ -48,6 +50,7 @@ class Exporters(logger : ILogger) extends GeneratorConfigBase(logger) {
 
       "javajaxb" -> classOf[JaxbJavaInteropExporter].getName,
       "protobufjavawrapper" -> classOf[JavaProtobufWrapperExporter].getName,
+      "refactor" -> classOf[RefactorExporter].getName,
 
       "cpp" -> classOf[CppExporter].getName,
     )
@@ -71,6 +74,9 @@ class Exporters(logger : ILogger) extends GeneratorConfigBase(logger) {
   def exporterInstance(name: String, o: Path,
                        cua: ICompilationUnitArtifact,
                        cfg: Map[String, String]): Option[AlfaExporter] = {
+
+    logger.debug(s"Exporter $name with config $cfg")
+
     val expClass = getExportClassName(name.toLowerCase)
 
     if (expClass.isEmpty)
@@ -80,6 +86,22 @@ class Exporters(logger : ILogger) extends GeneratorConfigBase(logger) {
 
         val expInstance = ctor.newInstance(new AlfaExporterParams(logger, o, cua,
           mapAsJavaMap(cfg), GraphReachabilityScopeType.all)).asInstanceOf[AlfaExporter]
+
+      val supported = expInstance.supportedConfig()
+      cfg.keySet.foreach( s => {
+        if (!supported.contains(s)) {
+          throw new AlfaRuntimeException("The exportClass for '" + name + "' does not support <" + s +
+            "> as a exportSetting config entry");
+        }
+      } )
+
+      val reqd = expInstance.requiredConfig()
+      reqd.foreach( s => {
+        if (! cfg.contains(s)) {
+          throw new AlfaRuntimeException("The export type " + name + "' requires <config><" + s +
+            ">... as an exportSetting config entry");
+        }
+      } )
 
       Some(expInstance)
     }
