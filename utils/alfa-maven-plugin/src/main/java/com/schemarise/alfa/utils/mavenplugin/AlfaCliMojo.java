@@ -34,6 +34,9 @@ public class AlfaCliMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         try {
+            var allSysProps = System.getProperties().keySet().stream().map(Object::toString).sorted().collect(Collectors.toList());
+            logger.debug("AlfaCliPlugin all system properties: " + allSysProps);
+
             List<String> alfaProps = System.getProperties().keySet().stream().
                     filter(p -> p.toString().startsWith("alfa.")).
                     filter(p -> !p.toString().equals("alfa.sourcepath")).
@@ -42,9 +45,10 @@ public class AlfaCliMojo extends AbstractMojo {
 
             List<String> cliArgs = new ArrayList<>();
 
-            alfaProps.stream().forEach(k -> {
+            alfaProps.forEach(k -> {
                 cliArgs.add("--" + k);
                 Object v = System.getProperty("alfa." + k);
+                logger.debug("AlfaCliPlugin alfa system property:" + k + "=" + v);
                 if ( v != null &&
                         !v.toString().equals("true") &&  // -Dcompile
                         !v.toString().isBlank() ) {
@@ -54,8 +58,11 @@ public class AlfaCliMojo extends AbstractMojo {
 
             String srcpath = System.getProperties().getProperty("alfa.sourcepath");
 
+            logger.debug("AlfaCliPlugin alfa system property:sourcepath=" + srcpath);
+
             if ( srcpath == null || srcpath.isBlank() ) {
-                throw new MojoExecutionException("-Dalfa.sourcepath=<path to source files> missing");
+                throw new MojoExecutionException("-Dalfa.sourcepath=<path to source files> missing.\nAvailable property keys: " +
+                        String.join(", ", allSysProps ));
             }
             cliArgs.add(srcpath);
 
