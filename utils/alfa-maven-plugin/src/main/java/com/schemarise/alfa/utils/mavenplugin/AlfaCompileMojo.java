@@ -318,6 +318,8 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
 
         e.getOutputDir().mkdirs();
 
+        // TODO Use Exporter
+
         try {
             Class.forName(e.getExportClass());
         } catch (Exception ex) {
@@ -379,6 +381,7 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
         logger.debug("Importer: " + e.getImportType() + " Config " +
                 importerParams.importConfig() );
 
+        // TODO Use Importer
         try {
             Class.forName(e.getImportClass());
         } catch (Exception ex) {

@@ -19,29 +19,36 @@ package com.schemarise.alfa.generators.importers.structureddata
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
 import com.schemarise.alfa.compiler.ast.NodeMeta
-import com.schemarise.alfa.compiler.ast.model.{NoOpNodeVisitor, NodeVisitMode}
+import com.schemarise.alfa.compiler.ast.model.{INamespaceNode, NoOpNodeVisitor, NodeVisitMode}
 import com.schemarise.alfa.compiler.ast.model.NodeVisitMode.Mode
 import com.schemarise.alfa.compiler.ast.model.types.{Enclosed, IUdtDataType}
 import com.schemarise.alfa.compiler.ast.nodes.datatypes._
 import com.schemarise.alfa.compiler.ast.nodes.{FieldOrFieldRef, _}
 import com.schemarise.alfa.compiler.utils.TokenImpl
-import com.schemarise.alfa.compiler.{CompilationUnitArtifact, Context}
+import com.schemarise.alfa.compiler.{AlfaInternalException, CompilationUnitArtifact, Context}
 
 import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.util.UUID
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.collection.mutable.{HashMap, MultiMap, Set}
 
-class JsonBasedTypeBuilder(ctx: Context, namespace: String, jn: JsonNode) extends TypeBuilder {
-  val namespaceNode = NamespaceNode(StringNode.create(namespace))
+class JsonBasedTypeBuilder(ctx: Context, cfg: StructureImportSettings, jn: JsonNode) extends TypeBuilder {
+  val namespaceNode = NamespaceNode(StringNode.create(cfg.namespace))
   private val udtGenNames = new mutable.HashMap[String, String]()
   private var recCounter = 1
+
+  override val udts: mutable.HashMap[String, Record] = new mutable.HashMap[String, Record]()
+
+  override val cua: CompilationUnitArtifact = makeCompUnit()
+
 
   def makeCompUnit(): CompilationUnitArtifact = {
     val r = createOrGetRecord(jn)
 
     udts.values.foreach(rd => ctx.registry.registerUdt(rd))
 
-    val nn = new NamespaceNode(nameNode = StringNode.create(namespace), collectedUdts = udts.values.toSeq)
+    val nn = new NamespaceNode(nameNode = StringNode.create(cfg.namespace), collectedUdts = udts.values.toSeq)
     val cu = new CompilationUnit(ctx = ctx, namespaces = Seq(nn))
     val cua = new CompilationUnitArtifact(ctx, cu)
 
@@ -50,27 +57,40 @@ class JsonBasedTypeBuilder(ctx: Context, namespace: String, jn: JsonNode) extend
 
 
   def createOrGetRecord(jn: JsonNode): Record = {
+
+    if ( jn.isArray ) {
+      var a = jn.asInstanceOf[ArrayNode]
+      return createOrGetRecord(a.get(0))
+    }
+
     if (!jn.isObject)
-      throw new com.schemarise.alfa.compiler.AlfaInternalException("Can decode Object based nodes only")
+      throw new AlfaInternalException("Can decode Object based nodes only")
 
     val fnames = jn.fieldNames().asScala.toArray
 
+    val fs = fnames.
+      filter(e => cfg.typenameField.isEmpty || !cfg.typenameField.get.equals(e)).
+      map(e => e -> makeFieldInfo(e, jn.get(e))).
+      filter(e => e._2.isDefined).map(e => e._2.get).
+      map(e => new FieldOrFieldRef(e))
 
-    val fs = fnames.map(e => e -> makeField(e, jn.get(e))).filter(e => e._2.isDefined).map(e => new FieldOrFieldRef(e._2.get))
+    val recName = if (cfg.typenameField.isDefined && jn.get(cfg.typenameField.get) != null) {
+      jn.get(cfg.typenameField.get).textValue()
+    }
+    else {
+      makeUdtName(fnames)
+    }
 
-    val nn = StringNode.create(makeUdtName(fnames))
+    val fqn = cfg.namespace + "." + recName
 
-    val fqn = namespace + "." + nn.text
-
-    var r = udts.get(nn.text)
+    var r = udts.get(fqn)
 
     if (r.isEmpty) {
-      r = Some(new Record(namespace = namespaceNode, nameNode = nn, fields = fs, imports = Seq.empty))
+      r = Some(new Record(namespace = namespaceNode, nameNode = StringNode.create(recName), fields = fs, imports = Seq.empty))
       udts.put(fqn, r.get)
     }
     r.get
   }
-
 
   class OnlyScalarOrVecOfScalars extends NoOpNodeVisitor {
     var ignore = false
@@ -81,7 +101,7 @@ class JsonBasedTypeBuilder(ctx: Context, namespace: String, jn: JsonNode) extend
     }
   }
 
-  def makeField(name: String, n: JsonNode): Option[Field] = {
+  def makeFieldInfo(name: String, n: JsonNode): Option[Field] = {
     val dt = makeDataType(n)
 
     if (dt.isDefined) {
@@ -95,10 +115,6 @@ class JsonBasedTypeBuilder(ctx: Context, namespace: String, jn: JsonNode) extend
     }
     else
       None
-  }
-
-  def makeTraitName(): String = {
-    "CommonTrait" + recCounter
   }
 
   def makeUdtName(n: Array[String]): String = {
@@ -148,7 +164,7 @@ class JsonBasedTypeBuilder(ctx: Context, namespace: String, jn: JsonNode) extend
           })).flatten.toSeq
 
           val nn = StringNode.create(makeUdtName(fields.map(_.name).toArray))
-          val fqn = namespace + "." + nn.text
+          val fqn = cfg.namespace + "." + nn.text
 
           val r = new Record(namespace = namespaceNode, nameNode = nn, fields = fields.map(f => new FieldOrFieldRef(f)), imports = Seq.empty)
           udts.put(fqn, r)
@@ -178,57 +194,61 @@ class JsonBasedTypeBuilder(ctx: Context, namespace: String, jn: JsonNode) extend
     }
     else if (n.isTextual) {
       try {
-        LocalDate.parse(n.asText())
+        cfg.dateFormat.parse(n.asText())
         return Some(ScalarDataType.dateType)
       } catch {
         case _ =>
       }
 
       try {
-        LocalDateTime.parse(n.asText())
+        cfg.datetimeFormat.parse(n.asText())
         return Some(ScalarDataType.datetimeType)
       } catch {
         case _ =>
       }
 
       try {
-        LocalTime.parse(n.asText())
+        cfg.timeFormat.parse(n.asText())
         return Some(ScalarDataType.timeType)
       } catch {
         case _ =>
       }
 
-      return Some(ScalarDataType.stringType)
+      try {
+        UUID.fromString(n.asText())
+        return Some(ScalarDataType.uuidType)
+      } catch {
+        case _ =>
+      }
+
+      Some(ScalarDataType.stringType)
 
     }
     else if (n.isInt) {
-      return Some(ScalarDataType.intType)
+      Some(ScalarDataType.intType)
     }
     else if (n.isLong) {
-      return Some(ScalarDataType.longType)
+      Some(ScalarDataType.longType)
     }
     else if (n.isFloat) {
-      return Some(ScalarDataType.doubleType)
+      Some(ScalarDataType.doubleType)
     }
     else if (n.isDouble) {
-      return Some(ScalarDataType.doubleType)
+      Some(ScalarDataType.doubleType)
     }
     else if (n.isBigDecimal) {
-      return Some(ScalarDataType.decimalType)
+      Some(ScalarDataType.decimalType)
     }
     else if (n.isBinary) {
-      return Some(ScalarDataType.binaryType)
+      Some(ScalarDataType.binaryType)
     }
     else if (n.isShort) {
-      return Some(ScalarDataType.shortType)
+      Some(ScalarDataType.shortType)
     }
     else if (n.isNull) {
-      return Some(ScalarDataType.stringType)
+      Some(ScalarDataType.stringType)
     }
     else
-      return Some(ScalarDataType.stringType)
+      Some(ScalarDataType.stringType)
   }
-
-  override val udts: mutable.HashMap[String, Record] = new mutable.HashMap[String, Record]()
-  override val cua: CompilationUnitArtifact = makeCompUnit()
 }

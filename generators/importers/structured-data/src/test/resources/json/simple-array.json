@@ -1,0 +1,50 @@
+[
+  {
+    "@type" : "Person",
+    "Age" : 26,
+    "Name" : "Bob",
+    "Salary" : 32000.00,
+    "LoyaltyPoints" : [ 1, 2, 3 ],
+
+    "Accounts" : [ {
+      "Id" : 10901238,
+      "Currency" : "EUR",
+      "Balance" : 1200.00,
+      "Type" : "Credit"
+    }, {
+      "Id" : 20901472,
+      "Currency" : "CHF",
+      "Balance" : 1200.00,
+      "Type" : "Credit"
+    }, {
+      "Id" : 90321234,
+      "Currency" : "USD",
+      "Balance" : 23200.00,
+      "Type" : "Savings"
+    } ]
+  },
+  {
+    "@type" : "Person",
+    "Age" : 26,
+    "Name" : "Joe",
+    "Salary" : 32000.00,
+    "LoyaltyPoints" : [ 1, 2, 3 ],
+
+    "Accounts" : [ {
+      "Id" : 10901238,
+      "Currency" : "EUR",
+      "Balance" : 1200.00,
+      "Type" : "Credit"
+    }, {
+      "Id" : 20901472,
+      "Currency" : "CHF",
+      "Balance" : 1200.00,
+      "Type" : "Credit"
+    }, {
+      "Id" : 90321234,
+      "Currency" : "USD",
+      "Balance" : 23200.00,
+      "Type" : "Savings"
+    } ]
+  }
+]

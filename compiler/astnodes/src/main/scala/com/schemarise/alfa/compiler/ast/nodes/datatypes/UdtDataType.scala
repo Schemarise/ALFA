@@ -328,7 +328,7 @@ object UdtDataType {
   def fromUdtDataType(resolved: UdtBaseNode): UdtDataType = {
     val nw = TokenImpl.empty
     val udt = new UdtDataType(resolved.declaredRawName.location, NamespaceNode.empty,
-      StringNode(nw, resolved.versionedName.fullyQualifiedName), resolved.versionNo, Option.empty)
+      StringNode(nw, resolved.versionedName.fullyQualifiedName), resolved.versionNoNode, Option.empty)
 
     udt._resolvedType = Some(resolved)
     udt.safeUpdateAllResolved

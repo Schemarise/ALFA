@@ -70,11 +70,12 @@ case class EnumDataType(location: IToken = TokenImpl.empty,
     val fieldStr = fields.map(f => {
       val startDoc = f.rawNodeMeta.topDocsToString("    ")
       val sameLnDoc = f.rawNodeMeta.samelineDocsToString()
-      startDoc + " " + EnumDecl.escapedString(f.name) + " " + sameLnDoc // + "\n"
+      val sameLnDocSpaced = if (sameLnDoc.isEmpty) "" else " " + sameLnDoc
+      startDoc + " " + EnumDecl.escapedString(f.name) + sameLnDocSpaced // + "\n"
     }).mkString(",")
 
     val s = new StringBuilder
-    s.append("enum< ")
+    s.append("enum<")
     s.append(fieldStr)
     s.append(" >")
     s.toString()

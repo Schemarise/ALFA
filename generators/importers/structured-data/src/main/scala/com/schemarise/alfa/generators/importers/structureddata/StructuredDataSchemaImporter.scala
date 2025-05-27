@@ -30,23 +30,12 @@ import java.nio.file.{Files, Path}
 import java.time.format.DateTimeFormatter
 
 class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
-  private val reqdKeys = Seq("namespace")
-
-  private var errored = false
-
-  reqdKeys.foreach(k => {
-    if (!param.importConfig.containsKey(k)) {
-      logger.error(s"Missing setting for setting '$k'")
-      errored = true
-    }
-  })
-
-  if (errored)
-    throw new MissingParameter("Missing settings. See log messages.")
+  private val structureImportSettings = new StructureImportSettings(param.importConfig)
 
   private val tBuilder = loadModel(toLocalPath(param.rootPath))
 
   writeAlfaFile(tBuilder.cua, outputDirectory, importConfigStr("namespace"))
+
 
   def loadModel(rootPath: Path): TypeBuilder = {
     if (Files.isDirectory(rootPath))
@@ -57,11 +46,7 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
     val pathstr = rootPath.toString
 
     if ( pathstr.endsWith(".csv") ) {
-      val tb = new CsvTypeBuilder(ctx, rootPath,
-        importConfigStr("namespace"),
-        importConfigStr("typename", "CsvImported" ),
-        importConfigStr("dateformat", "yyyy-MM-dd" ),
-        importConfigStr("datetimeformat", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+      val tb = new CsvTypeBuilder(ctx, rootPath, structureImportSettings)
       tb
     }
     else {
@@ -79,14 +64,21 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
       val contents = new String(Files.readAllBytes(rootPath), StandardCharsets.UTF_8)
       val node = mapper.readTree(contents)
 
-      val tb = new JsonBasedTypeBuilder(ctx, importConfigStr("namespace"), node)
+      val tb = new JsonBasedTypeBuilder(ctx, structureImportSettings, node)
 
       tb
     }
   }
 
-
-  override def supportedConfig(): Array[String] = Array("dateformat")
+  override def supportedConfig(): Array[String] = Array(
+    StructureImportSettings.namespace,
+    StructureImportSettings.dateformat,
+    StructureImportSettings.timeformat,
+    StructureImportSettings.typenameField,
+    StructureImportSettings.typename,
+    StructureImportSettings.enumUniqueValueLimit,
+    StructureImportSettings.datetimeFormat,
+  )
 
   override def name: String = "StructuredDataImporter"
 
@@ -98,7 +90,7 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
 
   override def importSchema(): List[Path] = List.empty
 
-  override def requiredConfig(): Array[String] = Array.empty
+  override def requiredConfig(): Array[String] = Array(StructureImportSettings.namespace)
 
   override def writeTopComment() = false
 }

@@ -17,8 +17,8 @@ package com.schemarise.alfa.compiler.ast.antlrvisitors
 
 import com.schemarise.alfa.compiler.Context
 import com.schemarise.alfa.compiler.antlr.AlfaParser.ModifierContext
+import com.schemarise.alfa.compiler.ast.model.types.Modifiers
 import com.schemarise.alfa.compiler.ast.nodes.ModifierNode
-import com.schemarise.alfa.compiler.types.Modifiers
 
 class ModifiersVisitor(resolveCtx: Context) extends WithContextVisitor[ModifierNode](resolveCtx) {
   override def visitModifier(ctx: ModifierContext): ModifierNode = {

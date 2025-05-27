@@ -218,7 +218,7 @@ class Entity(ctx: Option[Context] = None, token: IToken = TokenImpl.empty,
       }
     }
 
-    sb ++= toStringIncludesAndBody
+    sb ++= toStringIncludesAndBody()
 
     sb.toString()
   }

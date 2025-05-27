@@ -26,9 +26,9 @@ import java.nio.file.Paths
 import java.util
 
 class StructuredDataImporterTest extends AlfaFunSuite {
-  val targetDir = new File(getClass.getResource("/").getPath + "../").getCanonicalPath + "/"
-  val testDir = new File(targetDir, "../src/test/resources/").getCanonicalPath + "/"
-  val genAlfa = new File(targetDir, "generated-test-sources/alfa").getCanonicalPath + "/"
+  private val targetDir = new File(getClass.getResource("/").getPath + "../").getCanonicalPath + "/"
+  private val testDir = new File(targetDir, "../src/test/resources/").getCanonicalPath + "/"
+  private val genAlfa = new File(targetDir, "generated-test-sources/alfa").getCanonicalPath + "/"
 
 
   test("Trade Srv importers") {
@@ -40,7 +40,8 @@ class StructuredDataImporterTest extends AlfaFunSuite {
       Paths.get(genAlfa, "trade-srv"),
       m) )
 
-    sd.getDefinitions()
+    val defs = sd.getDefinitions()
+    println(defs)
   }
 
   test("Structured Data Import tester") {
@@ -65,6 +66,22 @@ class StructuredDataImporterTest extends AlfaFunSuite {
       val d = sd.getDefinition(t)
       println(d.get)
     })
+  }
+
+  test("Structured Data Import from Array") {
+    val m = new util.HashMap[String, Object]()
+    m.put(StructureImportSettings.namespace, "demo")
+    m.put(StructureImportSettings.typenameField, "@type")
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(),
+      Paths.get(testDir + "json/simple-array.json"),
+      Paths.get(genAlfa, "simple-array"),
+      m) )
+
+    val types = sd.getDefinitions()
+
+    val r2 = sd.getDefinition("demo.Rec1").get
+    assert(r2.allFields.size == 4)
   }
 
   test("YAML Structured Data Import tester") {
@@ -103,7 +120,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record CsvImported {
+        |record Imported {
         |  Name : string
         |  Age : int
         |  AddressLine1 : string
@@ -140,7 +157,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record CsvImported {
+        |record Imported {
         |  NumberA : double
         |  NumberB : long
         |  NumberC : double
@@ -151,12 +168,42 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     assertEqualsIgnoringWhitespace(expected, generated)
   }
 
+  test("CSV Schema Test 6") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+    m.put("dateFormat", "dd/MM/yyyy")
+
+    val p = VFS.create().getPath("/")
+    val csvFile = p.resolve("data.csv")
+
+    VFS.write(csvFile,
+      """Name,Dob
+        |Bob,20/10/2001
+        |""".stripMargin)
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record Imported {
+        |  Name : string
+        |  Dob : date
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
 
   test("CSV Schema Test temporal formats") {
     val m = new util.HashMap[String, Object]()
     m.put("namespace", "imported.csvmodel")
-    m.put("dateformat", "dd.MM.yyyy")
-    m.put("datetimeformat", "HH:mm:ss.SSSXXX")
+    m.put("dateFormat", "dd.MM.yyyy")
+    m.put("timeFormat", "HH:mm")
+    m.put("datetimeFormat", "HH:mm:ss.SSSXXX")
 
     val p = VFS.create().getPath("/")
     val csvFile = p.resolve("data.csv")
@@ -174,9 +221,44 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record CsvImported {
+        |record Imported {
         |  DateA : date
         |  DatetimeB : datetime
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
+
+  test("CSV Schema Test Infer Enum") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+
+    val csvFile = Paths.get(testDir + "products-1000.csv")
+
+    val p = VFS.create().getPath("/")
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    val defs = sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record Imported {
+        |  Index : int
+        |  Name : string
+        |  Description : string
+        |  Brand : string
+        |  Category : string
+        |  Price : int
+        |  Currency : enum< USD >
+        |  Stock : int
+        |  EAN : long
+        |  Color : string
+        |  Availability : enum< backorder, discontinued, pre_order, limited_stock, in_stock, out_of_stock >
+        |  `Internal ID` : int
         |}
         |""".stripMargin
 

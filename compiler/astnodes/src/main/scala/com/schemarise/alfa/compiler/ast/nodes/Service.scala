@@ -26,6 +26,7 @@ import com.schemarise.alfa.compiler.ast.nodes.datatypes.{DataType, UdtDataType}
 import com.schemarise.alfa.compiler.err.{DuplicateEntry, ResolutionMessage, ServiceReferencesMetaTypes, ServiceReferencesTraits}
 import com.schemarise.alfa.compiler.utils.TokenImpl
 
+import java.util.function.Supplier
 import scala.collection.immutable.ListMap
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -163,7 +164,10 @@ class Service(ctx: Option[Context],
 
   }
 
-  override def toStringIncludesAndBody(): String = {
+  override def toStringIncludesAndBody(
+                                        _includes:Supplier[Seq[IUdtDataType]] = () => includes,
+                                        _fields:Supplier[Seq[FieldOrFieldRef]] = () => fields
+                                      ): String = {
     val sigs = methodSigNodes.map(ms => {
       ms.toString
     }).mkString("\n")

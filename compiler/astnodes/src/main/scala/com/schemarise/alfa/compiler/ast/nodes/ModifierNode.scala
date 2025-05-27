@@ -18,7 +18,7 @@ package com.schemarise.alfa.compiler.ast.nodes
 import com.schemarise.alfa.compiler.ast.model.IToken
 import com.schemarise.alfa.compiler.ast.BaseNode
 import com.schemarise.alfa.compiler.ast.model.types.Nodes
-import com.schemarise.alfa.compiler.types.Modifiers.ModifierType
+import com.schemarise.alfa.compiler.ast.model.types.Modifiers.ModifierType
 import com.schemarise.alfa.compiler.utils.TokenImpl
 
 class ModifierNode(val location: IToken = TokenImpl.empty, val modifier: ModifierType) extends BaseNode {

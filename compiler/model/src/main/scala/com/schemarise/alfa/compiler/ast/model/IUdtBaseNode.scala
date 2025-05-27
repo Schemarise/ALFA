@@ -15,6 +15,7 @@
  */
 package com.schemarise.alfa.compiler.ast.model
 
+import com.schemarise.alfa.compiler.ast.model.types.Modifiers.ModifierType
 import com.schemarise.alfa.compiler.ast.model.types.{EnumToString, IUdtDataType, UdtType}
 import com.schemarise.alfa.compiler.ast.model.types.UdtType.UdtType
 
@@ -28,8 +29,12 @@ trait IUdtBaseNode extends INode with IdentifiableNode with IDocAndAnnotated wit
 
   def modelId(): Option[String]
 
+  def modifiers : Set[ModifierType] = Set.empty
   def versions: List[IUdtBaseNode]
 
+  def versionNo: Option[Int] = None
+
+  def typeParams: Option[Seq[ITypeParameter]] = None
   def isLoadedFromRepository: Boolean
   /*
   trait T1 { t1 }

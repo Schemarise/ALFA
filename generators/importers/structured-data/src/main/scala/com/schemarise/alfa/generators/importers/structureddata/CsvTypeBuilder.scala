@@ -1,5 +1,20 @@
+/**
+ * Copyright 2024 Schemarise Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.schemarise.alfa.generators.importers.structureddata
-import com.schemarise.alfa.compiler.ast.nodes.datatypes.{AnyDataType, DataType, EnclosingDataType, ScalarDataType}
+import com.schemarise.alfa.compiler.ast.nodes.datatypes.{AnyDataType, DataType, EnclosingDataType, EnumDataType, ScalarDataType}
 import com.schemarise.alfa.compiler.{CompilationUnitArtifact, Context}
 import com.schemarise.alfa.compiler.ast.nodes.{CompilationUnit, Field, FieldOrFieldRef, NamespaceNode, Record, StringNode}
 import com.schemarise.alfa.compiler.utils.TextUtils
@@ -22,13 +37,7 @@ object CsvTypeBuilder {
 }
 class CsvTypeBuilder(ctx: Context,
                      csvFilePath : Path,
-                     namespace: String,
-                     typename :String,
-                     dateFormat : String,
-                     datetimeFormat : String) extends TypeBuilder {
-
-  private val dateFmt = DateTimeFormatter.ofPattern(dateFormat)
-  private val dateTimeFmt = DateTimeFormatter.ofPattern(datetimeFormat)
+                     settings : StructureImportSettings) extends TypeBuilder {
 
   override val udts: mutable.HashMap[String, Record] = new mutable.HashMap[String, Record]()
   override val cua: CompilationUnitArtifact = makeCompUnit()
@@ -42,7 +51,11 @@ class CsvTypeBuilder(ctx: Context,
 
     val colnames = ListBuffer[String]()
     val colTypes = new mutable.LinkedHashMap[String, Set[DataType]] with MultiMap[String, DataType]
+    val strColValues = new mutable.LinkedHashMap[String, Set[String]] with MultiMap[String, String]
+
     val notColTypes = new HashMap[String, Set[DataType]] with MultiMap[String, DataType]
+
+    var typeNameFromField : Option[String] = None
 
     while (it.hasNext()) {
       val csvline = it.next()
@@ -57,6 +70,10 @@ class CsvTypeBuilder(ctx: Context,
           val cell = l._1
           val i = l._2
           val colName = colnames.lift(i).get
+
+          if ( settings.typenameField.isDefined && colName.equals(settings.typenameField.get) ) {
+            typeNameFromField = Some(cell)
+          }
 
           var cellType : DataType = null
 
@@ -85,7 +102,7 @@ class CsvTypeBuilder(ctx: Context,
             if ( notColTypes.contains(colName) &&
                  !notColTypes.get(colName).get.contains(ScalarDataType.datetimeType)) {
               try {
-                dateTimeFmt.parse(cell)
+                val ignore = settings.datetimeFormat.parse(cell)
                 cellType = ScalarDataType.datetimeType
               } catch {
                 case _ =>
@@ -95,11 +112,21 @@ class CsvTypeBuilder(ctx: Context,
 
             if ( !notColTypes.get(colName).get.contains(ScalarDataType.dateType)) {
               try {
-                dateFmt.parse(cell)
+                settings.dateFormat.parse(cell)
                 cellType = ScalarDataType.dateType
               } catch {
                 case _ =>
                   notColTypes.addBinding(colName, ScalarDataType.dateType )
+              }
+            }
+
+            if ( !notColTypes.get(colName).get.contains(ScalarDataType.timeType)) {
+              try {
+                settings.timeFormat.parse(cell)
+                cellType = ScalarDataType.timeType
+              } catch {
+                case _ =>
+                  notColTypes.addBinding(colName, ScalarDataType.timeType )
               }
             }
 
@@ -116,37 +143,49 @@ class CsvTypeBuilder(ctx: Context,
 
           if ( cellType == null ) {
             cellType = ScalarDataType.stringType
+            strColValues.addBinding(colName,  cell)
           }
 
           colTypes.addBinding(colName, cellType)
         })
       }
-
     }
 
-    val fields = {
+    val fields =
       colTypes.map(ct => {
         val cn = TextUtils.validAlfaIdentifier(ct._1)
         val st = ct._2.filter(x => x.isScalar).
           map(x => x.asInstanceOf[ScalarDataType]).toList.
           sortBy(x => x.scalarType).lastOption.getOrElse(ScalarDataType.stringType)
 
-        val isOpt = ct._2.contains(optionalType)
+        val finalType =
+          if ( st == ScalarDataType.stringType ) {
+            val uniqueStrValues = strColValues.get(cn).get
+            if ( uniqueStrValues.size <= settings.enumUniqueValueLimit && rowsRead.get() > 100 ) {
+              EnumDataType( fields = uniqueStrValues.map(v => new Field(nameNode=StringNode.create(v), declDataType=ScalarDataType.stringType)).toSeq )
+            }
+            else {
+              st
+            }
+          }
+          else {
+            st
+          }
 
-        val t = if (isOpt) EnclosingDataType.optional(compType = st) else st
+        val isOpt = ct._2.contains(optionalType)
+        val t = if (isOpt) EnclosingDataType.optional(compType = finalType) else finalType
 
         val f = new Field(nameNode = StringNode.create(cn), declDataType = t)
         new FieldOrFieldRef(f)
       })
-    }
 
-    val rec = new Record(nameNode = StringNode.create(typename),
-      fields = fields.toSeq
-    )
+    val recName = typeNameFromField.getOrElse(settings.typename)
+
+    val rec = new Record(nameNode = StringNode.create(recName), fields = fields.toSeq)
 
     ctx.registry.registerUdt(rec)
 
-    val nn = new NamespaceNode(nameNode = StringNode.create(namespace), collectedUdts = Seq(rec))
+    val nn = new NamespaceNode(nameNode = StringNode.create(settings.namespace), collectedUdts = Seq(rec))
     val cu = new CompilationUnit(ctx = ctx, namespaces = Seq(nn))
     val cua = new CompilationUnitArtifact(ctx, cu)
 
