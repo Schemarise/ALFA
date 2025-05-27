@@ -21,7 +21,7 @@
 
     <groupId>com.schemarise.alfa.generators</groupId>
     <artifactId>alfa-itests</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
@@ -30,7 +30,7 @@
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-gen</artifactId>
-        <version>3.5.1</version>
+        <version>3.5.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.utils</groupId>
             <artifactId>alfa-maven-plugin</artifactId>
-            <version>3.5.1</version>
+            <version>3.5.2-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
