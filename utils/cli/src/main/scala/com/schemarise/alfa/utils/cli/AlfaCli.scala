@@ -25,10 +25,14 @@ final class AlfaCli(compileFlag: Boolean = false,
                     settings: Map[String, String] = Map.empty,
                     exitOnError: Boolean = false,
                     val datafiles: Option[Path] = None,
-                    testFlag: Boolean = false
+                    testFlag: Boolean = false,
+                    _logger : Option[ILogger] = None
                    ) {
 
-  val logger = new StdoutLogger(verbose.isDefined && verbose.get)
+  private val logger = if ( _logger.isDefined ) _logger.get else new StdoutLogger(verbose.isDefined && verbose.get)
+
+  logger.debug(s"AlfaCli parameters - exporters:${exporters.getOrElse("")} importers:${importers.getOrElse("")} " +
+    s"path:${path.getOrElse(Paths.get("empty")).toAbsolutePath} outputDir:${outputDir.getOrElse(Paths.get("empty"))} settings:$settings")
 
   def run() = {
     if (hasValidationError()) {
@@ -40,7 +44,7 @@ final class AlfaCli(compileFlag: Boolean = false,
       cliEarlyExit()
     }
 
-    if ( ( importers.isDefined || exporters.isDefined ) && ! outputDir.isDefined ) {
+    if ( ( importers.isDefined || exporters.isDefined ) && outputDir.isEmpty ) {
       logger.error("outputDir required if importer or exporter specified")
       cliEarlyExit()
     }
@@ -211,10 +215,14 @@ object AlfaCli {
     if (args.filter(a => a.equals("-v") || a.equals("--verbose")).length > 0)
       println("Arguments - " + args.mkString("[", "|", "]"))
 
-    parseAndRun(args)
+    parseAndRun(args, None)
   }
 
-  def parseAndRun(args: Array[String]): Unit = {
+  def parseAndRun(args: Array[String], loggerParam : ILogger): Unit = {
+    parseAndRun(args, Some(loggerParam))
+  }
+
+  def parseAndRun(args: Array[String], loggerParam : Option[ILogger]): Unit = {
     val opts = new ScallopConf(args) {
       banner(
         s"""
@@ -296,7 +304,7 @@ For usage see below:
 
     val ppath = if (p.isDefined) Some(AlfaPath.get(p.get)) else None
 
-    val smt = new AlfaCli(c.getOrElse(false), d.getOrElse(false), e, i, ppath, m, o, t, v, settings, true, datafiles, tst)
+    val smt = new AlfaCli(c.getOrElse(false), d.getOrElse(false), e, i, ppath, m, o, t, v, settings, true, datafiles, tst, loggerParam)
 
     if (smt.hasValidationError()) {
       opts.printHelp()

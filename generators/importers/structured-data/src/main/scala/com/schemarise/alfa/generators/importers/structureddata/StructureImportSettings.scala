@@ -29,8 +29,12 @@ object StructureImportSettings {
   val typename = "typename"
   val typenameField = "typenameField"
   val enumUniqueValueLimit = "enumUniqueValueLimit"
+  val csvDelimiter = "csvDelimiter"
+  val csvMaxColumns = "csvMaxColumns"
+  val csvMaxCharsPerColumn = "csvMaxCharsPerColumn"
 
-  val all = Set( dateformat, timeformat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit)
+  val all = Set( dateformat, timeformat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit,
+    csvDelimiter, csvMaxColumns, csvMaxCharsPerColumn)
 }
 class StructureImportSettings(config: java.util.Map[String, Object] ) {
 
@@ -40,6 +44,19 @@ class StructureImportSettings(config: java.util.Map[String, Object] ) {
     }
   })
 
+  def csvDelimiter : String = {
+    val v = read(StructureImportSettings.csvDelimiter, ",")
+    v
+  }
+  def csvMaxColumns : Int = {
+    val v = read(StructureImportSettings.csvMaxColumns, "1024")
+    Integer.parseInt(v)
+  }
+
+  def csvMaxCharsPerColumn : Int = {
+    val v = read(StructureImportSettings.csvMaxCharsPerColumn, "1024")
+    Integer.parseInt(v)
+  }
   def dateFormat = {
     val v = read(StructureImportSettings.dateformat)
     if ( v == null )

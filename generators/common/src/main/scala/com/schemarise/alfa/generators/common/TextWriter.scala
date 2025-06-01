@@ -129,7 +129,7 @@ abstract class TextWriter(val logger: ILogger) {
 
       val buf = buffers.pop()
       VFS.write(logger, f, formatSource(f, buf.toString()), true)
-      logger.debug("Writing file " + f)
+      logger.debug("Writing file " + f.toAbsolutePath)
       writtenFiles.push(f)
     }
 

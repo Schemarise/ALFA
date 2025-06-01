@@ -17,9 +17,10 @@ package com.schemarise.alfa.generators.importers.structureddata
 import com.schemarise.alfa.compiler.ast.nodes.datatypes.{AnyDataType, DataType, EnclosingDataType, EnumDataType, ScalarDataType}
 import com.schemarise.alfa.compiler.{CompilationUnitArtifact, Context}
 import com.schemarise.alfa.compiler.ast.nodes.{CompilationUnit, Field, FieldOrFieldRef, NamespaceNode, Record, StringNode}
-import com.schemarise.alfa.compiler.utils.TextUtils
+import com.schemarise.alfa.compiler.utils.{ILogger, TextUtils}
 import com.schemarise.alfa.generators.importers.structureddata.CsvTypeBuilder.optionalType
 import com.univocity.parsers.common.{ParsingContext, ResultIterator}
+import com.univocity.parsers.csv._
 
 import java.nio.file.{Files, Path}
 import scala.collection.mutable
@@ -27,7 +28,6 @@ import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
 import org.apache.commons.lang3.math.NumberUtils
 
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicLong
 import scala.collection.mutable.{HashMap, ListBuffer, MultiMap, Set}
@@ -35,7 +35,8 @@ import scala.collection.mutable.{HashMap, ListBuffer, MultiMap, Set}
 object CsvTypeBuilder {
   private val optionalType = EnclosingDataType.optional(compType=AnyDataType.anyType)
 }
-class CsvTypeBuilder(ctx: Context,
+class CsvTypeBuilder(logger: ILogger,
+                     ctx: Context,
                      csvFilePath : Path,
                      settings : StructureImportSettings) extends TypeBuilder {
 
@@ -44,7 +45,15 @@ class CsvTypeBuilder(ctx: Context,
 
   private def makeCompUnit() : CompilationUnitArtifact = {
 
-    val p = new CsvParser( new CsvParserSettings() )
+    val csvf = new CsvFormat()
+    csvf.setDelimiter(settings.csvDelimiter)
+
+    val ps = new CsvParserSettings()
+    ps.setFormat( csvf )
+    ps.setMaxColumns(settings.csvMaxColumns)
+    ps.setMaxCharsPerColumn(settings.csvMaxCharsPerColumn)
+
+    val p = new CsvParser( ps )
     val it : ResultIterator[Array[String], ParsingContext] = p.iterate(Files.newInputStream(csvFilePath)).iterator()
 
     val rowsRead: AtomicLong = new AtomicLong
@@ -64,6 +73,7 @@ class CsvTypeBuilder(ctx: Context,
       if (rowNo == 1) {
         colnames.appendAll( csvline.filter( e => e != null) )
         colnames.foreach( e => notColTypes.addBinding(e, AnyDataType.anyType) )
+        logger.debug(s"Found ${colnames.size} column names - ${colnames.mkString(", ")}")
       }
       else {
         csvline.zipWithIndex.filter( l => l._2 < colnames.length ).foreach( l => {
@@ -159,7 +169,7 @@ class CsvTypeBuilder(ctx: Context,
           sortBy(x => x.scalarType).lastOption.getOrElse(ScalarDataType.stringType)
 
         val finalType =
-          if ( st == ScalarDataType.stringType ) {
+          if ( st == ScalarDataType.stringType && strColValues.get(ct._1).isDefined ) {
             val uniqueStrValues = strColValues.get(ct._1).get
             if ( uniqueStrValues.size <= settings.enumUniqueValueLimit && rowsRead.get() > 100 ) {
               EnumDataType( fields = uniqueStrValues.map(v => new Field(nameNode=StringNode.create(v), declDataType=ScalarDataType.stringType)).toSeq )

@@ -6,7 +6,7 @@ import java.nio.file.Path
 
 case class AlfaImporterParams(logger: ILogger,
                               rootPath: Path,
-                              val outputDirectory: Path,
+                              outputDirectory: Path,
                               importConfig: java.util.Map[String, Object]
                              ) {
 

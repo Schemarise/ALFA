@@ -21,23 +21,29 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.schemarise.alfa.compiler.ast.model.IUdtBaseNode
-import com.schemarise.alfa.compiler.utils.ILogger
 import com.schemarise.alfa.compiler.{AlfaSettingsException, Context}
 import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, MissingParameter}
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
-import java.time.format.DateTimeFormatter
 
 class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
   private val structureImportSettings = new StructureImportSettings(param.importConfig)
+  private val localPath = toLocalPath(param.rootPath)
+  private val tBuilder = loadModel(localPath)
 
-  private val tBuilder = loadModel(toLocalPath(param.rootPath))
+  runImport()
+  private def runImport() = {
 
-  writeAlfaFile(tBuilder.cua, outputDirectory, importConfigStr("namespace"))
+    val outputFile = if ( ! Files.isDirectory(localPath) )
+                        localPath.getFileName.toString.split("\\.").head
+                     else
+                        importConfigStr("namespace")
 
+    writeAlfaFile(tBuilder.cua, outputDirectory, outputFile )
+  }
 
-  def loadModel(rootPath: Path): TypeBuilder = {
+  private def loadModel(rootPath: Path): TypeBuilder = {
     if (Files.isDirectory(rootPath))
       throw new AlfaSettingsException("Expected file, got directory " + rootPath)
 
@@ -46,7 +52,7 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
     val pathstr = rootPath.toString
 
     if ( pathstr.endsWith(".csv") ) {
-      val tb = new CsvTypeBuilder(ctx, rootPath, structureImportSettings)
+      val tb = new CsvTypeBuilder(param.logger, ctx, rootPath, structureImportSettings)
       tb
     }
     else {
@@ -81,8 +87,6 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
   )
 
   override def name: String = "StructuredDataImporter"
-
-  //  override def baseDir: Path = rootPath
 
   override def getDefinitions(): Set[String] = tBuilder.udts.keySet.toSet
 
