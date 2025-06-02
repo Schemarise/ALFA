@@ -36,7 +36,7 @@
     <modules>
         <module>runtime/ast</module>
         <module>runtime/java/core</module>
-        <!-- <module>runtime/java/core-tests</module> -->
+        <module>runtime/java/core-tests</module>
     </modules>
 
 </project>
