@@ -279,8 +279,6 @@ class StructuredDataImporterTest extends AlfaFunSuite {
 
     val generated = VFS.read(p.resolve("gleif10k.alfa"))
 
-    println(generated)
-
     val expected =
       """namespace imported.csvmodel
         |

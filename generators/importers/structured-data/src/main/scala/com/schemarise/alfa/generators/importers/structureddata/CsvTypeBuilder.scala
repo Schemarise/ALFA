@@ -161,7 +161,7 @@ class CsvTypeBuilder(logger: ILogger,
       }
     }
 
-    while (it.hasNext()) {
+    while (it.hasNext() && rowsRead.get() < settings.csvMaxRows ) {
       val csvline = it.next()
       val rowNo = rowsRead.incrementAndGet()
 
