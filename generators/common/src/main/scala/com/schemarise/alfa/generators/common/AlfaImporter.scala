@@ -77,8 +77,7 @@ abstract class AlfaImporter(param: AlfaImporterParams) extends TextWriter(param.
     val elapsed = System.currentTimeMillis - start
     logger.vitalInfo("Import to Alfa completed in " + elapsed + "ms " + m)
 
-    val filename = outputDir.resolve(fileName + ".alfa").toString
-
+    val filename = fileName + ".alfa"
     enterFile(filename)
 
     val ns = cua.getCompilationUnitNamespaces().headOption

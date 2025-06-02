@@ -115,7 +115,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
     sd.getDefinitions()
 
-    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+    val generated = VFS.read(p.resolve("data.alfa"))
 
     val expected =
       """namespace imported.csvmodel
@@ -152,7 +152,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
     sd.getDefinitions()
 
-    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+    val generated = VFS.read(p.resolve("data.alfa"))
 
     val expected =
       """namespace imported.csvmodel
@@ -174,7 +174,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     m.put("dateFormat", "dd/MM/yyyy")
 
     val p = VFS.create().getPath("/")
-    val csvFile = p.resolve("data.csv")
+    val csvFile = p.resolve("all-data.csv")
 
     VFS.write(csvFile,
       """Name,Dob
@@ -184,7 +184,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
     sd.getDefinitions()
 
-    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+    val generated = VFS.read(p.resolve("all-data.alfa"))
 
     val expected =
       """namespace imported.csvmodel
@@ -206,7 +206,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     m.put("datetimeFormat", "HH:mm:ss.SSSXXX")
 
     val p = VFS.create().getPath("/")
-    val csvFile = p.resolve("data.csv")
+    val csvFile = p.resolve("data-with-dates.csv")
 
     VFS.write(csvFile,
       """DateA,DatetimeB
@@ -216,7 +216,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
     sd.getDefinitions()
 
-    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+    val generated = VFS.read(p.resolve("data-with-dates.alfa"))
 
     val expected =
       """namespace imported.csvmodel
@@ -241,7 +241,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
     val defs = sd.getDefinitions()
 
-    val generated = VFS.read(p.resolve("imported.csvmodel.alfa"))
+    val generated = VFS.read(p.resolve("products-1000.alfa"))
 
     val expected =
       """namespace imported.csvmodel

@@ -68,7 +68,7 @@ public class AlfaCliMojo extends AbstractMojo {
 
             logger.info("Arguments: " + String.join(" ", cliArgs));
 
-            AlfaCli.parseAndRun(cliArgs.toArray(new String[]{}));
+            AlfaCli.parseAndRun(cliArgs.toArray(new String[]{}), logger);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Alfa compiler error.", e);
