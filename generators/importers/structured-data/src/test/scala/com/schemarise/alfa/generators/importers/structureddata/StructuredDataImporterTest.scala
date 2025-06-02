@@ -264,4 +264,84 @@ class StructuredDataImporterTest extends AlfaFunSuite {
 
     assertEqualsIgnoringWhitespace(expected, generated)
   }
+
+  test("CSV Schema Test Infer GLEIF") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+    m.put("typename", "GLEIFRecord")
+
+    val csvFile = Paths.get(testDir + "gleif10k.csv")
+
+    val p = VFS.create().getPath("/")
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    val defs = sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("gleif10k.alfa"))
+
+    println(generated)
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record GLEIFRecord {
+        |  `Relationship.StartNode.NodeID` : string
+        |  `Relationship.StartNode.NodeIDType` : enum< LEI >
+        |  `Relationship.EndNode.NodeID` : string
+        |  `Relationship.EndNode.NodeIDType` : enum< LEI >
+        |  `Relationship.RelationshipType` : enum< IS_FEEDER_TO, IS_ULTIMATELY_CONSOLIDATED_BY, IS_DIRECTLY_CONSOLIDATED_BY, IS_INTERNATIONAL_BRANCH_OF, IS_SUBFUND_OF, `IS_FUND-MANAGED_BY` >
+        |  `Relationship.RelationshipStatus` : enum< ACTIVE, INACTIVE >
+        |  `Relationship.Period.1.startDate` : datetime ?
+        |  `Relationship.Period.1.endDate` : datetime ?
+        |  `Relationship.Period.1.periodType` : enum< RELATIONSHIP_PERIOD, DOCUMENT_FILING_PERIOD, ACCOUNTING_PERIOD > ?
+        |  `Relationship.Period.2.startDate` : datetime ?
+        |  `Relationship.Period.2.endDate` : datetime ?
+        |  `Relationship.Period.2.periodType` : enum< RELATIONSHIP_PERIOD, DOCUMENT_FILING_PERIOD, ACCOUNTING_PERIOD > ?
+        |  `Relationship.Period.3.startDate` : datetime ?
+        |  `Relationship.Period.3.endDate` : datetime ?
+        |  `Relationship.Period.3.periodType` : enum< RELATIONSHIP_PERIOD, DOCUMENT_FILING_PERIOD, ACCOUNTING_PERIOD > ?
+        |  `Relationship.Period.4.startDate` : string ?
+        |  `Relationship.Period.4.endDate` : string ?
+        |  `Relationship.Period.4.periodType` : string ?
+        |  `Relationship.Period.5.startDate` : string ?
+        |  `Relationship.Period.5.endDate` : string ?
+        |  `Relationship.Period.5.periodType` : string ?
+        |  `Relationship.Qualifiers.1.QualifierDimension` : enum< ACCOUNTING_STANDARD > ?
+        |  `Relationship.Qualifiers.1.QualifierCategory` : enum< IFRS, US_GAAP, OTHER_ACCOUNTING_STANDARD > ?
+        |  `Relationship.Qualifiers.2.QualifierDimension` : string ?
+        |  `Relationship.Qualifiers.2.QualifierCategory` : string ?
+        |  `Relationship.Qualifiers.3.QualifierDimension` : string ?
+        |  `Relationship.Qualifiers.3.QualifierCategory` : string ?
+        |  `Relationship.Qualifiers.4.QualifierDimension` : string ?
+        |  `Relationship.Qualifiers.4.QualifierCategory` : string ?
+        |  `Relationship.Qualifiers.5.QualifierDimension` : string ?
+        |  `Relationship.Qualifiers.5.QualifierCategory` : string ?
+        |  `Relationship.Quantifiers.1.MeasurementMethod` : enum< ACCOUNTING_CONSOLIDATION > ?
+        |  `Relationship.Quantifiers.1.QuantifierAmount` : double ?
+        |  `Relationship.Quantifiers.1.QuantifierUnits` : enum< PERCENTAGE > ?
+        |  `Relationship.Quantifiers.2.MeasurementMethod` : string ?
+        |  `Relationship.Quantifiers.2.QuantifierAmount` : string ?
+        |  `Relationship.Quantifiers.2.QuantifierUnits` : string ?
+        |  `Relationship.Quantifiers.3.MeasurementMethod` : string ?
+        |  `Relationship.Quantifiers.3.QuantifierAmount` : string ?
+        |  `Relationship.Quantifiers.3.QuantifierUnits` : string ?
+        |  `Relationship.Quantifiers.4.MeasurementMethod` : string ?
+        |  `Relationship.Quantifiers.4.QuantifierAmount` : string ?
+        |  `Relationship.Quantifiers.4.QuantifierUnits` : string ?
+        |  `Relationship.Quantifiers.5.MeasurementMethod` : string ?
+        |  `Relationship.Quantifiers.5.QuantifierAmount` : string ?
+        |  `Relationship.Quantifiers.5.QuantifierUnits` : string ?
+        |  `Registration.InitialRegistrationDate` : datetime
+        |  `Registration.LastUpdateDate` : datetime
+        |  `Registration.RegistrationStatus` : enum< PUBLISHED, LAPSED >
+        |  `Registration.NextRenewalDate` : datetime
+        |  `Registration.ManagingLOU` : string
+        |  `Registration.ValidationSources` : enum< ENTITY_SUPPLIED_ONLY, PARTIALLY_CORROBORATED, FULLY_CORROBORATED >
+        |  `Registration.ValidationDocuments` : enum< REGULATORY_FILING, SUPPORTING_DOCUMENTS, ACCOUNTS_FILING, OTHER_OFFICIAL_DOCUMENTS, CONTRACTS >
+        |  `Registration.ValidationReference` : string ?
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
 }

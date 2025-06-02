@@ -19,6 +19,7 @@ import com.schemarise.alfa.compiler.{CompilationUnitArtifact, Context}
 import com.schemarise.alfa.compiler.ast.nodes.{CompilationUnit, Field, FieldOrFieldRef, NamespaceNode, Record, StringNode}
 import com.schemarise.alfa.compiler.utils.{ILogger, TextUtils}
 import com.schemarise.alfa.generators.importers.structureddata.CsvTypeBuilder.optionalType
+import com.schemarise.alfa.runtime.AlfaRuntimeException
 import com.univocity.parsers.common.{ParsingContext, ResultIterator}
 import com.univocity.parsers.csv._
 
@@ -66,6 +67,100 @@ class CsvTypeBuilder(logger: ILogger,
 
     var typeNameFromField : Option[String] = None
 
+    def processLine(rowNo : Long, l: (String, Int)): Unit = {
+
+      val cell = l._1
+      val colNo = l._2
+
+      try {
+        val colName = colnames.lift(colNo).get
+
+        if (settings.typenameField.isDefined && colName.equals(settings.typenameField.get)) {
+          typeNameFromField = Some(cell)
+        }
+
+        var cellType: DataType = null
+
+        if (NumberUtils.isCreatable(cell)) {
+          val n = NumberUtils.createNumber(cell)
+
+          if (Math.ceil(n.doubleValue()) == Math.floor(n.doubleValue())) {
+            if (n.longValue() > Integer.MAX_VALUE) {
+              cellType = ScalarDataType.longType
+            }
+            else {
+              cellType = ScalarDataType.intType
+            }
+          }
+          else {
+            cellType = ScalarDataType.doubleType
+          }
+        }
+        else if (cell == null) {
+          cellType = CsvTypeBuilder.optionalType
+        }
+        else if (cell.toLowerCase() == "true" || cell.toLowerCase() == "false") {
+          cellType = ScalarDataType.booleanType
+        }
+        else {
+          if (notColTypes.contains(colName) &&
+            !notColTypes.get(colName).get.contains(ScalarDataType.datetimeType)) {
+            try {
+              val ignore = settings.datetimeFormat.parse(cell)
+              cellType = ScalarDataType.datetimeType
+            } catch {
+              case _ =>
+                notColTypes.addBinding(colName, ScalarDataType.datetimeType)
+            }
+          }
+
+          if (!notColTypes.get(colName).get.contains(ScalarDataType.dateType)) {
+            try {
+              settings.dateFormat.parse(cell)
+              cellType = ScalarDataType.dateType
+            } catch {
+              case _ =>
+                notColTypes.addBinding(colName, ScalarDataType.dateType)
+            }
+          }
+
+          if (!notColTypes.get(colName).get.contains(ScalarDataType.timeType)) {
+            try {
+              settings.timeFormat.parse(cell)
+              cellType = ScalarDataType.timeType
+            } catch {
+              case _ =>
+                notColTypes.addBinding(colName, ScalarDataType.timeType)
+            }
+          }
+
+          if (!notColTypes.get(colName).get.contains(ScalarDataType.uuidType)) {
+            try {
+              UUID.fromString(cell)
+              cellType = ScalarDataType.uuidType
+            } catch {
+              case _ =>
+                notColTypes.addBinding(colName, ScalarDataType.uuidType)
+            }
+          }
+        }
+
+        if (cellType == null) {
+          cellType = ScalarDataType.stringType
+          strColValues.addBinding(colName, cell)
+        }
+
+        colTypes.addBinding(colName, cellType)
+      } catch {
+        case e:Exception =>
+          val msg = s"Skipping line:$rowNo col:$colNo value: $cell. " + e.getMessage
+          logger.warn(msg)
+          if ( logger.isDebugEnabled ) {
+            logger.debug(msg + logger.stacktraceToString(e))
+          }
+      }
+    }
+
     while (it.hasNext()) {
       val csvline = it.next()
       val rowNo = rowsRead.incrementAndGet()
@@ -76,88 +171,7 @@ class CsvTypeBuilder(logger: ILogger,
         logger.debug(s"Found ${colnames.size} column names - ${colnames.mkString(", ")}")
       }
       else {
-        csvline.zipWithIndex.filter( l => l._2 < colnames.length ).foreach( l => {
-          val cell = l._1
-          val i = l._2
-          val colName = colnames.lift(i).get
-
-          if ( settings.typenameField.isDefined && colName.equals(settings.typenameField.get) ) {
-            typeNameFromField = Some(cell)
-          }
-
-          var cellType : DataType = null
-
-          if ( NumberUtils.isCreatable(cell) ) {
-            val n = NumberUtils.createNumber(cell)
-
-            if ( Math.ceil(n.doubleValue()) == Math.floor(n.doubleValue()) )  {
-              if ( n.longValue() > Integer.MAX_VALUE ) {
-                cellType = ScalarDataType.longType
-              }
-              else {
-                cellType = ScalarDataType.intType
-              }
-            }
-            else {
-              cellType = ScalarDataType.doubleType
-            }
-          }
-          else if ( cell == null ) {
-            cellType = CsvTypeBuilder.optionalType
-          }
-          else if ( cell.toLowerCase() == "true" || cell.toLowerCase() == "false" ) {
-            cellType = ScalarDataType.booleanType
-          }
-          else {
-            if ( notColTypes.contains(colName) &&
-                 !notColTypes.get(colName).get.contains(ScalarDataType.datetimeType)) {
-              try {
-                val ignore = settings.datetimeFormat.parse(cell)
-                cellType = ScalarDataType.datetimeType
-              } catch {
-                case _ =>
-                  notColTypes.addBinding(colName, ScalarDataType.datetimeType )
-              }
-            }
-
-            if ( !notColTypes.get(colName).get.contains(ScalarDataType.dateType)) {
-              try {
-                settings.dateFormat.parse(cell)
-                cellType = ScalarDataType.dateType
-              } catch {
-                case _ =>
-                  notColTypes.addBinding(colName, ScalarDataType.dateType )
-              }
-            }
-
-            if ( !notColTypes.get(colName).get.contains(ScalarDataType.timeType)) {
-              try {
-                settings.timeFormat.parse(cell)
-                cellType = ScalarDataType.timeType
-              } catch {
-                case _ =>
-                  notColTypes.addBinding(colName, ScalarDataType.timeType )
-              }
-            }
-
-            if ( !notColTypes.get(colName).get.contains(ScalarDataType.uuidType) ) {
-              try {
-                UUID.fromString(cell)
-                cellType = ScalarDataType.uuidType
-              } catch {
-                case _ =>
-                  notColTypes.addBinding(colName, ScalarDataType.uuidType )
-              }
-            }
-          }
-
-          if ( cellType == null ) {
-            cellType = ScalarDataType.stringType
-            strColValues.addBinding(colName,  cell)
-          }
-
-          colTypes.addBinding(colName, cellType)
-        })
+        csvline.zipWithIndex.filter( l => l._2 < colnames.length ).foreach( l => processLine(rowNo, l) )
       }
     }
 
