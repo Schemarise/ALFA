@@ -19,7 +19,6 @@ package com.schemarise.alfa.generators.importers.structureddata
 import com.schemarise.alfa.compiler.utils.{StdoutLogger, VFS}
 import com.schemarise.alfa.generators.common.AlfaImporterParams
 import com.schemarise.alfa.utils.testing.AlfaFunSuite
-import org.scalatest.funsuite.AnyFunSuite
 
 import java.io.File
 import java.nio.file.Paths
@@ -234,7 +233,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val m = new util.HashMap[String, Object]()
     m.put("namespace", "imported.csvmodel")
 
-    val csvFile = Paths.get(testDir + "products-1000.csv")
+    val csvFile = Paths.get(testDir, "csv", "products-1000.csv")
 
     val p = VFS.create().getPath("/")
 
@@ -270,7 +269,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     m.put("namespace", "imported.csvmodel")
     m.put("typename", "GLEIFRecord")
 
-    val csvFile = Paths.get(testDir + "gleif10k.csv")
+    val csvFile = Paths.get(testDir + "csv", "gleif10k.csv")
 
     val p = VFS.create().getPath("/")
 
@@ -337,6 +336,45 @@ class StructuredDataImporterTest extends AlfaFunSuite {
         |  `Registration.ValidationSources` : enum< ENTITY_SUPPLIED_ONLY, PARTIALLY_CORROBORATED, FULLY_CORROBORATED >
         |  `Registration.ValidationDocuments` : enum< REGULATORY_FILING, SUPPORTING_DOCUMENTS, ACCOUNTS_FILING, OTHER_OFFICIAL_DOCUMENTS, CONTRACTS >
         |  `Registration.ValidationReference` : string ?
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
+
+  test("CSV file with BOM UTF8") {
+    testDifferenceCharset("fileWithBOM")
+  }
+
+  test("CSV file with UTF8") {
+    testDifferenceCharset("utf8file")
+  }
+
+  test("CSV file with cp1252") {
+    testDifferenceCharset("cp1252file")
+  }
+
+
+  private def testDifferenceCharset(f : String): Unit = {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+
+    val csvFile = Paths.get(testDir, "csv", f + ".csv")
+
+    val p = VFS.create().getPath("/")
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m))
+    sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve(f + ".alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record Imported {
+        |  Name : string
+        |  Age : int
+        |  Country : string
         |}
         |""".stripMargin
 

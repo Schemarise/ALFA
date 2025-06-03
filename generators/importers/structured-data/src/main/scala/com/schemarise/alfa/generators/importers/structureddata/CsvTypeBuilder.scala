@@ -19,7 +19,6 @@ import com.schemarise.alfa.compiler.{CompilationUnitArtifact, Context}
 import com.schemarise.alfa.compiler.ast.nodes.{CompilationUnit, Field, FieldOrFieldRef, NamespaceNode, Record, StringNode}
 import com.schemarise.alfa.compiler.utils.{ILogger, TextUtils}
 import com.schemarise.alfa.generators.importers.structureddata.CsvTypeBuilder.optionalType
-import com.schemarise.alfa.runtime.AlfaRuntimeException
 import com.univocity.parsers.common.{ParsingContext, ResultIterator}
 import com.univocity.parsers.csv._
 
@@ -27,6 +26,7 @@ import java.nio.file.{Files, Path}
 import scala.collection.mutable
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import org.apache.commons.io.input.BOMInputStream
 import org.apache.commons.lang3.math.NumberUtils
 
 import java.util.UUID
@@ -55,7 +55,9 @@ class CsvTypeBuilder(logger: ILogger,
     ps.setMaxCharsPerColumn(settings.csvMaxCharsPerColumn)
 
     val p = new CsvParser( ps )
-    val it : ResultIterator[Array[String], ParsingContext] = p.iterate(Files.newInputStream(csvFilePath)).iterator()
+
+    val it : ResultIterator[Array[String], ParsingContext] = p.iterate(
+      new BOMInputStream(Files.newInputStream(csvFilePath)), settings.encoding).iterator()
 
     val rowsRead: AtomicLong = new AtomicLong
 
