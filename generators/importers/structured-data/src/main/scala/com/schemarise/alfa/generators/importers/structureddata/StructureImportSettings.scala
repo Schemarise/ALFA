@@ -22,6 +22,7 @@ import com.schemarise.alfa.runtime.AlfaRuntimeException
 import java.time.format.DateTimeFormatter
 
 object StructureImportSettings {
+  val encoding = "encoding"
   val dateformat = "dateFormat"
   val timeformat = "timeFormat"
   val datetimeFormat = "datetimeFormat"
@@ -34,7 +35,7 @@ object StructureImportSettings {
   val csvMaxRows = "csvMaxRows"
   val csvMaxCharsPerColumn = "csvMaxCharsPerColumn"
 
-  val all = Set( dateformat, timeformat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit,
+  val all = Set( encoding, dateformat, timeformat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit,
     csvDelimiter, csvMaxColumns, csvMaxCharsPerColumn, csvMaxRows)
 }
 class StructureImportSettings(config: java.util.Map[String, Object] ) {
@@ -49,6 +50,12 @@ class StructureImportSettings(config: java.util.Map[String, Object] ) {
     val v = read(StructureImportSettings.csvDelimiter, ",")
     v
   }
+
+  def encoding : String = {
+    val v = read(StructureImportSettings.encoding, "UTF-8")
+    v
+  }
+
   def csvMaxRows : Int = {
     val v = read(StructureImportSettings.csvMaxRows, "100000")
     Integer.parseInt(v)
