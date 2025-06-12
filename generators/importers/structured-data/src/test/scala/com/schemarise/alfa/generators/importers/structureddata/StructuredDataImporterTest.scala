@@ -354,6 +354,10 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     testDifferenceCharset("cp1252file")
   }
 
+  test("CSV file with newlineOnly") {
+    testDifferenceCharset("newlineOnly")
+  }
+
 
   private def testDifferenceCharset(f : String): Unit = {
     val m = new util.HashMap[String, Object]()
