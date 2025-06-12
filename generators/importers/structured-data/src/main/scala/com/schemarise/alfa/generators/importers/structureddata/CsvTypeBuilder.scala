@@ -48,12 +48,13 @@ class CsvTypeBuilder(logger: ILogger,
 
     val csvf = new CsvFormat()
     csvf.setDelimiter(settings.csvDelimiter)
+    csvf.setLineSeparator(settings.lineSeparator)
 
     val ps = new CsvParserSettings()
     ps.setFormat( csvf )
     ps.setMaxColumns(settings.csvMaxColumns)
     ps.setMaxCharsPerColumn(settings.csvMaxCharsPerColumn)
-
+      
     val p = new CsvParser( ps )
 
     val it : ResultIterator[Array[String], ParsingContext] = p.iterate(
@@ -71,7 +72,7 @@ class CsvTypeBuilder(logger: ILogger,
 
     def processLine(rowNo : Long, l: (String, Int)): Unit = {
 
-      val cell = l._1
+      val cell = if ( l._1 == null ) null else l._1.trim
       val colNo = l._2
 
       try {

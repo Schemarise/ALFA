@@ -76,15 +76,7 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
     }
   }
 
-  override def supportedConfig(): Array[String] = Array(
-    StructureImportSettings.namespace,
-    StructureImportSettings.dateformat,
-    StructureImportSettings.timeformat,
-    StructureImportSettings.typenameField,
-    StructureImportSettings.typename,
-    StructureImportSettings.enumUniqueValueLimit,
-    StructureImportSettings.datetimeFormat,
-  )
+  override def supportedConfig(): Array[String] = StructureImportSettings.all.toArray
 
   override def name: String = "StructuredDataImporter"
 
