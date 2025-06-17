@@ -153,9 +153,9 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
 
             if (srcPath == null && importSettings.size() == 0) {
                 if (pathsWithAlfaFiles.size() > 1) {
-                    throw new Exception("Alfa source found in multiple source-file paths. Please specify <srcPath> or <sourceDirectory>. Only 1 source path is currently supported - " + srcPaths);
+                    throw new Exception("ALFA source found in multiple source-file paths. Please specify <srcPath> or <sourceDirectory>. Only 1 source path is currently supported - " + srcPaths);
                 } else if (pathsWithAlfaFiles.size() == 0) {
-                    logger.info("No Alfa source files were found in " + srcPaths);
+                    logger.info("No ALFA source files were found in " + srcPaths);
                     logger.info("Use <sourceDirectory>src/main/alfa</sourceDirectory> for the sole source path, or configure using build-helper-maven-plugin. Current paths:");
 
                     srcPaths.forEach(p -> logger.info("\t - " + p));
@@ -273,18 +273,18 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
                     ICompilationUnitArtifact cua = runner.execute();
 
                     if (exportSettings.isEmpty())
-                        logger.info("No Alfa exporters configured.");
+                        logger.info("No ALFA exporters configured.");
 
 
                     for (ExportSetting s : exportSettings) {
                         runExport(s, cua);
                     }
                 } else
-                    logger.info("Not running Alfa compiler, no source files found.");
+                    logger.info("Not running ALFA compiler, no source files found.");
             }
 
         } catch (Exception e) {
-            throw new MojoExecutionException("Alfa compiler error.", e);
+            throw new MojoExecutionException("ALFA compiler error.", e);
         }
 
         if ( importSettings.isEmpty() || exportSettings.isEmpty() ) {

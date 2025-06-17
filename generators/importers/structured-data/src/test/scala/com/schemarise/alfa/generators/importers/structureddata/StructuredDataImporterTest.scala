@@ -119,7 +119,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record Imported {
+        |record data {
         |  Name : string
         |  Age : int
         |  AddressLine1 : string
@@ -156,7 +156,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record Imported {
+        |record data {
         |  NumberA : double
         |  NumberB : long
         |  NumberC : double
@@ -188,7 +188,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record Imported {
+        |record alldata {
         |  Name : string
         |  Dob : date
         |}
@@ -220,7 +220,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record Imported {
+        |record datawithdates {
         |  DateA : date
         |  DatetimeB : datetime
         |}
@@ -245,7 +245,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val expected =
       """namespace imported.csvmodel
         |
-        |record Imported {
+        |record products1000 {
         |  Index : int
         |  Name : string
         |  Description : string
@@ -359,9 +359,15 @@ class StructuredDataImporterTest extends AlfaFunSuite {
   }
 
 
+  test("CSV file with embeddedJson") {
+    testDifferenceCharset("embeddedJson")
+  }
+
+
   private def testDifferenceCharset(f : String): Unit = {
     val m = new util.HashMap[String, Object]()
     m.put("namespace", "imported.csvmodel")
+    m.put("csvMaxCharsPerColumn", "5000")
 
     val csvFile = Paths.get(testDir, "csv", f + ".csv")
 
@@ -373,9 +379,9 @@ class StructuredDataImporterTest extends AlfaFunSuite {
     val generated = VFS.read(p.resolve(f + ".alfa"))
 
     val expected =
-      """namespace imported.csvmodel
+      s"""namespace imported.csvmodel
         |
-        |record Imported {
+        |record $f {
         |  Name : string
         |  Age : int
         |  Country : string

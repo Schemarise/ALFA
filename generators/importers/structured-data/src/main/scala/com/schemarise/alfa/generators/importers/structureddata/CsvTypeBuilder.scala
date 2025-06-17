@@ -49,12 +49,13 @@ class CsvTypeBuilder(logger: ILogger,
     val csvf = new CsvFormat()
     csvf.setDelimiter(settings.csvDelimiter)
     csvf.setLineSeparator(settings.lineSeparator)
+    csvf.setCharToEscapeQuoteEscaping('"')
 
     val ps = new CsvParserSettings()
     ps.setFormat( csvf )
     ps.setMaxColumns(settings.csvMaxColumns)
     ps.setMaxCharsPerColumn(settings.csvMaxCharsPerColumn)
-      
+
     val p = new CsvParser( ps )
 
     val it : ResultIterator[Array[String], ParsingContext] = p.iterate(

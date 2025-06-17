@@ -42,6 +42,7 @@ public class CompilerRunner {
 
 
         AlfaCompiler c = new AlfaCompiler(logger, repoMan);
+        logger.info("Compiling files in " + srcRootDir);
         ICompilationUnitArtifact cua = c.compile(srcRootDir, compilerSettings, Option.empty());
 
         Seq<IResolutionMessage> warnings = cua.getWarnings();

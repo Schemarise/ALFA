@@ -17,6 +17,7 @@
 package com.schemarise.alfa.generators.importers.structureddata
 
 import com.schemarise.alfa.compiler.AlfaInternalException
+import com.schemarise.alfa.compiler.utils.TextUtils
 import com.schemarise.alfa.runtime.AlfaRuntimeException
 
 import java.time.format.DateTimeFormatter
@@ -39,7 +40,7 @@ object StructureImportSettings {
   val all = Set( encoding, dateformat, timeformat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit,
     csvDelimiter, csvMaxColumns, csvMaxCharsPerColumn, csvMaxRows, csvLineSeparator)
 }
-class StructureImportSettings(config: java.util.Map[String, Object] ) {
+class StructureImportSettings(config: java.util.Map[String, Object], outputFilename : String) {
 
   config.keySet().forEach( k => {
     if ( !StructureImportSettings.all.contains(k) ) {
@@ -73,7 +74,7 @@ class StructureImportSettings(config: java.util.Map[String, Object] ) {
   }
 
   def csvMaxCharsPerColumn : Int = {
-    val v = read(StructureImportSettings.csvMaxCharsPerColumn, "1024")
+    val v = read(StructureImportSettings.csvMaxCharsPerColumn, "512")
     Integer.parseInt(v)
   }
   def dateFormat = {
@@ -105,7 +106,8 @@ class StructureImportSettings(config: java.util.Map[String, Object] ) {
   }
 
   def typename = {
-    read(StructureImportSettings.typename, "Imported")
+    val tn = TextUtils.escapeJava(outputFilename)
+    read(StructureImportSettings.typename, tn)
   }
 
   def typenameField = {
