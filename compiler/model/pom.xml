@@ -21,14 +21,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>alfa-compiler-model</artifactId>
-    <version>3.5.7-SNAPSHOT</version>
+    <version>3.5.7</version>
     <groupId>com.schemarise.alfa.compiler</groupId>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-compiler</artifactId>
-        <version>3.5.7-SNAPSHOT</version>
+        <version>3.5.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

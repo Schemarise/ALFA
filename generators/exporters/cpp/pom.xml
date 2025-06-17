@@ -18,13 +18,13 @@
 
     <groupId>com.schemarise.alfa.generators.exporters</groupId>
     <artifactId>alfa-gen-exp-cpp</artifactId>
-    <version>3.5.7-SNAPSHOT</version>
+    <version>3.5.7</version>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
         <artifactId>alfa-gen-exp</artifactId>
-        <version>3.5.7-SNAPSHOT</version>
+        <version>3.5.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators</groupId>
             <artifactId>alfa-gen-common</artifactId>
-            <version>3.5.7-SNAPSHOT</version>
+            <version>3.5.7</version>
         </dependency>
 
     </dependencies>
