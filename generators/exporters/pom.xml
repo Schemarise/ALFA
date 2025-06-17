@@ -21,14 +21,14 @@
 
     <groupId>com.schemarise.alfa.generators</groupId>
     <artifactId>alfa-gen-exp</artifactId>
-    <version>3.5.7</version>
+    <version>3.5.8-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-gen</artifactId>
-        <version>3.5.7</version>
+        <version>3.5.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators</groupId>
             <artifactId>alfa-gen-common</artifactId>
-            <version>3.5.7</version>
+            <version>3.5.8-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
