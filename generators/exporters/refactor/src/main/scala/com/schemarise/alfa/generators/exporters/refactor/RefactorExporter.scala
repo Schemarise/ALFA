@@ -33,6 +33,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
   override def writeTopComment() = false
 
   override def exportSchema(): List[Path] = {
+
     val generalized = generalize()
 
     val cua = param.cua
@@ -58,7 +59,9 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
           )
         }
 
-        VFS.write(param.outputDir.resolve(n.fullyQualifiedName + ".alfa"), t)
+        val tgt = param.outputDir.resolve(n.fullyQualifiedName + ".alfa")
+        logger.info(s"Writing $tgt")
+        VFS.write(tgt, t)
       }
     })
 

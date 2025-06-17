@@ -23,36 +23,59 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.schemarise.alfa.compiler.ast.model.IUdtBaseNode
 import com.schemarise.alfa.compiler.{AlfaSettingsException, Context}
 import com.schemarise.alfa.generators.common.{AlfaImporter, AlfaImporterParams, MissingParameter}
+import com.schemarise.alfa.compiler.ast.nodes.Record
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
+import scala.collection.mutable
 
 class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
-  private val structureImportSettings = new StructureImportSettings(param.importConfig)
   private val localPath = toLocalPath(param.rootPath)
-  private val tBuilder = loadModel(localPath)
+  private val loaded = new mutable.HashMap[String, Record]
 
   runImport()
   private def runImport() = {
 
-    val outputFile = if ( ! Files.isDirectory(localPath) )
-                        localPath.getFileName.toString.split("\\.").head
-                     else
-                        importConfigStr("namespace")
 
-    writeAlfaFile(tBuilder.cua, outputDirectory, outputFile )
+    if ( Files.isDirectory(localPath)) {
+      Files.list(localPath).
+        filter( p => p.endsWith(".csv") ||  p.endsWith(".json") ||  p.endsWith(".xml") ||  p.endsWith(".yaml") ).
+        forEach( p => processFile(p) )
+    }
+    else {
+      processFile(localPath)
+    }
   }
 
-  private def loadModel(rootPath: Path): TypeBuilder = {
-    if (Files.isDirectory(rootPath))
+  private def processFile(p: Path): Unit = {
+
+    val outputFile = if (!Files.isDirectory(localPath))
+      localPath.getFileName.toString.split("\\.").head
+    else
+      importConfigStr("namespace")
+
+    val settings = new StructureImportSettings(param.importConfig, outputFile)
+
+    val tBuilder = loadModel(p, settings)
+    loaded ++= tBuilder.udts
+
+
+    writeAlfaFile(tBuilder.cua, outputDirectory, outputFile)
+  }
+
+  private def loadModel(rootPath: Path, settings : StructureImportSettings ): TypeBuilder = {
+    if (Files.isDirectory(rootPath)) {
       throw new AlfaSettingsException("Expected file, got directory " + rootPath)
+    }
 
     val ctx = new Context()
 
     val pathstr = rootPath.toString
 
+    logger.info("Loading " + pathstr)
+
     if ( pathstr.endsWith(".csv") ) {
-      val tb = new CsvTypeBuilder(param.logger, ctx, rootPath, structureImportSettings)
+      val tb = new CsvTypeBuilder(param.logger, ctx, rootPath, settings)
       tb
     }
     else {
@@ -70,7 +93,7 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
       val contents = new String(Files.readAllBytes(rootPath), StandardCharsets.UTF_8)
       val node = mapper.readTree(contents)
 
-      val tb = new JsonBasedTypeBuilder(ctx, structureImportSettings, node)
+      val tb = new JsonBasedTypeBuilder(ctx, settings, node)
 
       tb
     }
@@ -80,9 +103,9 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
 
   override def name: String = "StructuredDataImporter"
 
-  override def getDefinitions(): Set[String] = tBuilder.udts.keySet.toSet
+  override def getDefinitions(): Set[String] = loaded.keySet.toSet
 
-  override def getDefinition(name: String): Option[IUdtBaseNode] = tBuilder.udts.get(name)
+  override def getDefinition(name: String): Option[IUdtBaseNode] = loaded.get(name)
 
   override def importSchema(): List[Path] = List.empty
 

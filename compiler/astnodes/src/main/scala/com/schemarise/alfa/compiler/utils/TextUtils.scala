@@ -24,13 +24,17 @@ object TextUtils {
     s.head.toString.capitalize + s.tail
 
   def escapeJava(x: String) = {
-    x.map(e => {
+    val escaped = x.map(e => {
       if (Character.isJavaIdentifierPart(e))
         e
       else
         ""
     }).mkString
 
+    if ( Character.isJavaIdentifierStart(escaped.head ) )
+      escaped
+    else
+      "_" + escaped
   }
 
   def toMultilineBlockText(s: String, max: Int = 97, separator: String = "\n") = {
