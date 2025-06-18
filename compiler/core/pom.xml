@@ -22,14 +22,14 @@
 
     <artifactId>alfa-compiler-core</artifactId>
     <groupId>com.schemarise.alfa.compiler</groupId>
-    <version>3.5.8-SNAPSHOT</version>
+    <version>3.5.8</version>
 
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-compiler</artifactId>
-        <version>3.5.8-SNAPSHOT</version>
+        <version>3.5.8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.compiler</groupId>
             <artifactId>alfa-compiler-astnodes</artifactId>
-            <version>3.5.8-SNAPSHOT</version>
+            <version>3.5.8</version>
         </dependency>
 
     </dependencies>

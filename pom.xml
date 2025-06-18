@@ -30,7 +30,7 @@
 
     <groupId>com.schemarise</groupId>
     <artifactId>alfa</artifactId>
-    <version>3.5.8-SNAPSHOT</version>
+    <version>3.5.8</version>
     <name>${project.artifactId}</name>
 
     <description>Schemarise ALFA Data Modelling Toolset</description>
