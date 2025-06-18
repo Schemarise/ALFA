@@ -30,12 +30,12 @@ import java.nio.file.{Files, Path}
 import scala.collection.mutable
 
 class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImporter(param) {
-  private val localPath = toLocalPath(param.rootPath)
   private val loaded = new mutable.HashMap[String, Record]
 
   runImport()
   private def runImport() = {
 
+    val localPath = toLocalPath(param.rootPath)
 
     if ( Files.isDirectory(localPath)) {
 
@@ -51,8 +51,8 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
 
   private def processFile(p: Path): Unit = {
 
-    val outputFile = if (!Files.isDirectory(localPath))
-      localPath.getFileName.toString.split("\\.").head
+    val outputFile = if (!Files.isDirectory(p))
+      p.getFileName.toString.split("\\.").head
     else
       importConfigStr("namespace")
 
