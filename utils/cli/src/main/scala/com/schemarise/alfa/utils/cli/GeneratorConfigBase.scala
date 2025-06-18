@@ -23,7 +23,7 @@ abstract class GeneratorConfigBase(logger : ILogger) {
 
     // validate class exists
     fromClasspath.foreach( f => {
-      logger.info(s"Loading ${f._1} $genType from dependencies" )
+      logger.debug(s"Loading ${f._1} $genType from dependencies" )
       try {
         Class.forName(f._2, false, getClass.getClassLoader)
       }

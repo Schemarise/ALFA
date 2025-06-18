@@ -38,8 +38,10 @@ class StructuredDataSchemaImporter(param: AlfaImporterParams) extends AlfaImport
 
 
     if ( Files.isDirectory(localPath)) {
+
       Files.list(localPath).
-        filter( p => p.endsWith(".csv") ||  p.endsWith(".json") ||  p.endsWith(".xml") ||  p.endsWith(".yaml") ).
+        filter( p => p.toString.endsWith(".csv") ||  p.toString.endsWith(".json") ||  
+        p.toString.endsWith(".xml") ||  p.toString.endsWith(".yaml") ).
         forEach( p => processFile(p) )
     }
     else {
