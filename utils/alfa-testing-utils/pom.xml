@@ -20,7 +20,7 @@
 
     <groupId>com.schemarise.alfa.utils</groupId>
     <artifactId>alfa-utils-testing</artifactId>
-    <version>3.5.8</version>
+    <version>3.5.9-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <description>ALFA testing utilities</description>
@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-utils</artifactId>
-        <version>3.5.8</version>
+        <version>3.5.9-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
