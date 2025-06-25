@@ -31,7 +31,7 @@ object Annotation {
 
 class Annotation(val location: IToken = TokenImpl.empty, namespace: NamespaceNode = NamespaceNode.empty,
                  val nameNode: StringNode,
-                 valueCtx: Option[AlfaParser.NamedExpressionSequenceContext] = None,
+                 val valueCtx: Option[AlfaParser.NamedExpressionSequenceContext] = None,
                  rawObjExpr: Option[Expression] = None,
                 )
   extends BaseNode with ResolvableNode

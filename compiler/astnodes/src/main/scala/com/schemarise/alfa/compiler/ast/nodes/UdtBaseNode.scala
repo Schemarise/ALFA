@@ -70,7 +70,7 @@ abstract class UdtBaseNode(
   def compUnitImports = imports
 
 
-  val SkipGenAnnotation = "alfa.gen.Skip"
+  private val SkipGenAnnotation = "alfa.gen.Skip"
 
   private var _localAndFragFieldRefs: Seq[FieldOrFieldRef] = Seq.empty
   private var _localAndFragIncludes: Seq[UdtDataType] = Seq.empty

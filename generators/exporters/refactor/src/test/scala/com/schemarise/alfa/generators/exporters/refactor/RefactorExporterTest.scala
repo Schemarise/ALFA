@@ -46,7 +46,6 @@ class RefactorExporterTest extends AlfaFunSuite {
 
     val tgtDir = testGeneralize("trademodel", script)
 
-
     assert( Files.exists( tgtDir.resolve("default.Base1.alfa")) )
     assert( Files.exists( tgtDir.resolve("default.Base2.alfa")) )
     assert( Files.exists( tgtDir.resolve("Imported.BondTrade.alfa")) )
@@ -140,7 +139,7 @@ class RefactorExporterTest extends AlfaFunSuite {
     val tgtDir = targetGeneratedTestSourcesPath("refactor/" + rootDir)
     val m = new java.util.HashMap[String, Object]()
     m.put(RefactorExporter.Namespace, "default")
-    m.put(RefactorExporter.IgnoreFields, "id")
+    m.put(RefactorExporter.ExcludeFields, "id")
     m.put(RefactorExporter.AttribSizeThreshold, "2")
 
     val rst = new RefactorExporter(AlfaExporterParams(new StdoutLogger(), tgtDir, cua, m))
