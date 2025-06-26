@@ -19,13 +19,13 @@
 
     <groupId>com.schemarise.alfa.generators.importers</groupId>
     <artifactId>alfa-gen-imp-idl</artifactId>
-    <version>3.5.10-SNAPSHOT</version>
+    <version>3.5.10</version>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa.generators</groupId>
         <artifactId>alfa-gen-imp</artifactId>
-        <version>3.5.10-SNAPSHOT</version>
+        <version>3.5.10</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.generators</groupId>
             <artifactId>alfa-gen-common</artifactId>
-            <version>3.5.10-SNAPSHOT</version>
+            <version>3.5.10</version>
         </dependency>
 
         <dependency>
@@ -41,7 +41,7 @@
             <artifactId>alfa-gen-common</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-            <version>3.5.10-SNAPSHOT</version>
+            <version>3.5.10</version>
         </dependency>
 
     </dependencies>
