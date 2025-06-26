@@ -233,75 +233,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
     }
 
     if ( udt.getName.getUdtType == UdtMetaType.annotationType ) {
-      writeln("\n## Annotation Usages")
-
-      writeln(
-        """
-          |<table>
-          |  <thead>
-          |    <tr>
-          |      <th>Type</th>
-          |      <th>Field</th>
-          |      <th>Settings</th>
-          |    </tr>
-          |  </thead>
-          |  <tbody>""".stripMargin)
-
-      cua.getUdtVersionNames().toList.filter( e => e.udtType != UdtType.annotation).foreach( vn => {
-
-        val typeLink = utils.udtAsLink(c2r.convert(vn), true, false, true)
-
-        val de = cua.getUdt(vn.fullyQualifiedName).get
-        val optAnn = de.annotationsMap.get( UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName) ) )
-        if ( optAnn.isDefined ) {
-          val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
-          val annData =
-            if ( valueCtx.isDefined && valueCtx.get != null ) {
-              valueCtx.get.namedExpression().asScala.map( e => e.expr.getText ).mkString(", ")
-            }
-            else {
-              ""
-            }
-
-          writeln(
-            s"""
-              |<tr><td>$typeLink</td>
-              |  <td></td>
-              |  <td>$annData</td>
-              |</tr>
-              |""".stripMargin)
-        }
-
-        de.allFields.toList.map(_._2).foreach( f => {
-          val optAnn = f.annotationsMap.get( UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName) ) )
-          if ( optAnn.isDefined ) {
-
-            val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
-
-            val annData =
-            if ( valueCtx.isDefined && valueCtx.get != null ) {
-              valueCtx.get.namedExpression().asScala.map( e => e.expr.getText ).mkString(", ")
-            }
-            else
-              ""
-
-            writeln(
-              s"""
-                 |<tr><td>$typeLink</td>
-                 |  <td>${f.name}</td>
-                 |  <td>$annData</td>
-                 |</tr>
-                 |""".stripMargin)
-          }
-        })
-      })
-
-      writeln(
-        """
-          |   </tbody>
-          |   </table>
-          |   <!-- end -->
-          """.stripMargin)
+      writeAnnotationType(udt)
     }
 
     // Referenced from
@@ -327,6 +259,78 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
             """.stripMargin)
       }
     })
+  }
+
+  private def writeAnnotationType(udt: UdtBaseNode): Unit = {
+    writeln("\n## Usages")
+
+    writeln(
+      """
+        |<table>
+        |  <thead>
+        |    <tr>
+        |      <th>Type</th>
+        |      <th>Field</th>
+        |      <th>Settings</th>
+        |    </tr>
+        |  </thead>
+        |  <tbody>""".stripMargin)
+
+    cua.getUdtVersionNames().toList.filter(e => e.udtType != UdtType.annotation).foreach(vn => {
+
+      val typeLink = utils.udtAsLink(c2r.convert(vn), true, false, true)
+
+      val de = cua.getUdt(vn.fullyQualifiedName).get
+      val optAnn = de.annotationsMap.get(UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName)))
+      if (optAnn.isDefined) {
+        val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
+        val annData =
+          if (valueCtx.isDefined && valueCtx.get != null) {
+            valueCtx.get.namedExpression().asScala.map(e => e.expr.getText).mkString(", ")
+          }
+          else {
+            ""
+          }
+
+        writeln(
+          s"""
+             |<tr><td>$typeLink</td>
+             |  <td></td>
+             |  <td>$annData</td>
+             |</tr>
+             |""".stripMargin)
+      }
+
+      de.allFields.toList.map(_._2).foreach(f => {
+        val optAnn = f.annotationsMap.get(UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName)))
+        if (optAnn.isDefined) {
+
+          val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
+
+          val annData =
+            if (valueCtx.isDefined && valueCtx.get != null) {
+              valueCtx.get.namedExpression().asScala.map(e => e.expr.getText).mkString(", ")
+            }
+            else
+              ""
+
+          writeln(
+            s"""
+               |<tr><td>$typeLink</td>
+               |  <td>${f.name}</td>
+               |  <td>$annData</td>
+               |</tr>
+               |""".stripMargin)
+        }
+      })
+    })
+
+    writeln(
+      """
+        |   </tbody>
+        |   </table>
+        |   <!-- end -->
+          """.stripMargin)
   }
 
   def printService(srv: Service) = {
@@ -468,7 +472,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
       writeln(s"# $deco $name")
 
       uBase.getDoc.ifPresent(d => {
-        writeln(">" + d.replaceAll("\n", "\n>"))
+        writeln(">" + d.replaceAll("\n", "\n>") + "\n")
       })
 
       if (includeUml) {

@@ -328,7 +328,7 @@ class MarkdownTest extends AnyFunSuite {
           |
           |
           |@alfa.meta.FieldAnnotations( {
-          |    [ @Ann1(), @Ann2(["ListArg1", "ListArg2"]) , @Ann3("AnnArg") ] : [ Field1, Field2 ]
+          |    [ @Ann1(), @Ann2(["ListArg1", "ListArg2"]) , @Ann3("AnnArg") ] : [ Field1, Field2, Field3 ]
           |})
           |fragment record mocking {
           |}

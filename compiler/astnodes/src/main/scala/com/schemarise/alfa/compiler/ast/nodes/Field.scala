@@ -190,21 +190,29 @@ class Field(val location: IToken = TokenImpl.empty,
         val ann = fieldAnns.get.asInstanceOf[Annotation]
 
         val annExp = ann.valueCtx.get
-        val vm = annExp.namedExpression().get(0).expr.asInstanceOf[BracesExpressionContext].getChild(1).asInstanceOf[ValueMapContext].valueMapEntry()
-        val vme = vm.get(0)
-        val tgtAnns = vme.entrykey.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.
-          filter( e => e.isInstanceOf[NewExpressionContext]).
-          map( e => {
-            val ne = e.asInstanceOf[NewExpressionContext]
-            new Annotation( namespace=udtParent.namespaceNode, nameNode = StringNode.create(ne.udtName.idOnly().id.getText), valueCtx = Some( ne.args ) )
-          } )
 
-        val fields = vme.entryvalue.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.
-          map( e => e.asInstanceOf[LiteralExpressionContext].literal().idOnly().id.getText)
+        val es = annExp.namedExpression().get(0).expr.asInstanceOf[BracesExpressionContext].children.asScala.filter( _.isInstanceOf[ValueMapContext])
 
-        if (fields.contains( name ) ) {
-          tgtAnns.foreach( an => udtAnns.append(an) )
-        }
+        es.foreach( exp => {
+          val vm = exp.asInstanceOf[ValueMapContext].valueMapEntry()
+
+          vm.asScala.foreach( vme => {
+            val tgtAnns = vme.entrykey.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.
+              filter( e => e.isInstanceOf[NewExpressionContext]).
+              map( e => {
+                val ne = e.asInstanceOf[NewExpressionContext]
+                new Annotation( namespace=udtParent.namespaceNode, nameNode = StringNode.create(ne.udtName.idOnly().id.getText), valueCtx = Some( ne.args ) )
+              } )
+
+            val fields = vme.entryvalue.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.
+              map( e => e.asInstanceOf[LiteralExpressionContext].literal().idOnly().id.getText)
+
+            if (fields.contains( name ) ) {
+              tgtAnns.foreach( an => udtAnns.append(an) )
+            }
+          })
+        })
+
       }
     }
     r ++ udtAnns

@@ -44,13 +44,15 @@ final class AlfaCli(compileFlag: Boolean = false,
       cliEarlyExit()
     }
 
-    if ( ( importers.isDefined || exporters.isDefined ) && outputDir.isEmpty ) {
+    if ((importers.isDefined || exporters.isDefined) && outputDir.isEmpty) {
       logger.error("outputDir required if importer or exporter specified")
       cliEarlyExit()
     }
 
-    if (importers.isDefined)
+    if (importers.isDefined) {
       runImporters(importers.get, path.get, outputDir.get, settings)
+      logger.info(s"Importer ${importers.get} completed. Output written to ${outputDir.get.toAbsolutePath}.")
+    }
     else {
 
       val _cua = compile(path.get, modulePaths)
@@ -67,6 +69,7 @@ final class AlfaCli(compileFlag: Boolean = false,
               outputDir.get.resolve(e)
 
           runExporters(e, op, filtered, settings)
+          logger.info(s"Exporter ${e} completed. Output written to ${outputDir.get.toAbsolutePath}.")
         })
       }
 
