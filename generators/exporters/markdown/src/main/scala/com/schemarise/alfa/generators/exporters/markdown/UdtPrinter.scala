@@ -1,10 +1,13 @@
 package com.schemarise.alfa.generators.exporters.markdown
 
-import com.schemarise.alfa.compiler.ast.model
+import com.schemarise.alfa.compiler.antlr.AlfaParser.{ListExpressionContext, LiteralExpressionContext, NamedExpressionContext, NamedExpressionSequenceContext}
+import com.schemarise.alfa.compiler.ast.{UdtVersionedName, model}
 
 import java.nio.file.Path
 import schemarise.alfa.runtime.model._
 import com.schemarise.alfa.compiler.ast.model.ICompilationUnitArtifact
+import com.schemarise.alfa.compiler.ast.model.types.UdtType
+import com.schemarise.alfa.compiler.ast.nodes.{Annotation, StringNode}
 import com.schemarise.alfa.compiler.utils.ILogger
 import com.schemarise.alfa.generators.common.{CompilerToRuntimeTypes, TextWriter}
 import org.commonmark.parser.Parser
@@ -214,7 +217,6 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
         printEnumFields(locals)
       else
         printFields(udt, locals)
-
     }
     else
       writeln("\nNo local fields declared\n")
@@ -230,6 +232,9 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
         printFields(udt, nonLocals)
     }
 
+    if ( udt.getName.getUdtType == UdtMetaType.annotationType ) {
+      writeAnnotationType(udt)
+    }
 
     // Referenced from
     udt.getReferencedInFieldTypeFrom.ifPresent(f => {
@@ -256,6 +261,78 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
     })
   }
 
+  private def writeAnnotationType(udt: UdtBaseNode): Unit = {
+    writeln("\n## Usages")
+
+    writeln(
+      """
+        |<table>
+        |  <thead>
+        |    <tr>
+        |      <th>Type</th>
+        |      <th>Field</th>
+        |      <th>Settings</th>
+        |    </tr>
+        |  </thead>
+        |  <tbody>""".stripMargin)
+
+    cua.getUdtVersionNames().toList.filter(e => e.udtType != UdtType.annotation).foreach(vn => {
+
+      val typeLink = utils.udtAsLink(c2r.convert(vn), true, false, true)
+
+      val de = cua.getUdt(vn.fullyQualifiedName).get
+      val optAnn = de.annotationsMap.get(UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName)))
+      if (optAnn.isDefined) {
+        val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
+        val annData =
+          if (valueCtx.isDefined && valueCtx.get != null) {
+            valueCtx.get.namedExpression().asScala.map(e => e.expr.getText).mkString(", ")
+          }
+          else {
+            ""
+          }
+
+        writeln(
+          s"""
+             |<tr><td>$typeLink</td>
+             |  <td></td>
+             |  <td>$annData</td>
+             |</tr>
+             |""".stripMargin)
+      }
+
+      de.allFields.toList.map(_._2).foreach(f => {
+        val optAnn = f.annotationsMap.get(UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName)))
+        if (optAnn.isDefined) {
+
+          val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
+
+          val annData =
+            if (valueCtx.isDefined && valueCtx.get != null) {
+              valueCtx.get.namedExpression().asScala.map(e => e.expr.getText).mkString(", ")
+            }
+            else
+              ""
+
+          writeln(
+            s"""
+               |<tr><td>$typeLink</td>
+               |  <td>${f.name}</td>
+               |  <td>$annData</td>
+               |</tr>
+               |""".stripMargin)
+        }
+      })
+    })
+
+    writeln(
+      """
+        |   </tbody>
+        |   </table>
+        |   <!-- end -->
+          """.stripMargin)
+  }
+
   def printService(srv: Service) = {
 
     val ctor = srv.getConstructorFormals
@@ -276,7 +353,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
 
       writeln(
         """
-          |<table >
+          |<table>
           |  <thead>
           |    <tr>
           |      <th>Name</th>
@@ -395,7 +472,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
       writeln(s"# $deco $name")
 
       uBase.getDoc.ifPresent(d => {
-        writeln(">" + d.replaceAll("\n", "\n>"))
+        writeln(">" + d.replaceAll("\n", "\n>") + "\n")
       })
 
       if (includeUml) {

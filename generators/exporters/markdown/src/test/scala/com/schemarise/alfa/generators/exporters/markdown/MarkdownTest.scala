@@ -320,4 +320,39 @@ class MarkdownTest extends AnyFunSuite {
 
       """.stripMargin)
   }
+
+    test("MD Annotations") {
+      testMD(
+        """
+          |namespace demo
+          |
+          |
+          |@alfa.meta.FieldAnnotations( {
+          |    [ @Ann1(), @Ann2(["ListArg1", "ListArg2"]) , @Ann3("AnnArg") ] : [ Field1, Field2, Field3 ]
+          |})
+          |fragment record mocking {
+          |}
+          |
+          |@Ann1
+          |@Ann3("AnnArg")
+          |record mocking {
+          |  Field1 : string
+          |  Field2 : string
+          |  Field3 : string
+          |}
+          |
+          |annotation Ann1(record, field) {
+          |}
+          |
+          |annotation Ann2 (record, field) {
+          |  Usage : list < string >
+          |}
+          |
+          |annotation Ann3(record, field) {
+          |   Name : string
+          |}
+          |
+          |""".stripMargin
+      )
+    }
 }

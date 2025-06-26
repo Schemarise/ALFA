@@ -25,14 +25,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>alfa-runtime-java</artifactId>
-    <version>3.5.10-SNAPSHOT</version>
+    <version>3.5.10</version>
     <groupId>com.schemarise.alfa.runtime</groupId>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-runtime</artifactId>
-        <version>3.5.10-SNAPSHOT</version>
+        <version>3.5.10</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
@@ -127,7 +127,7 @@
                     <plugin>
                         <groupId>com.schemarise.alfa.utils</groupId>
                         <artifactId>alfa-maven-plugin</artifactId>
-                        <version>3.5.10-SNAPSHOT</version>
+                        <version>3.5.10</version>
                         <executions>
 
                             <execution>

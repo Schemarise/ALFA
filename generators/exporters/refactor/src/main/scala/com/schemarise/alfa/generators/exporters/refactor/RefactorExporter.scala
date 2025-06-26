@@ -14,7 +14,8 @@ import scala.collection.mutable.{HashMap, ListBuffer, MultiMap, Set}
 
 object RefactorExporter {
   val Namespace = "namespace"
-  val IgnoreFields = "ignoreFields"
+  val ExcludeFields = "excludeFields"
+  val OnlyIncludeFields = "onlyIncludeFields"
   val AttribSizeThreshold = "groupAttribSizeThreshold"
   val UsageCountPercentage = "groupUsageCountPercentage"
   val GeneratedNamePrefix = "generatedNamePrefix"
@@ -25,7 +26,8 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
   private val attribSizeThreshold = Integer.parseInt(param.exportConfig.getOrDefault(RefactorExporter.AttribSizeThreshold, "2").toString)
   private val usageCountPercentage = Integer.parseInt(param.exportConfig.getOrDefault(RefactorExporter.UsageCountPercentage, "90").toString)
-  private val ignoreFields = param.exportConfig.getOrDefault(RefactorExporter.IgnoreFields, "").toString.split(",")
+  private val excludeFields = param.exportConfig.getOrDefault(RefactorExporter.ExcludeFields, "").toString.split(",").filter( _.length > 0)
+  private val onlyIncludeFields = param.exportConfig.getOrDefault(RefactorExporter.OnlyIncludeFields, "").toString.split(",").filter( _.length > 0)
   private val generatedNamePrefix = param.exportConfig.getOrDefault(RefactorExporter.GeneratedNamePrefix, "Base")
   private val namespace = param.exportConfig.get(RefactorExporter.Namespace)
   private val fullyGeneralize = param.exportConfig.getOrDefault(RefactorExporter.FullyGeneralize, "true").toString.toLowerCase.equals("true")
@@ -89,10 +91,11 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
     val attrs = new mutable.HashMap[String, Attr]()
     val types: Map[String, Type] = cua.getUdtVersionNames().filter(e => isFieldContainer(e.udtType)).map(vn => {
-      val udt = cua.getUdt(vn.fullyQualifiedName).get.asInstanceOf[UdtBaseNode]
+    val udt = cua.getUdt(vn.fullyQualifiedName).get.asInstanceOf[UdtBaseNode]
 
-      val fields = udt.allFields.values.
-        filter(f => !ignoreFields.contains(f.name)).
+    val fields = udt.allFields.values.
+        filter(f => onlyIncludeFields.isEmpty || onlyIncludeFields.contains(f.name) ).
+        filter(f => !excludeFields.contains(f.name)).
         map(f => f.name -> {
 
           val fk = f.name + "__" + f.dataType.toString
@@ -216,7 +219,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
 
   override def supportedConfig(): Array[String] = requiredConfig() ++
-    Seq(RefactorExporter.IgnoreFields, RefactorExporter.UsageCountPercentage,
+    Seq(RefactorExporter.ExcludeFields, RefactorExporter.OnlyIncludeFields, RefactorExporter.UsageCountPercentage,
       RefactorExporter.AttribSizeThreshold, RefactorExporter.FullyGeneralize)
 
   override def requiredConfig(): Array[String] = Array(RefactorExporter.Namespace)

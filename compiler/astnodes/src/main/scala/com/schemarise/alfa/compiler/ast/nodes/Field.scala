@@ -15,6 +15,7 @@
  */
 package com.schemarise.alfa.compiler.ast.nodes
 
+import com.schemarise.alfa.compiler.antlr.AlfaParser.{BracesExpressionContext, ListExpressionContext, LiteralExpressionContext, NewExpressionContext, ValueMapContext, ValueMapEntryContext}
 import com.schemarise.alfa.compiler.ast.model.{IToken, IdentifiableNode, NodeVisitor}
 import com.schemarise.alfa.compiler.ast.model.expr.IExpression
 import com.schemarise.alfa.compiler.{AlfaInternalException, Context}
@@ -22,8 +23,11 @@ import com.schemarise.alfa.compiler.ast._
 import com.schemarise.alfa.compiler.ast.model._
 import com.schemarise.alfa.compiler.ast.model.graph.NodeIdentity
 import com.schemarise.alfa.compiler.ast.model.types.Nodes
-import com.schemarise.alfa.compiler.ast.nodes.datatypes.{DataType}
+import com.schemarise.alfa.compiler.ast.nodes.datatypes.{DataType, UdtDataType}
 import com.schemarise.alfa.compiler.utils.{LexerUtils, TokenImpl}
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 
 object Field {
   def of(name: String, dataType: DataType, parent: BaseNode, isSynthetic: Boolean = false): Field = {
@@ -175,7 +179,43 @@ class Field(val location: IToken = TokenImpl.empty,
 
   private def localAndUdtLevelAnnotations(ctx: Context): Seq[Annotation] = {
     val r = rawNodeMeta.annotations
-    r
+
+    val udtAnns = new  ListBuffer[Annotation]
+
+    if (hasUdtParent && !locateUdtParent.annotationsMap.isEmpty) {
+      val udtParent = locateUdtParent
+      val fieldAnns = udtParent.annotationsMap.filter( e => e._1.fullyQualifiedName == IAnnotation.Meta_Field_Annotations ).values.headOption
+
+      if ( fieldAnns.isDefined ) {
+        val ann = fieldAnns.get.asInstanceOf[Annotation]
+
+        val annExp = ann.valueCtx.get
+
+        val es = annExp.namedExpression().get(0).expr.asInstanceOf[BracesExpressionContext].children.asScala.filter( _.isInstanceOf[ValueMapContext])
+
+        es.foreach( exp => {
+          val vm = exp.asInstanceOf[ValueMapContext].valueMapEntry()
+
+          vm.asScala.foreach( vme => {
+            val tgtAnns = vme.entrykey.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.
+              filter( e => e.isInstanceOf[NewExpressionContext]).
+              map( e => {
+                val ne = e.asInstanceOf[NewExpressionContext]
+                new Annotation( namespace=udtParent.namespaceNode, nameNode = StringNode.create(ne.udtName.idOnly().id.getText), valueCtx = Some( ne.args ) )
+              } )
+
+            val fields = vme.entryvalue.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.
+              map( e => e.asInstanceOf[LiteralExpressionContext].literal().idOnly().id.getText)
+
+            if (fields.contains( name ) ) {
+              tgtAnns.foreach( an => udtAnns.append(an) )
+            }
+          })
+        })
+
+      }
+    }
+    r ++ udtAnns
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Field]
