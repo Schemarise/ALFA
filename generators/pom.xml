@@ -21,7 +21,7 @@
 
     <groupId>com.schemarise.alfa</groupId>
     <artifactId>alfa-gen</artifactId>
-    <version>3.5.11-SNAPSHOT</version>
+    <version>3.5.11</version>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
@@ -30,7 +30,7 @@
     <parent>
         <groupId>com.schemarise</groupId>
         <artifactId>alfa</artifactId>
-        <version>3.5.11-SNAPSHOT</version>
+        <version>3.5.11</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.utils</groupId>
             <artifactId>alfa-utils-testing</artifactId>
-            <version>3.5.11-SNAPSHOT</version>
+            <version>3.5.11</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

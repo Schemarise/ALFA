@@ -22,13 +22,13 @@
 
     <groupId>com.schemarise.alfa.runtime</groupId>
     <artifactId>alfa-runtime-java-tests</artifactId>
-    <version>3.5.11-SNAPSHOT</version>
+    <version>3.5.11</version>
     <name>${project.artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-runtime</artifactId>
-        <version>3.5.11-SNAPSHOT</version>
+        <version>3.5.11</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.runtime</groupId>
             <artifactId>alfa-runtime-java</artifactId>
-            <version>3.5.11-SNAPSHOT</version>
+            <version>3.5.11</version>
         </dependency>
 
         <dependency>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.utils</groupId>
             <artifactId>alfa-utils-testing</artifactId>
-            <version>3.5.11-SNAPSHOT</version>
+            <version>3.5.11</version>
         </dependency>
 
     </dependencies>
@@ -94,7 +94,7 @@
             <plugin>
                 <groupId>com.schemarise.alfa.utils</groupId>
                 <artifactId>alfa-maven-plugin</artifactId>
-                <version>3.5.11-SNAPSHOT</version>
+                <version>3.5.11</version>
                 <executions>
 
                     <execution>
