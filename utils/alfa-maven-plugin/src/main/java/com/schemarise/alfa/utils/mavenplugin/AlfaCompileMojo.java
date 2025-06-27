@@ -344,7 +344,7 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
         for (String s : e.getConfig().keySet()) {
             if (!supported.contains(s)) {
                 throw new CompilerException("The exportClass for '" + e.getExportType() + "' does not support <" + s +
-                        "> as a exportSetting config entry");
+                        "> as a exportSetting config entry. Use one of " + supported);
             }
         }
 
@@ -400,7 +400,7 @@ public class AlfaCompileMojo extends AbstractMojo implements MavenCompilerParamP
         for (String s : e.getConfig().keySet()) {
             if (!supported.contains(s)) {
                 throw new CompilerException("The importClass '" + e.getImportClass() + "' does not support <" + s +
-                        "> as an importSetting config entry");
+                        "> as an importSetting config entry. Use one of " + supported);
             }
         }
 
