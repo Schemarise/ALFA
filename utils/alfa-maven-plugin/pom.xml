@@ -21,14 +21,14 @@
 
     <groupId>com.schemarise.alfa.utils</groupId>
     <artifactId>alfa-maven-plugin</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>${artifactId}</name>
 
     <parent>
         <groupId>com.schemarise.alfa</groupId>
         <artifactId>alfa-utils</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.schemarise.alfa.utils</groupId>
             <artifactId>alfa-utils-cli</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
