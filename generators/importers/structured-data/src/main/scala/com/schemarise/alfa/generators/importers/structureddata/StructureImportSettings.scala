@@ -24,21 +24,22 @@ import java.time.format.DateTimeFormatter
 
 object StructureImportSettings {
   val encoding = "encoding"
-  val dateformat = "dateFormat"
-  val timeformat = "timeFormat"
+  val dateFormat = "dateFormat"
+  val timeFormat = "timeFormat"
   val datetimeFormat = "datetimeFormat"
   val namespace = "namespace"
   val typename = "typename"
   val typenameField = "typenameField"
-  val enumUniqueValueLimit = "enumUniqueValueLimit"
   val csvDelimiter = "csvDelimiter"
   val csvMaxColumns = "csvMaxColumns"
   val csvMaxRows = "csvMaxRows"
   val csvMaxCharsPerColumn = "csvMaxCharsPerColumn"
   val csvLineSeparator = "csvLineSeparator"
+  val enumUniqueValueLimit = "enumUniqueValueLimit"
+  val treatAsEnumField = "treatAsEnumField"
 
-  val all = Set( encoding, dateformat, timeformat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit,
-    csvDelimiter, csvMaxColumns, csvMaxCharsPerColumn, csvMaxRows, csvLineSeparator)
+  val all = Set( encoding, dateFormat, timeFormat, datetimeFormat, namespace, typename, typenameField, enumUniqueValueLimit,
+    csvDelimiter, csvMaxColumns, csvMaxCharsPerColumn, csvMaxRows, csvLineSeparator, treatAsEnumField)
 }
 class StructureImportSettings(config: java.util.Map[String, Object], outputFilename : String) {
 
@@ -56,6 +57,14 @@ class StructureImportSettings(config: java.util.Map[String, Object], outputFilen
   def lineSeparator : String = {
     val v = read(StructureImportSettings.csvLineSeparator, "\n")
     v
+  }
+
+  def treatAsEnumFields : Set[String] = {
+    val v = read(StructureImportSettings.treatAsEnumField, "")
+    if ( v.isEmpty )
+      Set.empty[String]
+    else
+      v.split(",").toSet
   }
 
   def encoding : String = {
@@ -78,7 +87,7 @@ class StructureImportSettings(config: java.util.Map[String, Object], outputFilen
     Integer.parseInt(v)
   }
   def dateFormat = {
-    val v = read(StructureImportSettings.dateformat)
+    val v = read(StructureImportSettings.dateFormat)
     if ( v == null )
       DateTimeFormatter.ISO_DATE
     else
@@ -86,7 +95,7 @@ class StructureImportSettings(config: java.util.Map[String, Object], outputFilen
   }
 
   def timeFormat = {
-    val v = read(StructureImportSettings.timeformat)
+    val v = read(StructureImportSettings.timeFormat)
     if ( v == null )
       DateTimeFormatter.ISO_TIME
     else

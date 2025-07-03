@@ -91,7 +91,7 @@ class Exporters(logger : ILogger) extends GeneratorConfigBase(logger) {
       cfg.keySet.foreach( s => {
         if (!supported.contains(s)) {
           throw new AlfaRuntimeException("The exportClass for '" + name + "' does not support <" + s +
-            "> as a exportSetting config entry");
+            "> as a exportSetting config entry. Use one of " + supported.mkString(", "));
         }
       } )
 

@@ -4,14 +4,17 @@ import com.schemarise.alfa.compiler.ast.model.ICompilationUnitArtifact
 import com.schemarise.alfa.compiler.err.CompilerSettingsException
 import com.schemarise.alfa.compiler.tools.AllSettingsFactory
 import com.schemarise.alfa.compiler.tools.repo.{FileRepositoryMgr, RepositoryManagerFactory}
-import com.schemarise.alfa.compiler.utils.{ILogger, StdoutLogger}
+import com.schemarise.alfa.compiler.utils.{ILogger, StdoutLogger, VFS}
 import com.schemarise.alfa.compiler.{AlfaCompiler, CompilationUnitArtifact}
 import com.schemarise.alfa.generators.common.AlfaPath
 import com.schemarise.alfa.runtime.Logger
 import org.rogach.scallop._
 import org.rogach.scallop.exceptions.ScallopException
 
+import java.io.FileReader
 import java.nio.file._
+import java.util.Properties
+import scala.collection.JavaConverters._
 
 final class AlfaCli(compileFlag: Boolean = false,
                     installFlag: Boolean = false,
@@ -123,7 +126,7 @@ final class AlfaCli(compileFlag: Boolean = false,
       System.exit(1)
     }
     else
-      throw new AlfaExitException()
+      throw new AlfaExitException("Exiting ALFA CLI")
   }
 
   private def runExporters(g: String, o: Path, cua: ICompilationUnitArtifact, settings: Map[String, String]): Unit = {
@@ -188,7 +191,7 @@ final class AlfaCli(compileFlag: Boolean = false,
   }
 }
 
-class AlfaExitException extends Exception {}
+class AlfaExitException(msg : String) extends Exception(msg) {}
 
 /**
  * Alfa CLI
@@ -242,9 +245,6 @@ For usage see below:
 
       val types = opt[List[String]]("types", descr = "Type for DQ checks or restrict the output to this list of types and their derived/dependant/reachable definitions")
 
-      //      val path = opt[Path]("path",
-      //        descr = "A path to a) File with .alfa-proj.yaml or .alfa-proj.json extension b) A path to a directory c) A *.alfa-proj.zip file")
-
       val verbose = opt[Boolean]("verbose", descr = "Display verbose messages from compiler")
 
       private val verboseSet = args.contains("-v") || args.contains("--verbose")
@@ -255,7 +255,7 @@ For usage see below:
         descr = s"""Importer to use for generating ALFA model ${if (verboseSet) new Importers(logger).importers.toSeq.sorted.mkString("[", ", ", "]") else ""} """)
 
       val settings = opt[String]("settings", descr = "Settings specific to the generator (e.g. skip-assert-all=true;skip-unknown-fields=true;exclude-asserts=ExtValidate )")
-      val settingsFile = opt[String]("settingsFile", descr = "Path to settings configuration file")
+      val settingsFile = opt[Path]("settingsFile", descr = "Path to settings configuration file")
 
       val datafiles = opt[Path]("datafiles", descr = "Path to data file for Data Quality checks")
       val output = opt[Path]("output", descr = "Path to write generated output, optional unless generator specified")
@@ -283,17 +283,31 @@ For usage see below:
     val p = opts.path.toOption
     val _m = opts.modules.toOption
     val s = opts.settings.toOption
+    val sf = opts.settingsFile.toOption
 
     val datafiles = opts.datafiles.toOption
 
     val settings: Map[String, String] = if (s.isDefined) {
-      s.get.split(";").map(a => {
-        val x = a.split("=")
-        x.head -> x.last
+        s.get.split(";").map(a => {
+          val x = a.split("=")
+          x.head -> x.last
+        }
+        ).toMap
       }
-      ).toMap
-    } else
-      Map.empty
+      else if (sf.isDefined) {
+          val p = new Properties()
+          try {
+            p.load( new FileReader(sf.get.toFile) )
+          }
+          catch {
+            case excp:Exception =>
+              throw new AlfaExitException("Failed to load settingsFile. Expected format is a line per setting of key=value. " + excp.getMessage)
+          }
+          p.asScala.toMap
+      }
+      else {
+        Map.empty
+      }
 
     val m = if (_m.isDefined)
       Some(_m.get.map(e => Paths.get(e)))

@@ -189,7 +189,16 @@ class CsvTypeBuilder(logger: ILogger,
         val finalType =
           if ( st == ScalarDataType.stringType && strColValues.get(ct._1).isDefined ) {
             val uniqueStrValues = strColValues.get(ct._1).get
-            if ( uniqueStrValues.size <= settings.enumUniqueValueLimit && rowsRead.get() > 100 ) {
+
+            if ( !settings.treatAsEnumFields.isEmpty ) {
+              if ( settings.treatAsEnumFields.contains(cn) ) {
+                EnumDataType( fields = uniqueStrValues.map(v => new Field(nameNode=StringNode.create(v), declDataType=ScalarDataType.stringType)).toSeq )
+              }
+              else {
+                st
+              }
+            }
+            else if ( uniqueStrValues.size <= settings.enumUniqueValueLimit && rowsRead.get() > 100 ) {
               EnumDataType( fields = uniqueStrValues.map(v => new Field(nameNode=StringNode.create(v), declDataType=ScalarDataType.stringType)).toSeq )
             }
             else {
