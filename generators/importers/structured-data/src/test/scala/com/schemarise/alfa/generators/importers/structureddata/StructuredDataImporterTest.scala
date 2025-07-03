@@ -232,6 +232,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
   test("CSV Schema Test Infer Enum") {
     val m = new util.HashMap[String, Object]()
     m.put("namespace", "imported.csvmodel")
+    m.put("treatAsEnumField", "Availability")
 
     val csvFile = Paths.get(testDir, "csv", "products-1000.csv")
 
@@ -252,7 +253,7 @@ class StructuredDataImporterTest extends AlfaFunSuite {
         |  Brand : string
         |  Category : string
         |  Price : int
-        |  Currency : enum< USD >
+        |  Currency : string
         |  Stock : int
         |  EAN : long
         |  Color : string
@@ -385,6 +386,39 @@ class StructuredDataImporterTest extends AlfaFunSuite {
         |  Name : string
         |  Age : int
         |  Country : string
+        |}
+        |""".stripMargin
+
+    assertEqualsIgnoringWhitespace(expected, generated)
+  }
+
+
+  test("CSV Schema Test Optionals") {
+    val m = new util.HashMap[String, Object]()
+    m.put("namespace", "imported.csvmodel")
+
+    val p = VFS.create().getPath("/")
+    val csvFile = p.resolve("data-opt.csv")
+    VFS.write(csvFile,
+      """ValInt,ValStr,ValDbl
+        |10,,
+        |,ABC,190
+        |593,,
+        |,DEF,901.54
+        |""".stripMargin)
+
+    val sd = new StructuredDataSchemaImporter(new AlfaImporterParams(new StdoutLogger(), csvFile, p, m) )
+    sd.getDefinitions()
+
+    val generated = VFS.read(p.resolve("data-opt.alfa"))
+
+    val expected =
+      """namespace imported.csvmodel
+        |
+        |record dataopt {
+        |  ValInt : int?
+        |  ValStr : string?
+        |  ValDbl : double?
         |}
         |""".stripMargin
 

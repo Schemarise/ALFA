@@ -1,0 +1,83 @@
+namespace refactor.test1
+
+record User {
+  id: uuid 
+  name: string
+  email: string 
+  created_at: datetime 
+  is_active: boolean 
+}
+
+record Product {
+  id: uuid 
+  name: string
+  description: string?
+  price: double
+  available: boolean 
+  tags: list<string>
+}
+
+record Order {
+  id: uuid 
+  user_id: uuid 
+  status: string 
+  total: double
+  created_at: datetime 
+}
+
+record Category {
+  id: uuid 
+  name: string 
+  parent_id: uuid?
+}
+
+record Review {
+  id: uuid 
+  user_id: uuid 
+  product_id: uuid
+  rating: int
+  comment: string?
+  created_at: datetime 
+}
+
+record Inventory {
+  id: uuid 
+  product_id: uuid
+  quantity: int
+  last_updated: datetime 
+}
+
+record Address {
+  id: uuid 
+  user_id: uuid 
+  street: string
+  city: string
+  state: string
+  zip: string
+  country: string
+}
+
+record Session {
+  id: uuid 
+  user_id: uuid 
+  token: string 
+  created_at: datetime 
+  expires_at: datetime
+}
+
+record Payment {
+  id: uuid 
+  order_id: uuid 
+  amount: double
+  status: string 
+  method: string
+  paid_at: datetime?
+}
+
+record Notification {
+  id: uuid 
+  user_id: uuid 
+  message: string
+  read: boolean 
+  sent_at: datetime 
+}

@@ -17,7 +17,6 @@ object RefactorExporter {
   val ExcludeFields = "excludeFields"
   val OnlyIncludeFields = "onlyIncludeFields"
   val AttribSizeThreshold = "groupAttribSizeThreshold"
-  val UsageCountPercentage = "groupUsageCountPercentage"
   val GeneratedNamePrefix = "generatedNamePrefix"
   val FullyGeneralize = "fullyGeneralize"
 }
@@ -25,7 +24,6 @@ object RefactorExporter {
 class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) with SupportedGenerator {
 
   private val attribSizeThreshold = Integer.parseInt(param.exportConfig.getOrDefault(RefactorExporter.AttribSizeThreshold, "1").toString)
-  private val usageCountPercentage = Integer.parseInt(param.exportConfig.getOrDefault(RefactorExporter.UsageCountPercentage, "90").toString)
   private val excludeFields = param.exportConfig.getOrDefault(RefactorExporter.ExcludeFields, "").toString.split(",").filter( _.length > 0)
   private val onlyIncludeFields = param.exportConfig.getOrDefault(RefactorExporter.OnlyIncludeFields, "").toString.split(",").filter( _.length > 0)
   private val generatedNamePrefix = param.exportConfig.getOrDefault(RefactorExporter.GeneratedNamePrefix, "Base")
@@ -141,7 +139,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
     typeBasedOnUseOrdered.
       filter(e => e._1.size > 1).
-      filter(e => e._2.size >= attribSizeThreshold || 100 * e._1.size / allTypes.types.size > usageCountPercentage).
+      filter(e => e._2.size >= attribSizeThreshold ).
       zipWithIndex.
       foreach(c => {
         val types = c._1._1
@@ -238,7 +236,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
 
   override def supportedConfig(): Array[String] = requiredConfig() ++
-    Seq(RefactorExporter.ExcludeFields, RefactorExporter.OnlyIncludeFields, RefactorExporter.UsageCountPercentage,
+    Seq(RefactorExporter.ExcludeFields, RefactorExporter.OnlyIncludeFields,
       RefactorExporter.AttribSizeThreshold, RefactorExporter.FullyGeneralize)
 
   override def requiredConfig(): Array[String] = Array(RefactorExporter.Namespace)
