@@ -37,8 +37,6 @@ object ResolutionMessage {
 case class ResolutionMessage(location: IToken, errorCode: ErrorCode)(var targetNode: Option[ResolvableNode], completions: List[String], args: Any*) extends IResolutionMessage {
   override def toString: String = location + " " + formattedMessage
 
-  private val ignored = 10
-
   def formattedMessage: String = errorCode.description.format(args: _*)
 
   def hasCompletions = !completions.isEmpty

@@ -5,7 +5,7 @@ import com.schemarise.alfa.compiler.ast.{UdtVersionedName, model}
 
 import java.nio.file.Path
 import schemarise.alfa.runtime.model._
-import com.schemarise.alfa.compiler.ast.model.ICompilationUnitArtifact
+import com.schemarise.alfa.compiler.ast.model.{IAnnotation, ICompilationUnitArtifact}
 import com.schemarise.alfa.compiler.ast.model.types.UdtType
 import com.schemarise.alfa.compiler.ast.nodes.{Annotation, StringNode}
 import com.schemarise.alfa.compiler.utils.ILogger
@@ -153,20 +153,29 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
          |  <thead>
          |    <tr>
          |      <th>Name</th>
-         |      <th>Datatype</th>$defaultExpression
-         |      <th>Description</th>$assertHtml
+         |      <th>Datatype</th>
+         |      <th>Description</th>
+         |      <th>Annotations</th>$defaultExpression$assertHtml
          |    </tr>
          |  </thead>
          |  <tbody>""".stripMargin)
 
+
     fields.foreach(m => {
       val doc = mdToHtml(m.getDoc.orElse("").replace('\n', ' '))
+
+      val compField = cua.getUdt( udt.getName.getFullyQualifiedName ).get.allFields.get(m.getName).get
+
+      val annString = compField.annotations.map( a => {
+        s"@${a.versionedName.name}${readAnnotationExpr(a,"(", ")")}"
+      }).mkString(" ")
 
       writeln(
         s"""    <tr>
            |        <td>${m.getName}</td>
            |        <td>${printType(m.getDataType, true)}</td>
            |        <td>$doc</td>
+           |        <td>$annString</td>
            |    </tr>""".stripMargin)
     })
 
@@ -175,6 +184,15 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
         |  </tbody>
         |</table>
       """.stripMargin)
+  }
+
+  private def printAnnotationArgs( args: util.Map[String, IExpression]) = {
+    if ( args.isEmpty ) {
+      ""
+    }
+    else {
+      args.asScala.map( a => s"${a._1}=${a._2}" ).mkString("(",",",")")
+    }
   }
 
   def printEnumFields(fields: Map[String, Field]) = {
@@ -264,41 +282,22 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
   private def writeAnnotationType(udt: UdtBaseNode): Unit = {
     writeln("\n## Usages")
 
-    writeln(
-      """
-        |<table>
-        |  <thead>
-        |    <tr>
-        |      <th>Type</th>
-        |      <th>Field</th>
-        |      <th>Settings</th>
-        |    </tr>
-        |  </thead>
-        |  <tbody>""".stripMargin)
+    writeln("\n")
+    writeln(s"| Type        | Field | Settings |")
+    writeln(s"| ----------- | ----- | -------- |")
+
 
     cua.getUdtVersionNames().toList.filter(e => e.udtType != UdtType.annotation).foreach(vn => {
 
-      val typeLink = utils.udtAsLink(c2r.convert(vn), true, false, true)
+      val typeLink = utils.udtAsLink(c2r.convert(vn), true, false, false)
 
       val de = cua.getUdt(vn.fullyQualifiedName).get
       val optAnn = de.annotationsMap.get(UdtVersionedName(name = StringNode.create(udt.getName.getFullyQualifiedName)))
       if (optAnn.isDefined) {
-        val valueCtx = optAnn.get.asInstanceOf[Annotation].valueCtx
-        val annData =
-          if (valueCtx.isDefined && valueCtx.get != null) {
-            valueCtx.get.namedExpression().asScala.map(e => e.expr.getText).mkString(", ")
-          }
-          else {
-            ""
-          }
+        val ann = optAnn.get
+        val annData: String = readAnnotationExpr(ann)
 
-        writeln(
-          s"""
-             |<tr><td>$typeLink</td>
-             |  <td></td>
-             |  <td>$annData</td>
-             |</tr>
-             |""".stripMargin)
+        writeln(s"""| $typeLink | | $annData | |""")
       }
 
       de.allFields.toList.map(_._2).foreach(f => {
@@ -313,14 +312,7 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
             }
             else
               ""
-
-          writeln(
-            s"""
-               |<tr><td>$typeLink</td>
-               |  <td>${f.name}</td>
-               |  <td>$annData</td>
-               |</tr>
-               |""".stripMargin)
+          writeln(s"""| $typeLink | ${f.name} | $annData | |""")
         }
       })
     })
@@ -331,6 +323,18 @@ class UdtPrinter(logger: ILogger, outputDir: Path,
         |   </table>
         |   <!-- end -->
           """.stripMargin)
+  }
+
+  private def readAnnotationExpr(ann: IAnnotation, pre: String = "", suf : String = "") = {
+    val valueCtx = ann.asInstanceOf[Annotation].valueCtx
+    val annData =
+      if (valueCtx.isDefined && valueCtx.get != null) {
+        valueCtx.get.namedExpression().asScala.map(e => e.expr.getText).mkString(pre, ", ", suf)
+      }
+      else {
+        ""
+      }
+    annData
   }
 
   def printService(srv: Service) = {

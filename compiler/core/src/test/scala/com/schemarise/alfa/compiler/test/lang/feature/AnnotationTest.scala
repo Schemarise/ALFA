@@ -38,14 +38,20 @@ class AnnotationTest extends AlfaCoreFunSuite {
   test("FieldAnnotations simples") {
     val cua = TestCompiler.compileValidScript(
       """
+        |namespace a
+        |record Foo{ }
         |
         |annotation AnnX( field ) {}
+        |
+        |
+        |namespace a.b.c
+        |
         |annotation AnnY( field ) {}
         |annotation AnnZ( field ) {}
         |
         |@alfa.meta.FieldAnnotations(
         |  {
-        |     [ @AnnX(), @AnnY() ] : [ A, B ]
+        |     [ @a.AnnX(), @AnnY() ] : [ A, B ]
         |  }
         |)
         |trait Plain {
