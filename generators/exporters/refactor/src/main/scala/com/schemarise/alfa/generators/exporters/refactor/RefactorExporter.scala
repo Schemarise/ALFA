@@ -16,6 +16,7 @@ object RefactorExporter {
   val Namespace = "namespace"
   val ExcludeFields = "excludeFields"
   val OnlyIncludeFields = "onlyIncludeFields"
+  val OnlyIncludeTypes = "onlyIncludeTypes"
   val AttribSizeThreshold = "groupAttribSizeThreshold"
   val GeneratedNamePrefix = "generatedNamePrefix"
   val FullyGeneralize = "fullyGeneralize"
@@ -24,8 +25,9 @@ object RefactorExporter {
 class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) with SupportedGenerator {
 
   private val attribSizeThreshold = Integer.parseInt(param.exportConfig.getOrDefault(RefactorExporter.AttribSizeThreshold, "1").toString)
-  private val excludeFields = param.exportConfig.getOrDefault(RefactorExporter.ExcludeFields, "").toString.split(",").filter( _.length > 0)
-  private val onlyIncludeFields = param.exportConfig.getOrDefault(RefactorExporter.OnlyIncludeFields, "").toString.split(",").filter( _.length > 0)
+  private val excludeFields = param.exportConfig.getOrDefault(RefactorExporter.ExcludeFields, "").toString.split(",").filter(_.length > 0)
+  private val onlyIncludeFields = param.exportConfig.getOrDefault(RefactorExporter.OnlyIncludeFields, "").toString.split(",").filter(_.length > 0)
+  private val onlyIncludeTypes = param.exportConfig.getOrDefault(RefactorExporter.OnlyIncludeTypes, "").toString.split(",").filter(_.length > 0)
   private val generatedNamePrefix = param.exportConfig.getOrDefault(RefactorExporter.GeneratedNamePrefix, "Base")
   private val namespace = param.exportConfig.get(RefactorExporter.Namespace)
   private val fullyGeneralize = param.exportConfig.getOrDefault(RefactorExporter.FullyGeneralize, "true").toString.toLowerCase.equals("true")
@@ -90,11 +92,21 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
   private def generalize() = {
     val cua = param.cua
 
-    val attrs = new mutable.HashMap[String, Attr]()
-    val types: Map[String, Type] = cua.getUdtVersionNames().filter(e => isFieldContainer(e.udtType)).map(vn => {
-    val udt = cua.getUdt(vn.fullyQualifiedName).get.asInstanceOf[UdtBaseNode]
+    val udtNames = cua.getUdtVersionNames().map( n => n.fullyQualifiedName )
+    onlyIncludeTypes.foreach( t => {
+      if ( !udtNames.contains(t) ) {
+        param.logger.error("Type listed in 'OnlyIncludeTypes' not found - " + t)
+      }
+    })
 
-    val fields = udt.allFields.values.
+    val attrs = new mutable.HashMap[String, Attr]()
+    val types: Map[String, Type] = cua.getUdtVersionNames().
+      filter(e => isFieldContainer(e.udtType)).
+      filter(e => onlyIncludeTypes.isEmpty || onlyIncludeTypes.contains(e.fullyQualifiedName)).
+      map(vn => {
+      val udt = cua.getUdt(vn.fullyQualifiedName).get.asInstanceOf[UdtBaseNode]
+
+      val fields = udt.allFields.values.
         map(f => f.name -> {
 
           val fk = f.name + "__" + f.dataType.toString
@@ -123,23 +135,28 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
   private def _generalize(allTypes: Types, allAttrs: mutable.HashMap[String, Attr]) = {
 
+    param.logger.debug( "Types and attributes considered for generalize:\n" + allTypes.types.values.mkString("\n") )
     val typeBasedOnUse = new HashMap[List[String], Set[Attr]] with MultiMap[List[String], Attr]
 
     allAttrs.values.map(a => {
       val x = a.usedIn.sorted.toList
+      val b4 = typeBasedOnUse.get(x)
+
       typeBasedOnUse.addBinding(x, a)
+      val a8 = typeBasedOnUse.get(x)
     })
 
-    val typeBasedOnUseOrdered =  typeBasedOnUse.toList.sortBy( e => e._2.size )
+    val typeBasedOnUseOrdered = typeBasedOnUse.toList.sortBy(e => e._2.size)
 
     val newBaseTypes = new mutable.HashMap[String, scala.collection.mutable.Set[String]]()
 
-
     var counter = 1
 
-    typeBasedOnUseOrdered.
-      filter(e => e._1.size > 1).
-      filter(e => e._2.size >= attribSizeThreshold ).
+    val withFields = typeBasedOnUseOrdered
+      .filter(e => e._1.size > 1)
+      .filter(e => e._2.size >= attribSizeThreshold)
+
+    withFields.
       zipWithIndex.
       foreach(c => {
         val types = c._1._1
@@ -148,10 +165,10 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
         val baseTypeAttrs = attrs.map(a => a.name -> a).toMap
 
         val filteredAttrs = baseTypeAttrs.
-          filter(f => onlyIncludeFields.isEmpty || onlyIncludeFields.contains(f._1) ).
+          filter(f => onlyIncludeFields.isEmpty || onlyIncludeFields.contains(f._1)).
           filter(f => !excludeFields.contains(f._1))
 
-        if ( !filteredAttrs.isEmpty ) {
+        if (!filteredAttrs.isEmpty) {
           val baseTypeName = namespace + "." + generatedNamePrefix + counter
           counter += 1
 
@@ -164,13 +181,15 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
           typesSet ++= types.toSet
 
           newBaseTypes.put(baseTypeName, typesSet)
+
+          param.logger.info("New Base type " + baseTypeName + " for use in" + typesSet.mkString(", ") )
         }
       })
 
 
-    val sortedNewBaseTypes = newBaseTypes.toList.sortBy( e => e._2.size ).reverse
+    val sortedNewBaseTypes = newBaseTypes.toList.sortBy(e => e._2.size).reverse
 
-    if ( fullyGeneralize ) {
+    if (fullyGeneralize) {
       adjustLevels(sortedNewBaseTypes, allTypes)
     }
 
@@ -193,9 +212,9 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
     })
   }
 
-  private def fieldsClosure(allTypes: Types, name: String) : Seq[String] = {
+  private def fieldsClosure(allTypes: Types, name: String): Seq[String] = {
     val t = allTypes.types.get(name).get
-    t.attr.map( _._1).toSeq ++ t.includes.map( i => fieldsClosure(allTypes, i)).flatten
+    t.attr.map(_._1).toSeq ++ t.includes.map(i => fieldsClosure(allTypes, i)).flatten
   }
 
   private def adjustLevels(newBaseTypes: List[(String, mutable.Set[String])], allTypes: Types): Boolean = {
@@ -208,9 +227,9 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
           val cyclic = hasCycle(allTypes, inner._1, innerIncs.toList ++ List(outer._1), List.empty)
 
-          if (! cyclic) {
+          if (!cyclic) {
             innerIncs.append(outer._1)
-            inner._2.foreach( t => {
+            inner._2.foreach(t => {
               outer._2.remove(t)
               modified = true
             })
@@ -222,7 +241,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
     modified
   }
 
-  private def hasCycle(allTypes: Types, target: String, targetsIncludes : List[String], visiting: List[String]): Boolean = {
+  private def hasCycle(allTypes: Types, target: String, targetsIncludes: List[String], visiting: List[String]): Boolean = {
     if (visiting.contains(target))
       true
     else {
@@ -236,7 +255,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
 
   override def supportedConfig(): Array[String] = requiredConfig() ++
-    Seq(RefactorExporter.ExcludeFields, RefactorExporter.OnlyIncludeFields,
+    Seq(RefactorExporter.ExcludeFields, RefactorExporter.OnlyIncludeFields, RefactorExporter.OnlyIncludeTypes,
       RefactorExporter.AttribSizeThreshold, RefactorExporter.FullyGeneralize)
 
   override def requiredConfig(): Array[String] = Array(RefactorExporter.Namespace)
@@ -245,7 +264,7 @@ class RefactorExporter(param: AlfaExporterParams) extends AlfaExporter(param) wi
 
   case class Attr(name: String, field: Field)(val usedIn: mutable.ListBuffer[String]) {
     override def toString: String = {
-      name + " : " + field.dataType
+      name + " : " + field.dataType // + " UsedIn:" + usedIn.mkString(", ")
     }
   }
 

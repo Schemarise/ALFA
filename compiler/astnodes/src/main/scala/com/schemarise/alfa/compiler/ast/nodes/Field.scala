@@ -201,7 +201,8 @@ class Field(val location: IToken = TokenImpl.empty,
               filter( e => e.isInstanceOf[NewExpressionContext]).
               map( e => {
                 val ne = e.asInstanceOf[NewExpressionContext]
-                new Annotation( namespace=udtParent.namespaceNode, nameNode = StringNode.create(ne.udtName.idOnly().id.getText), valueCtx = Some( ne.args ) )
+                val loc = new TokenImpl(ne.start, ne.stop)
+                new Annotation( location = loc, namespace=udtParent.namespaceNode, nameNode = StringNode.create(loc, ne.udtName.getText), valueCtx = Some( ne.args ) )
               } )
 
             val fields = vme.entryvalue.asInstanceOf[ListExpressionContext].expressionSequence().expressionUnit().asScala.

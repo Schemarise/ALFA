@@ -2,7 +2,8 @@ namespace refactor.test1
 
 record User {
   id: uuid 
-  name: string
+  fname: string
+  lname: string
   email: string 
   created_at: datetime 
   is_active: boolean 
@@ -10,7 +11,8 @@ record User {
 
 record Product {
   id: uuid 
-  name: string
+  fname: string
+  lname: string
   description: string?
   price: double
   available: boolean 
@@ -27,7 +29,8 @@ record Order {
 
 record Category {
   id: uuid 
-  name: string 
+  fname: string 
+  lname: string
   parent_id: uuid?
 }
 
