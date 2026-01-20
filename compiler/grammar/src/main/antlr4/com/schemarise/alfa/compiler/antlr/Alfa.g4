@@ -467,13 +467,23 @@ decisionRule
     ;
 
 functionCall
-    : ( library=idOrQid   DOUBLE_COLON  )? methodName=idOnly ( LESS_THAN  methodResultType=fieldType  GREATER_THAN )?   LEFT_BRACKET  args=namedExpressionSequence?  RIGHT_BRACKET
+    : ( library=idOrQid   DOUBLE_COLON  )? methodName=idOnly ( LESS_THAN methodResultType=fieldType  GREATER_THAN )?   LEFT_BRACKET  args=namedExpressionSequence?  RIGHT_BRACKET
+    ;
+
+matchCaseExpression
+    : caseWhenLiteralOrEnumConst=expressionUnit     MINUS_ARROW caseResult=expressionUnit
+    | caseWhenTypedVar=idOnly COLON dtype=fieldType MINUS_ARROW caseResult=expressionUnit
+    ;
+
+matchExpressionsDef
+    : matchCaseExpression+ ( ELSE caseDefault=expressionUnit )?
     ;
 
 expressionUnit
     : ( NEW  |  AT  ) udtName=idOrQid   LEFT_BRACKET  args=namedExpressionSequence?  RIGHT_BRACKET  ( WITH  with=idOnly )?    # NewExpression
-    |  RAISE  raiseType=idOnly  LEFT_BRACKET  (category=idOnly  COMMA )? message=expressionUnit  RIGHT_BRACKET                # RaiseExpression
-    |  PARTIAL  udtName=idOrQid   LEFT_BRACKET  args=namedExpressionSequence?  RIGHT_BRACKET                                  # FragmentExpression
+    | RAISE  raiseType=idOnly  LEFT_BRACKET  (category=idOnly  COMMA )? message=expressionUnit  RIGHT_BRACKET                 # RaiseExpression
+    | PARTIAL  udtName=idOrQid   LEFT_BRACKET  args=namedExpressionSequence?  RIGHT_BRACKET                                   # FragmentExpression
+    | MATCH matchExpr=expressionUnit LEFT_BRACE matchExpressionsDef RIGHT_BRACE                                               # MatchExpression
     | (negate= EXCLAMATION )? functionCall ( DOT  literal )?                                                                  # MethodCallExpression
     | lhs=expressionUnit ( PIPE  funcChains = functionCall )+                                                                 # ChainedMethodCallExpression
     | lhs=expressionUnit op=( SLASH  |  STAR  |  PERCENTAGE  |  PLUS  |  MINUS ) rhs=expressionUnit                           # MathExpression
@@ -484,6 +494,7 @@ expressionUnit
                     truedoc=docstrings thenExp=expressionUnit
                     ( ELSE  falsedoc=docstrings elseExp=expressionUnit )?                                                     # IfElseExpression
     | ( LEFT_BRACKET dtype=fieldType RIGHT_BRACKET )?  NONE                                                                   # NoneExpression
+    | ( LEFT_BRACKET dtype=fieldType RIGHT_BRACKET )?  NULL                                                                   # NullExpression
     |  THIS                                                                                                                   # ThisExpression
     | (negate= EXCLAMATION )? literal                                                                                         # LiteralExpression
     | ( LEFT_BRACKET castType=fieldType RIGHT_BRACKET )?  LEFT_SQUARE_BRACKET  expressionSequence?  RIGHT_SQUARE_BRACKET      # ListExpression
@@ -558,7 +569,7 @@ enclosedType
 	: encType= STREAM       LESS_THAN  ft=fieldType  GREATER_THAN
 	| encType= FUTURE       LESS_THAN  ft=fieldType  GREATER_THAN
 	| encType= TRY          LESS_THAN  ft=fieldType  GREATER_THAN
-	| encType=KEY           LESS_THAN  ft=fieldType  GREATER_THAN
+	| encType= KEY          LESS_THAN  ft=fieldType  GREATER_THAN
 	| encType= EITHER       LESS_THAN  ft=fieldType  COMMA  right=fieldType  GREATER_THAN
 	| encType= PAIR         LESS_THAN  ft=fieldType  COMMA  right=fieldType  GREATER_THAN
 	| encType= TABLE        LESS_THAN  ft=fieldType  GREATER_THAN   ( LEFT_BRACKET  optargs=namedExpressionSequence?  RIGHT_BRACKET  )?
