@@ -71,7 +71,7 @@
         <alfa.java.tgt.version>${maven.compiler.release}</alfa.java.tgt.version>
         <alfa.scala.compat.version>2.12</alfa.scala.compat.version>
         <alfa.scalatest.version>3.2.18</alfa.scalatest.version>
-        <alfa.scala-maven-plugin.version>4.7.1</alfa.scala-maven-plugin.version>
+        <alfa.scala-maven-plugin.version>4.9.8</alfa.scala-maven-plugin.version>
         <alfa.scallop.version>3.3.1</alfa.scallop.version>
         <alfa.jackson.version>2.15.0</alfa.jackson.version>
         <alfa.sprintbootweb.version>3.4.1</alfa.sprintbootweb.version>
